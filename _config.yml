@@ -1,0 +1,113 @@
+# -----------------------------------------------------------------------------
+# Site settings
+# -----------------------------------------------------------------------------
+
+title: Mehul Patel
+first_name: Mehul
+middle_name: 
+last_name: Patel
+email: contact@mehulpatel.dev # Change to your email
+description: > # this means to ignore newlines
+  DevOps & Cloud Expert | Docker Captain | Google Developer Expert | AWS Community Builder
+  500+ Technical Sessions across 25+ Countries | Founder of CloudCaptain
+footer_text: >
+  Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
+  Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
+
+keywords: devops, cloud, docker, kubernetes, aws, gcp, azure, terraform, ansible, jenkins, tech-speaker, mentor
+
+lang: en
+icon: 🚀  # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
+
+url: https://nomadicmehul.github.io # the base hostname & protocol for your site
+baseurl: # the subpath of your site, e.g. /blog/. Leave blank for root
+last_updated: false # set to true if you want to display last updated in the footer
+
+# -----------------------------------------------------------------------------
+# Profile Settings
+# -----------------------------------------------------------------------------
+
+# Profile information
+blog_name: Mehul Patel
+blog_nav_title: Blog
+blog_description: DevOps & Cloud insights
+
+# Social integration
+# -----------------------------------------------------------------------------
+
+github_username: nomadicmehul
+twitter_username: nomadicmehul
+linkedin_username: nomadicmehul
+medium_username: nomadicmehul
+scholar_userid: # Your Google Scholar ID
+orcid_id: # your ORCID ID
+youtube_id: # Your YouTube channel ID
+discord_id: # Your discord server ID (e.g., 123456789012345678)
+
+contact_note: >
+  Available for speaking engagements, workshops, and 1:1 mentorship sessions.
+
+# Announcement at top of page
+announcement: >
+  🎤 Speaking at KubeCon Europe 2025 | 🚀 New Course: Kubernetes Mastery launching soon!
+
+# -----------------------------------------------------------------------------
+# Collections
+# -----------------------------------------------------------------------------
+
+collections:
+  news:
+    defaults:
+      layout: post
+    output: true
+    permalink: /news/:path/
+  projects:
+    output: true
+    permalink: /projects/:path/
+
+# -----------------------------------------------------------------------------
+# Jekyll settings
+# -----------------------------------------------------------------------------
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Includes & excludes
+include: ['_pages']
+
+# Pagination
+pagination:
+  enabled: true
+
+# -----------------------------------------------------------------------------
+# Other settings
+# -----------------------------------------------------------------------------
+
+# Enable Jekyll SEO plugin
+plugins:
+  - jekyll-feed
+  - jekyll-paginate-v2
+  - jekyll-scholar
+  - jekyll-sitemap
+  - jemoji
+
+# Enable blog sidebar
+blog_sidebar: true
+
+# Dark mode settings
+enable_darkmode: true
+darkmode_permanent: false
+
+# Enable smooth scrolling
+enable_smooth_scroll: true
+
+# Enable navbar fixed at top
+enable_navbar_social: true
+
+# Enable Google Analytics
+google_analytics: # Your GA tracking ID
+
+# Enable Responsive Images
+imagemagick:
+  enabled: true
