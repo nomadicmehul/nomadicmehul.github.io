@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects — Mehul Patel</title>
+    <meta name="description" content="Open-source projects by Mehul Patel — DevOps tools, cloud-native frameworks, AI integrations, and learning resources.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --blue-50: #eff6ff; --blue-100: #dbeafe; --blue-200: #bfdbfe;
+            --blue-300: #93c5fd; --blue-400: #60a5fa; --blue-500: #3b82f6;
+            --blue-600: #2563eb; --blue-700: #1d4ed8; --blue-800: #1e40af;
+            --blue-900: #1e3a8a; --blue-950: #172554;
+            --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0;
+            --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b;
+            --slate-600: #475569; --slate-700: #334155; --slate-800: #1e293b;
+            --slate-900: #0f172a;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-blue: 0 4px 14px 0 rgba(37, 99, 235, 0.25);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-sans); color: var(--slate-800); background: var(--slate-50); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        a { text-decoration: none; color: inherit; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* Nav */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--slate-200);
+        }
+        .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+        .nav-logo { font-weight: 700; font-size: 1.25rem; display: flex; align-items: center; gap: 8px; }
+        .nav-logo span { background: linear-gradient(135deg, var(--blue-600), var(--blue-800)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .nav-links { display: flex; align-items: center; gap: 24px; }
+        .nav-links a { font-size: 0.9rem; font-weight: 500; color: var(--slate-600); transition: color 0.2s; }
+        .nav-links a:hover { color: var(--blue-600); }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; border: none; cursor: pointer; }
+        .btn-primary { background: var(--blue-600); color: white; }
+        .btn-primary:hover { background: var(--blue-700); transform: translateY(-1px); box-shadow: var(--shadow-blue); }
+
+        /* Hero */
+        .page-hero {
+            padding: 140px 0 64px;
+            background: linear-gradient(180deg, var(--blue-50) 0%, var(--slate-50) 100%);
+            text-align: center;
+        }
+        .page-hero h1 { font-size: 3rem; font-weight: 800; color: var(--slate-900); margin-bottom: 16px; }
+        .page-hero h1 .hl { background: linear-gradient(135deg, var(--blue-600), var(--blue-400)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .page-hero p { font-size: 1.15rem; color: var(--slate-500); max-width: 640px; margin: 0 auto 32px; }
+
+        /* Stats */
+        .stats-bar { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.75rem; font-weight: 800; color: var(--blue-600); }
+        .stat-label { font-size: 0.8rem; color: var(--slate-500); font-weight: 500; }
+
+        /* Projects Grid */
+        .projects-section { padding: 64px 0 100px; }
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .project-card {
+            background: white;
+            border: 1px solid var(--slate-200);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .project-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--blue-400), var(--blue-600));
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .project-card:hover {
+            border-color: var(--blue-200);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+        .project-card:hover::before { opacity: 1; }
+
+        .project-icon {
+            width: 56px; height: 56px; border-radius: 14px;
+            background: var(--blue-50); display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-bottom: 20px;
+        }
+        .project-card h3 {
+            font-size: 1.2rem; font-weight: 700; color: var(--slate-800); margin-bottom: 10px;
+        }
+        .project-card .desc {
+            font-size: 0.9rem; color: var(--slate-500); line-height: 1.6; margin-bottom: 20px; flex: 1;
+        }
+        .project-tech {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
+        }
+        .project-tech span {
+            font-size: 0.75rem; background: var(--blue-50); color: var(--blue-700);
+            padding: 4px 12px; border-radius: 100px; font-weight: 600;
+        }
+        .project-link {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--blue-600); font-size: 0.9rem; font-weight: 600;
+            transition: gap 0.2s;
+        }
+        .project-link:hover { gap: 12px; }
+
+        .featured-badge {
+            position: absolute; top: 16px; right: 16px;
+            background: linear-gradient(135deg, var(--blue-500), var(--blue-700));
+            color: white; font-size: 0.7rem; font-weight: 700;
+            padding: 4px 10px; border-radius: 100px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        /* Footer */
+        .footer { background: var(--slate-900); color: var(--slate-400); padding: 32px 0; text-align: center; font-size: 0.85rem; }
+        .footer a { color: var(--blue-400); }
+
+        /* Responsive */
+        @media (max-width: 1024px) { .projects-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) {
+            .projects-grid { grid-template-columns: 1fr; }
+            .page-hero h1 { font-size: 2.25rem; }
+            .nav-links { display: none; }
+            .stats-bar { gap: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Nav -->
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-inner">
+                <a href="index.html" class="nav-logo">
+                    <i class="fas fa-terminal"></i>
+                    <span>Mehul Patel</span>
+                </a>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#about">About</a>
+                    <a href="speaking.html">Speaking</a>
+                    <a href="projects.html">Projects</a>
+                    <a href="https://github.com/nomadicmehul" target="_blank" class="btn btn-primary"><i class="fab fa-github"></i> GitHub</a>
+                    <a href="https://topmate.io/nomadicmehul" target="_blank" class="btn" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;"><i class="fas fa-calendar-check"></i> Book Session</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="page-hero">
+        <div class="container">
+            <h1>Open Source <span class="hl">Projects</span></h1>
+            <p>Tools, frameworks, and learning resources I've built to empower the DevOps, cloud-native, and AI community.</p>
+            <div class="stats-bar">
+                <div class="stat"><div class="stat-value" id="total-count">0</div><div class="stat-label">Total Projects</div></div>
+                <div class="stat"><div class="stat-value" id="featured-count">0</div><div class="stat-label">Featured</div></div>
+                <div class="stat"><div class="stat-value" id="tech-count">0</div><div class="stat-label">Technologies</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects -->
+    <section class="projects-section">
+        <div class="container">
+            <div class="projects-grid" id="projects-container">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section style="background:linear-gradient(135deg,var(--blue-700),var(--blue-900));color:white;padding:64px 0;text-align:center;">
+        <div class="container">
+            <h2 style="font-size:2rem;font-weight:800;margin-bottom:12px;">Want to Collaborate?</h2>
+            <p style="opacity:0.85;margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto;">All my projects are open source. Contributions, feedback, and ideas are always welcome.</p>
+            <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+                <a href="https://github.com/nomadicmehul" target="_blank" class="btn" style="background:white;color:var(--blue-700);font-weight:700;">
+                    <i class="fab fa-github"></i> View GitHub Profile
+                </a>
+                <a href="mailto:contact@mehulpatel.dev" class="btn" style="background:rgba(255,255,255,0.1);color:white;border:2px solid rgba(255,255,255,0.3);">
+                    <i class="fas fa-envelope"></i> Get in Touch
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Mehul Patel &mdash; <a href="index.html">Back to Home</a></p>
+        </div>
+    </footer>
+
+    <script>window.__PROJECTS_DATA = [{"title":"Azure MCP Server","description":"Model Context Protocol server for Azure services, enabling AI agents to interact with Azure resources through a standardized protocol.","icon":"fas fa-cloud","iconColor":"#0078d4","repo":"https://github.com/nomadicmehul/Azure-MCP-Server","tech":["Azure","MCP","AI Agents","Python"],"featured":true},{"title":"Hello GenAI","description":"Getting started with Generative AI \u2014 a collection of examples, tutorials, and hands-on labs for building AI-powered applications.","icon":"fas fa-brain","iconColor":"#9333ea","repo":"https://github.com/nomadicmehul/hello-genai","tech":["GenAI","LLM","Python","Tutorials"],"featured":true},{"title":"CloudCaptain","description":"Comprehensive DevOps and cloud learning resources \u2014 free tutorials, guides, and hands-on labs for mastering cloud-native technologies.","icon":"fas fa-rocket","iconColor":"#2563eb","repo":"https://github.com/nomadicmehul/CloudCaptain","tech":["DevOps","Cloud","Learning","Open Source"],"featured":true}];</script>
+    <script>
+        let allProjects = window.__PROJECTS_DATA || [];
+
+        async function loadProjects() {
+            if (allProjects.length === 0) {
+                try {
+                    const response = await fetch('data/projects.json');
+                    allProjects = await response.json();
+                } catch (e) {
+                    console.warn('Could not fetch projects.json — using inline data if available.');
+                }
+            }
+            renderProjects();
+        }
+
+        function renderProjects() {
+            if (allProjects.length === 0) return;
+
+            // Stats
+            const allTech = new Set();
+            allProjects.forEach(p => (p.tech || []).forEach(t => allTech.add(t)));
+            document.getElementById('total-count').textContent = allProjects.length;
+            document.getElementById('featured-count').textContent = allProjects.filter(p => p.featured).length;
+            document.getElementById('tech-count').textContent = allTech.size;
+
+            // Sort: featured first
+            const sorted = [...allProjects].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+            const container = document.getElementById('projects-container');
+
+            container.innerHTML = sorted.map(project => `
+                <div class="project-card">
+                    ${project.featured ? '<span class="featured-badge">Featured</span>' : ''}
+                    <div class="project-icon"><i class="${project.icon || 'fas fa-code-branch'}" style="color:${project.iconColor || 'var(--blue-600)'}"></i></div>
+                    <h3>${project.title}</h3>
+                    <p class="desc">${project.description}</p>
+                    <div class="project-tech">
+                        ${(project.tech || []).map(t => `<span>${t}</span>`).join('')}
+                    </div>
+                    <a href="${project.repo}" target="_blank" class="project-link">
+                        View on GitHub <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        loadProjects();
+    </script>
+</body>
+</html>
