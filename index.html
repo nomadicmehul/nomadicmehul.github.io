@@ -758,6 +758,8 @@
             border-radius: 16px;
             padding: 28px;
             transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
         }
 
         .event-card:hover {
@@ -803,6 +805,25 @@
             padding: 4px 10px;
             border-radius: 4px;
             font-weight: 500;
+        }
+
+        .event-topics {
+            flex: 1;
+        }
+
+        .event-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--blue-600);
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: gap 0.2s;
+            margin-top: 12px;
+        }
+
+        .event-link:hover {
+            gap: 10px;
         }
 
         /* ===== Projects Section ===== */
@@ -1187,8 +1208,8 @@
                 <div class="nav-links">
                     <a href="#about">About</a>
                     <a href="#skills">Skills</a>
-                    <a href="speaking.html">Speaking</a>
-                    <a href="projects.html">Projects</a>
+                    <a href="#speaking">Speaking</a>
+                    <a href="#projects">Projects</a>
                     <a href="https://github.com/nomadicmehul" target="_blank" class="nav-cta"><i class="fab fa-github"></i> GitHub</a>
                     <a href="https://topmate.io/nomadicmehul" target="_blank" class="nav-cta nav-cta-book"><i class="fas fa-calendar-check"></i> Book Session</a>
                 </div>
@@ -1200,8 +1221,8 @@
         <div class="mobile-menu" id="mobile-menu">
             <a href="#about" onclick="toggleMenu()">About</a>
             <a href="#skills" onclick="toggleMenu()">Skills</a>
-            <a href="speaking.html" onclick="toggleMenu()">Speaking</a>
-            <a href="projects.html" onclick="toggleMenu()">Projects</a>
+            <a href="#speaking" onclick="toggleMenu()">Speaking</a>
+            <a href="#projects" onclick="toggleMenu()">Projects</a>
             <a href="https://github.com/nomadicmehul" target="_blank" onclick="toggleMenu()">GitHub</a>
             <a href="https://topmate.io/nomadicmehul" target="_blank" onclick="toggleMenu()">Book Session</a>
         </div>
@@ -1242,10 +1263,10 @@
                         </div>
                     </div>
                     <div class="hero-actions">
-                        <a href="speaking.html" class="btn btn-primary">
+                        <a href="#speaking" class="btn btn-primary">
                             <i class="fas fa-microphone-alt"></i> Speaking
                         </a>
-                        <a href="projects.html" class="btn btn-outline">
+                        <a href="#projects" class="btn btn-outline">
                             <i class="fas fa-code-branch"></i> Projects
                         </a>
                         <a href="assets/Mehul_Patel_Resume.pdf" target="_blank" class="btn btn-outline">
@@ -1608,7 +1629,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 Mehul Patel &mdash; Built with passion from Berlin, Germany. <a href="https://github.com/nomadicmehul" target="_blank">nomadicmehul</a></p>
+            <p>&copy; 2026 Mehul Patel &mdash; Built with passion from Berlin, Germany. <a href="https://github.com/nomadicmehul" target="_blank">nomadicmehul</a></p>
         </div>
     </footer>
 
