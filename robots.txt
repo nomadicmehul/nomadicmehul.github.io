@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://nomadicmehul.github.io/sitemap.xml

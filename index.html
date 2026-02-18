@@ -13,6 +13,18 @@
     <meta property="og:description" content="Docker Captain | GDE | AWS Community Builder | 500+ Sessions across 25+ Countries">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://nomadicmehul.github.io">
+    <meta property="og:image" content="https://nomadicmehul.github.io/assets/img/profile.jpg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@nomadicmehul">
+    <meta name="twitter:title" content="Mehul Patel — DevOps & Cloud Expert">
+    <meta name="twitter:description" content="Docker Captain | GDE | AWS Community Builder | 500+ Sessions across 25+ Countries">
+    <meta name="twitter:image" content="https://nomadicmehul.github.io/assets/img/profile.jpg">
+
+    <!-- Canonical & Favicon -->
+    <link rel="canonical" href="https://nomadicmehul.github.io/">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1452,9 +1464,21 @@
             .photo-badge { animation: none; }
             .hero-terminal .term-line { opacity: 1; animation: none; }
         }
+
+        /* Accessibility */
+        .skip-link {
+            position: absolute; top: -100px; left: 16px; z-index: 10001;
+            background: var(--term-green); color: var(--bg-primary); padding: 12px 24px;
+            border-radius: 0 0 8px 8px; font-weight: 700; font-family: var(--font-mono);
+            transition: top 0.2s;
+        }
+        .skip-link:focus { top: 0; }
+        *:focus-visible { outline: 2px solid var(--term-green); outline-offset: 2px; }
     </style>
 </head>
 <body>
+    <!-- Skip to content (accessibility) -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <!-- Matrix Rain Canvas -->
     <canvas id="matrix-bg"></canvas>
@@ -1463,7 +1487,7 @@
     <div class="scanline"></div>
 
     <!-- Navigation -->
-    <nav class="nav" id="nav">
+    <nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
         <div class="container">
             <div class="nav-inner">
                 <a href="#" class="nav-logo">
@@ -1493,6 +1517,7 @@
     </nav>
 
     <!-- Hero Section -->
+    <main id="main-content">
     <section class="hero">
         <div class="container">
             <div class="hero-grid">
@@ -1896,8 +1921,10 @@
         </div>
     </section>
 
+    </main>
+
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <div class="container">
             <p>&copy; 2026 Mehul Patel &mdash; <span style="color:var(--term-green)">chmod +x</span> life.sh &mdash; Built with passion from Berlin, Germany. <a href="https://github.com/nomadicmehul" target="_blank">nomadicmehul</a></p>
         </div>

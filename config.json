@@ -1,0 +1,130 @@
+{
+  "site": {
+    "title": "Mehul Patel",
+    "tagline": "DevOps & Cloud Expert",
+    "description": "Docker Captain | GDE | AWS Community Builder | 500+ Sessions across 25+ Countries",
+    "url": "https://nomadicmehul.github.io",
+    "email": "contact@mehulpatel.dev",
+    "resumePath": "assets/Mehul_Patel_Resume.pdf",
+    "profileImage": "assets/img/profile.jpg",
+    "location": "Berlin, Germany",
+    "copyright": "2026"
+  },
+
+  "terminal": {
+    "user": "root",
+    "host": "mehul",
+    "promptPath": "~",
+    "footerCommand": "chmod +x life.sh"
+  },
+
+  "hero": {
+    "badge": "Available for speaking engagements",
+    "heading": ["DevOps &", "Cloud Expert"],
+    "subtitle": "Open-source advocate, Docker Captain, and tech mentor with 12+ years helping developers and teams excel in cloud-native technologies across 25+ countries.",
+    "terminal": [
+      { "prompt": true, "command": "whoami", "flag": "" },
+      { "prompt": false, "output": "DevOps Engineer | Docker Captain | GDE | Open Source Advocate" },
+      { "prompt": true, "command": "uptime", "flag": "--experience" },
+      { "prompt": false, "output": "12+ years, 500+ sessions, 25+ countries, 50K+ developers impacted" }
+    ],
+    "stats": [
+      { "value": "500+", "label": "Sessions" },
+      { "value": "25+", "label": "Countries" },
+      { "value": "50K+", "label": "Developers" },
+      { "value": "4.9", "label": "Rating" }
+    ],
+    "badges": [
+      { "icon": "fab fa-docker", "label": "Docker Captain", "position": "top" },
+      { "icon": "fab fa-google", "label": "Google Developer Expert", "position": "bottom" }
+    ]
+  },
+
+  "social": {
+    "github": "https://github.com/nomadicmehul",
+    "linkedin": "https://www.linkedin.com/in/nomadicmehul/",
+    "twitter": "https://twitter.com/nomadicmehul",
+    "youtube": "https://www.youtube.com/@nomadicmehul",
+    "instagram": "https://www.instagram.com/nomadicmehul/",
+    "medium": "https://medium.com/@nomadicmehul",
+    "bioLink": "https://bio.link/nomadicmehul",
+    "bookSession": "https://topmate.io/nomadicmehul"
+  },
+
+  "navigation": [
+    { "label": "About", "href": "#about" },
+    { "label": "Skills", "href": "#skills" },
+    { "label": "Speaking", "href": "#speaking" },
+    { "label": "Projects", "href": "#projects" }
+  ],
+
+  "recognition": [
+    { "icon": "fab fa-docker", "iconColor": "#2496ed", "title": "Docker Captain", "description": "Official Docker community leader, recognized for expertise and contributions to container technologies." },
+    { "icon": "fab fa-google", "iconColor": "#4285f4", "title": "Google Developer Expert", "description": "GDE for Google Cloud Platform, recognized for deep technical knowledge and community impact." },
+    { "icon": "fab fa-aws", "iconColor": "#ff9900", "title": "AWS Community Builder", "description": "Selected for the AWS Community Builders program in Cloud Architecture and DevOps." },
+    { "icon": "fas fa-shield-alt", "iconColor": "#635dff", "title": "Auth0 Ambassador", "description": "Auth0 by Okta Ambassador, promoting identity and security best practices." }
+  ],
+
+  "ticker": [
+    { "icon": "fab fa-docker", "label": "Docker Captain" },
+    { "icon": "fab fa-google", "label": "Google Developer Expert" },
+    { "icon": "fab fa-aws", "label": "AWS Community Builder" },
+    { "icon": "fas fa-shield-alt", "label": "Auth0 Ambassador" },
+    { "icon": "fab fa-firefox-browser", "label": "Mozilla Reps Council" },
+    { "icon": "fas fa-cloud", "label": "CloudCaptain Founder" },
+    { "icon": "fas fa-users", "label": "CNCF Gandhinagar Organizer" }
+  ],
+
+  "skills": [
+    {
+      "icon": "fas fa-cloud",
+      "title": "Cloud Platforms",
+      "tags": ["AWS", "GCP", "Azure", "EC2", "GKE", "Cloud Run", "Lambda"]
+    },
+    {
+      "icon": "fab fa-docker",
+      "title": "Containers & Orchestration",
+      "tags": ["Docker", "Kubernetes", "Helm", "EKS", "AKS", "Knative"]
+    },
+    {
+      "icon": "fas fa-cogs",
+      "title": "Infrastructure as Code",
+      "tags": ["Terraform", "Ansible", "CloudFormation", "Pulumi", "ARM"]
+    },
+    {
+      "icon": "fas fa-sync-alt",
+      "title": "CI/CD & DevOps",
+      "tags": ["Jenkins", "GitLab CI", "GitHub Actions", "ArgoCD", "Flux"]
+    },
+    {
+      "icon": "fas fa-chart-line",
+      "title": "Monitoring & Observability",
+      "tags": ["Prometheus", "Grafana", "ELK Stack", "CloudWatch", "Datadog"]
+    },
+    {
+      "icon": "fas fa-brain",
+      "title": "AI/ML Ops",
+      "tags": ["Vertex AI", "ML Pipelines", "MCP", "AI Agents", "MLflow"]
+    }
+  ],
+
+  "about": {
+    "paragraphs": [
+      "I'm Mehul Patel, a DevOps and Cloud expert with over 12 years of hands-on experience in cutting-edge technologies like AWS, Google Cloud, Docker, Kubernetes, Ansible, Jenkins, and Terraform. Sharing knowledge is my driving force.",
+      "Through my initiative <strong>CloudCaptain</strong>, I've conducted over 500 sessions across 25+ countries, helping individuals and organizations excel in DevOps and cloud technologies.",
+      "I actively organize events and build communities at CNCF Gandhinagar, HashiCorp Gandhinagar, and GDG Cloud Gandhinagar. Currently based in Berlin, I'm focused on AI-powered DevOps, self-healing infrastructure, and Kubernetes security."
+    ],
+    "highlights": [
+      { "icon": "fas fa-briefcase", "value": "12+", "label": "Years Experience" },
+      { "icon": "fas fa-microphone-alt", "value": "500+", "label": "Sessions Delivered" },
+      { "icon": "fas fa-globe-americas", "value": "25+", "label": "Countries Reached" },
+      { "icon": "fas fa-users", "value": "50K+", "label": "Developers Impacted" }
+    ],
+    "cards": [
+      { "icon": "fas fa-rocket", "color": "blue", "title": "Current Focus", "text": "Self-healing infrastructure with GKE, AI-powered DevOps automation, Docker Sandboxes for AI agents, and MCP integration." },
+      { "icon": "fas fa-chalkboard-teacher", "color": "green", "title": "Mentorship Impact", "text": "305+ professionals mentored with a 4.9/5 rating. Career guidance, mock interviews, and cloud architecture reviews." },
+      { "icon": "fas fa-heart", "color": "purple", "title": "Community Building", "text": "Founder of CloudCaptain, OSW, and OSCF. Organizer at CNCF, HashiCorp, and GDG Cloud communities." },
+      { "icon": "fas fa-language", "color": "orange", "title": "Languages & Location", "text": "Based in Berlin, Germany. Fluent in English, Hindi, and Gujarati. Available across all time zones." }
+    ]
+  }
+}

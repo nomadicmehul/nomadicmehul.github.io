@@ -1,0 +1,901 @@
+/* ============================================================================
+   SHARED BASE STYLES - Linux Terminal Themed Portfolio
+   ============================================================================ */
+
+/* ============================================================================
+   1. CSS VARIABLES - Terminal Color Palette & Design Tokens
+   ============================================================================ */
+
+:root {
+    /* Terminal Colors */
+    --term-green: #4ade80;
+    --term-green-dim: #22c55e;
+    --term-green-bright: #86efac;
+    --term-amber: #fbbf24;
+    --term-cyan: #22d3ee;
+    --term-red: #f87171;
+    --term-purple: #c084fc;
+    --term-blue: #60a5fa;
+
+    /* Background Colors */
+    --bg-primary: #0a0e17;
+    --bg-secondary: #0f1623;
+    --bg-tertiary: #151d2e;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --bg-elevated: #1e293b;
+
+    /* Text Colors */
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-accent: #4ade80;
+
+    /* Border Colors */
+    --border-default: #1e293b;
+    --border-hover: #334155;
+    --border-accent: rgba(74, 222, 128, 0.3);
+
+    /* Typography */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+    --shadow-glow: 0 0 20px rgba(74, 222, 128, 0.15);
+    --shadow-glow-strong: 0 0 30px rgba(74, 222, 128, 0.25);
+}
+
+/* ============================================================================
+   2. RESET & BASE STYLES
+   ============================================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    letter-spacing: 0.3px;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 0.5em;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.1rem; }
+h6 { font-size: 1rem; }
+
+p {
+    margin-bottom: 1em;
+    color: var(--text-secondary);
+}
+
+a {
+    color: var(--term-green);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--term-green-bright);
+    text-decoration: underline;
+}
+
+ul, ol {
+    list-style-position: inside;
+    margin-bottom: 1em;
+}
+
+code {
+    font-family: var(--font-mono);
+    background-color: var(--bg-secondary);
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
+    color: var(--term-green);
+}
+
+pre {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-default);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    font-family: var(--font-mono);
+}
+
+pre code {
+    background-color: transparent;
+    padding: 0;
+    color: var(--text-primary);
+}
+
+/* ============================================================================
+   3. CONTAINER
+   ============================================================================ */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+    }
+}
+
+/* ============================================================================
+   4. SCANLINE EFFECT - Terminal Aesthetic
+   ============================================================================ */
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.03),
+        rgba(0, 0, 0, 0.03) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* ============================================================================
+   5. NAVIGATION - Terminal Prompt & Styling
+   ============================================================================ */
+
+nav {
+    background-color: var(--bg-primary);
+    border-bottom: 1px solid var(--border-default);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-md);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+}
+
+/* Logo with root@host prompt styling */
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.navbar-logo::before {
+    content: 'root@host';
+    color: var(--term-green);
+}
+
+.navbar-logo::after {
+    content: '';
+    display: inline-block;
+    width: 2px;
+    height: 1.2em;
+    background-color: var(--term-green);
+    margin-left: 0.2rem;
+    animation: cursor-block 1s step-end infinite;
+}
+
+/* Cursor block animation */
+@keyframes cursor-block {
+    0%, 49% {
+        background-color: var(--term-green);
+    }
+    50%, 100% {
+        background-color: transparent;
+    }
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-links a {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -0.25rem;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--term-green);
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--term-green);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.nav-links a.active {
+    color: var(--term-green);
+}
+
+.nav-links a.active::after {
+    width: 100%;
+}
+
+/* Mobile menu toggle button */
+.mobile-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 0.35rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.mobile-toggle span {
+    width: 24px;
+    height: 2px;
+    background-color: var(--term-green);
+    transition: all 0.3s ease;
+    display: block;
+}
+
+.mobile-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
+
+.mobile-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* ============================================================================
+   6. MOBILE MENU
+   ============================================================================ */
+
+.mobile-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-default);
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.mobile-menu.active {
+    display: flex;
+}
+
+.mobile-menu a {
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    transition: all 0.3s ease;
+    color: var(--text-secondary);
+}
+
+.mobile-menu a:hover,
+.mobile-menu a.active {
+    background-color: var(--bg-tertiary);
+    color: var(--term-green);
+}
+
+/* ============================================================================
+   7. BUTTON STYLES - Multiple Variants
+   ============================================================================ */
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.375rem;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+/* Primary button - Green terminal style */
+.btn-primary {
+    background-color: var(--term-green);
+    color: var(--bg-primary);
+    border: 1px solid var(--term-green);
+}
+
+.btn-primary:hover {
+    background-color: var(--term-green-bright);
+    border-color: var(--term-green-bright);
+    box-shadow: var(--shadow-glow);
+    text-decoration: none;
+    color: var(--bg-primary);
+}
+
+/* Outline button - Green border with transparent background */
+.btn-outline {
+    background-color: transparent;
+    color: var(--term-green);
+    border: 1px solid var(--term-green);
+}
+
+.btn-outline:hover {
+    background-color: rgba(74, 222, 128, 0.1);
+    border-color: var(--term-green-bright);
+    color: var(--term-green-bright);
+    box-shadow: var(--shadow-glow);
+}
+
+/* White button - Secondary style */
+.btn-white {
+    background-color: var(--text-primary);
+    color: var(--bg-primary);
+    border: 1px solid var(--text-primary);
+}
+
+.btn-white:hover {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--text-primary);
+    box-shadow: var(--shadow-md);
+}
+
+/* Ghost button - Minimal style */
+.btn-ghost {
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-default);
+}
+
+.btn-ghost:hover {
+    background-color: var(--bg-card-hover);
+    color: var(--text-primary);
+    border-color: var(--border-hover);
+}
+
+/* Book/Link button - Minimal text style */
+.btn-book {
+    background-color: transparent;
+    color: var(--term-green);
+    border: none;
+    padding: 0;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.btn-book:hover {
+    color: var(--term-green-bright);
+    text-decoration: underline;
+}
+
+/* ============================================================================
+   8. PAGE HERO - Shared Between Speaking & Projects
+   ============================================================================ */
+
+.hero {
+    padding: 4rem 0;
+    background-color: var(--bg-primary);
+    border-bottom: 1px solid var(--border-default);
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text-primary);
+}
+
+.hero-title .term-highlight {
+    color: var(--term-green);
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: 2.5rem 0;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+}
+
+/* ============================================================================
+   9. STATS BAR - Status/Metrics Display
+   ============================================================================ */
+
+.stats-bar {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-default);
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--term-green);
+    font-family: var(--font-mono);
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: var(--font-mono);
+}
+
+@media (max-width: 768px) {
+    .stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+}
+
+/* ============================================================================
+   10. SECTION STYLES - Consistent Spacing & Layout
+   ============================================================================ */
+
+.section {
+    padding: 4rem 0;
+    background-color: var(--bg-primary);
+}
+
+.section-alt {
+    background-color: var(--bg-secondary);
+}
+
+.section-header {
+    margin-bottom: 3rem;
+}
+
+.section-label {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--term-green);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+}
+
+.section-label::before {
+    content: '# ';
+    margin-right: 0.25rem;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.section-desc {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    max-width: 600px;
+}
+
+@media (max-width: 768px) {
+    .section {
+        padding: 2.5rem 0;
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+    }
+
+    .section-desc {
+        font-size: 1rem;
+    }
+}
+
+/* ============================================================================
+   11. CTA SECTION - Call-to-Action
+   ============================================================================ */
+
+.cta-section {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-default);
+    border-radius: 0.5rem;
+    padding: 3rem;
+    text-align: center;
+    margin: 4rem 0;
+}
+
+.cta-section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.cta-section-text {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .cta-section {
+        padding: 2rem;
+    }
+
+    .cta-section-title {
+        font-size: 1.5rem;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+
+/* ============================================================================
+   12. SOCIAL LINKS - Terminal Styled Social Icons
+   ============================================================================ */
+
+.social-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+}
+
+.social-link {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: 0.375rem;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background-color: var(--bg-card-hover);
+    color: var(--term-green);
+    border-color: var(--term-green);
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-2px);
+}
+
+/* ============================================================================
+   13. FOOTER - Monospace & chmod Styling
+   ============================================================================ */
+
+footer {
+    background-color: var(--bg-secondary);
+    border-top: 1px solid var(--border-default);
+    padding: 3rem 0;
+    margin-top: 4rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-section h4 {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-section a {
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+}
+
+.footer-section a:hover {
+    color: var(--term-green);
+}
+
+.footer-bottom {
+    border-top: 1px solid var(--border-default);
+    padding-top: 2rem;
+    text-align: center;
+}
+
+.chmod-notice {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.chmod-notice::before {
+    content: '$ chmod ';
+    color: var(--term-green);
+}
+
+.chmod-notice::after {
+    content: ' portfolio';
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    footer {
+        padding: 2rem 0;
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+/* ============================================================================
+   14. SCROLL ANIMATIONS - Fade-In on Scroll
+   ============================================================================ */
+
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-up {
+    animation: fadeUp 0.6s ease forwards;
+}
+
+/* Staggered animation delays */
+.animate-on-scroll:nth-child(1) { transition-delay: 0s; }
+.animate-on-scroll:nth-child(2) { transition-delay: 0.1s; }
+.animate-on-scroll:nth-child(3) { transition-delay: 0.2s; }
+.animate-on-scroll:nth-child(4) { transition-delay: 0.3s; }
+.animate-on-scroll:nth-child(5) { transition-delay: 0.4s; }
+
+/* ============================================================================
+   15. SKIP-TO-CONTENT LINK - Accessibility
+   ============================================================================ */
+
+.skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--term-green);
+    color: var(--bg-primary);
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    z-index: 10000;
+    border-radius: 0.375rem;
+    font-weight: 600;
+}
+
+.skip-to-content:focus {
+    top: 0;
+}
+
+/* ============================================================================
+   16. FOCUS-VISIBLE STYLES - Keyboard Navigation
+   ============================================================================ */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--term-green);
+    outline-offset: 2px;
+}
+
+/* ============================================================================
+   17. RESPONSIVE BREAKPOINTS
+   ============================================================================ */
+
+/* Large devices (1024px and up) */
+@media (max-width: 1024px) {
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.35rem; }
+
+    .container {
+        padding: 0 1.25rem;
+    }
+}
+
+/* Tablets (768px and up) */
+@media (max-width: 768px) {
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.25rem; }
+
+    .container {
+        padding: 0 1rem;
+    }
+
+    .mobile-toggle {
+        display: flex;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    nav .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+/* Small devices (480px and up) */
+@media (max-width: 480px) {
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.25rem; }
+    h3 { font-size: 1.1rem; }
+
+    .container {
+        padding: 0 0.75rem;
+    }
+
+    .navbar {
+        padding: 0.75rem 1rem;
+    }
+
+    .cta-section {
+        padding: 1.5rem;
+    }
+
+    .section {
+        padding: 2rem 0;
+    }
+
+    .hero {
+        padding: 1.5rem 0;
+    }
+
+    .hero-title {
+        font-size: 1.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.95rem;
+    }
+}
+
+/* ============================================================================
+   18. PREFERS-REDUCED-MOTION - Accessibility
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    @keyframes cursor-block {
+        0%, 100% { background-color: var(--term-green); }
+    }
+}
+
+/* ============================================================================
+   END OF STYLES.CSS
+   ============================================================================ */

@@ -4,11 +4,12 @@ on:
   push:
     branches: [main, master]
     paths:
-      - 'index.html'
-      - 'speaking.html'
-      - 'projects.html'
+      - '*.html'
+      - 'config.json'
       - 'data/**'
       - 'assets/**'
+      - 'robots.txt'
+      - 'sitemap.xml'
       - '.github/workflows/deploy.yml'
       - '.nojekyll'
 
@@ -128,12 +129,51 @@ jobs:
           print(f'  {linked} with external links')
           "
 
+      - name: Validate config.json
+        run: |
+          echo "=== Validating config.json ==="
+          python3 -c "
+          import json, sys
+          with open('config.json') as f:
+              data = json.load(f)
+
+          errors = []
+          # Check required top-level sections
+          for section in ['site', 'terminal', 'social']:
+              if section not in data:
+                  errors.append(f'Missing required section: \"{section}\"')
+
+          # Check site section
+          site = data.get('site', {})
+          for key in ['title', 'url']:
+              if not site.get(key, '').strip():
+                  errors.append(f'site.{key} is required')
+
+          # Check terminal section
+          terminal = data.get('terminal', {})
+          for key in ['user', 'host']:
+              if not terminal.get(key, '').strip():
+                  errors.append(f'terminal.{key} is required')
+
+          if errors:
+              print('Validation FAILED:')
+              for e in errors:
+                  print(f'  - {e}')
+              sys.exit(1)
+
+          print(f'Config: site=\"{site.get(\"title\")}\", prompt={terminal.get(\"user\")}@{terminal.get(\"host\")}')
+          "
+
       - name: Validate HTML files
         run: |
           echo "=== Checking HTML files ==="
           test -f index.html && echo "index.html OK" || (echo "index.html MISSING" && exit 1)
           test -f speaking.html && echo "speaking.html OK" || (echo "speaking.html MISSING" && exit 1)
           test -f projects.html && echo "projects.html OK" || (echo "projects.html MISSING" && exit 1)
+          test -f 404.html && echo "404.html OK" || (echo "404.html MISSING" && exit 1)
+          test -f config.json && echo "config.json OK" || (echo "config.json MISSING" && exit 1)
+          test -f robots.txt && echo "robots.txt OK" || echo "robots.txt missing (optional)"
+          test -f sitemap.xml && echo "sitemap.xml OK" || echo "sitemap.xml missing (optional)"
           test -f .nojekyll && echo ".nojekyll OK" || echo ".nojekyll missing (optional)"
 
       - name: Summary
