@@ -1,0 +1,58 @@
+[
+  {
+    "quote": "Mehul's technical talks are always insightful and practical. His deep knowledge of DevOps and cloud technologies really shines through.",
+    "name": "DevOps Engineer",
+    "role": "Conference Attendee",
+    "stars": 5,
+    "link": ""
+  },
+  {
+    "quote": "Exceptional knowledge and clear communication. Mehul's workshops are always well-structured and packed with practical examples.",
+    "name": "Cloud Architect",
+    "role": "Workshop Participant",
+    "stars": 5,
+    "link": ""
+  },
+  {
+    "quote": "One of the best speakers in the DevOps community. Mehul makes complex topics accessible and engaging for all skill levels.",
+    "name": "Software Engineer",
+    "role": "Meetup Attendee",
+    "stars": 5,
+    "link": ""
+  },
+  {
+    "quote": "Mehul's session on Kubernetes security was a game changer. He broke down complex concepts into actionable steps that I could apply immediately.",
+    "name": "Platform Engineer",
+    "role": "KubeCon Attendee",
+    "stars": 5,
+    "link": ""
+  },
+  {
+    "quote": "I attended Mehul's Docker workshop and it completely transformed how our team approaches containerization. Highly recommended for anyone in DevOps.",
+    "name": "Tech Lead",
+    "role": "Docker Workshop Participant",
+    "stars": 5,
+    "link": ""
+  },
+  {
+    "quote": "Mehul's mentorship helped me land my dream DevOps role. His career guidance is practical, honest, and incredibly valuable.",
+    "name": "Junior DevOps Engineer",
+    "role": "Mentee",
+    "stars": 5,
+    "link": ""
+  },
+  {
+    "quote": "The energy Mehul brings to community events is unmatched. His passion for open source and knowledge sharing is truly inspiring.",
+    "name": "Community Manager",
+    "role": "GDG Organizer",
+    "stars": 5,
+    "link": ""
+  },
+  {
+    "quote": "Mehul's talk on AI-powered DevOps opened my eyes to what's possible. A true visionary in the cloud-native space.",
+    "name": "Senior SRE",
+    "role": "Tech Conference Speaker",
+    "stars": 5,
+    "link": ""
+  }
+]

@@ -1,0 +1,228 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'index.html'
+      - 'speaking.html'
+      - 'projects.html'
+      - 'data/**'
+      - 'assets/**'
+      - '.github/workflows/deploy.yml'
+      - '.nojekyll'
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate speaking.json
+        run: |
+          echo "=== Validating data/speaking.json ==="
+          python3 -c "
+          import json, sys
+          with open('data/speaking.json') as f:
+              data = json.load(f)
+
+          required_keys = ['year', 'title', 'location', 'topics']
+          errors = []
+          for i, event in enumerate(data):
+              for key in required_keys:
+                  if key not in event:
+                      errors.append(f'Event {i}: missing key \"{key}\"')
+              if not isinstance(event.get('topics', []), list):
+                  errors.append(f'Event {i}: topics must be a list')
+              if not isinstance(event.get('year', 0), int):
+                  errors.append(f'Event {i}: year must be an integer')
+
+          if errors:
+              print('Validation FAILED:')
+              for e in errors:
+                  print(f'  - {e}')
+              sys.exit(1)
+
+          print(f'Speaking: {len(data)} events found')
+          years = sorted(set(e['year'] for e in data), reverse=True)
+          print(f'Years: {years}')
+          "
+
+      - name: Validate projects.json
+        run: |
+          echo "=== Validating data/projects.json ==="
+          python3 -c "
+          import json, sys
+          with open('data/projects.json') as f:
+              data = json.load(f)
+
+          required_keys = ['title', 'description', 'repo', 'tech']
+          errors = []
+          for i, project in enumerate(data):
+              for key in required_keys:
+                  if key not in project:
+                      errors.append(f'Project {i}: missing key \"{key}\"')
+              if not isinstance(project.get('tech', []), list):
+                  errors.append(f'Project {i}: tech must be a list')
+              if not project.get('title', '').strip():
+                  errors.append(f'Project {i}: title cannot be empty')
+              repo = project.get('repo', '')
+              if repo and not repo.startswith('https://github.com/'):
+                  errors.append(f'Project {i}: repo must be a GitHub URL')
+
+          if errors:
+              print('Validation FAILED:')
+              for e in errors:
+                  print(f'  - {e}')
+              sys.exit(1)
+
+          print(f'Projects: {len(data)} projects found')
+          for p in data:
+              print(f'  - {p[\"title\"]} ({len(p[\"tech\"])} tech tags)')
+          "
+
+      - name: Validate testimonials.json
+        run: |
+          echo "=== Validating data/testimonials.json ==="
+          python3 -c "
+          import json, sys
+          with open('data/testimonials.json') as f:
+              data = json.load(f)
+
+          required_keys = ['quote', 'name', 'role']
+          errors = []
+          for i, t in enumerate(data):
+              for key in required_keys:
+                  if key not in t:
+                      errors.append(f'Testimonial {i}: missing key \"{key}\"')
+              if not t.get('quote', '').strip():
+                  errors.append(f'Testimonial {i}: quote cannot be empty')
+              if 'stars' in t and not isinstance(t['stars'], int):
+                  errors.append(f'Testimonial {i}: stars must be an integer')
+              if 'link' in t and t['link'] and not t['link'].startswith('http'):
+                  errors.append(f'Testimonial {i}: link must be a valid URL')
+
+          if errors:
+              print('Validation FAILED:')
+              for e in errors:
+                  print(f'  - {e}')
+              sys.exit(1)
+
+          print(f'Testimonials: {len(data)} entries found')
+          linked = sum(1 for t in data if t.get('link'))
+          print(f'  {linked} with external links')
+          "
+
+      - name: Validate HTML files
+        run: |
+          echo "=== Checking HTML files ==="
+          test -f index.html && echo "index.html OK" || (echo "index.html MISSING" && exit 1)
+          test -f speaking.html && echo "speaking.html OK" || (echo "speaking.html MISSING" && exit 1)
+          test -f projects.html && echo "projects.html OK" || (echo "projects.html MISSING" && exit 1)
+          test -f .nojekyll && echo ".nojekyll OK" || echo ".nojekyll missing (optional)"
+
+      - name: Summary
+        run: |
+          echo "### Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          SPEAKING=$(python3 -c "import json; print(len(json.load(open('data/speaking.json'))))")
+          PROJECTS=$(python3 -c "import json; print(len(json.load(open('data/projects.json'))))")
+          TESTIMONIALS=$(python3 -c "import json; print(len(json.load(open('data/testimonials.json'))))")
+          echo "| Data File | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Speaking Events | $SPEAKING |" >> $GITHUB_STEP_SUMMARY
+          echo "| Projects | $PROJECTS |" >> $GITHUB_STEP_SUMMARY
+          echo "| Testimonials | $TESTIMONIALS |" >> $GITHUB_STEP_SUMMARY
+
+  build:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Inject JSON data into HTML pages
+        run: |
+          python3 << 'PYEOF'
+          import json, re
+
+          def safe_inject(html, pattern, replacement, flags=re.DOTALL):
+              """Replace using string slicing to avoid re.sub escape issues"""
+              m = re.search(pattern, html, flags)
+              if m:
+                  return html[:m.start()] + replacement + html[m.end():]
+              return html
+
+          def inject_window_var(html_file, json_file, var_name):
+              """Inject data into <script>window.VAR = ...;</script> tags"""
+              with open(json_file) as f:
+                  data = json.load(f)
+              json_str = json.dumps(data, separators=(",",":"))
+              replacement = f'<script>window.{var_name} = {json_str};</script>'
+              with open(html_file) as f:
+                  html = f.read()
+              pattern = rf'<script>window\.{re.escape(var_name)}\s*=\s*\[.*?\];\s*</script>'
+              html = safe_inject(html, pattern, replacement)
+              with open(html_file, 'w') as f:
+                  f.write(html)
+              print(f"  {html_file}: injected {len(data)} items via window.{var_name}")
+
+          def inject_const_var(html_file, json_file, var_name):
+              """Inject data into const VAR = [...]; declarations in index.html"""
+              with open(json_file) as f:
+                  data = json.load(f)
+              json_str = json.dumps(data, separators=(",",":"))
+              replacement = f'const {var_name} = {json_str};'
+              with open(html_file) as f:
+                  html = f.read()
+              pattern = rf'const\s+{re.escape(var_name)}\s*=\s*\[.*?\];'
+              html = safe_inject(html, pattern, replacement)
+              with open(html_file, 'w') as f:
+                  f.write(html)
+              print(f"  {html_file}: injected {len(data)} items via const {var_name}")
+
+          # Inject into speaking.html and projects.html (window.__VAR pattern)
+          inject_window_var('speaking.html', 'data/speaking.json', '__SPEAKING_DATA')
+          inject_window_var('projects.html', 'data/projects.json', '__PROJECTS_DATA')
+
+          # Inject into index.html (const __inline* pattern)
+          inject_const_var('index.html', 'data/speaking.json', '__inlineSpeaking')
+          inject_const_var('index.html', 'data/projects.json', '__inlineProjects')
+          inject_const_var('index.html', 'data/testimonials.json', '__inlineTestimonials')
+
+          print("=== Injection complete ===")
+          PYEOF
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
