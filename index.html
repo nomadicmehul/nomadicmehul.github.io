@@ -1423,7 +1423,7 @@
 
         .coffee-cursor {
             color: var(--term-green);
-            animation: blink 1s step-end infinite;
+            animation: cursor-blink 1s step-end infinite;
             font-size: 0.85rem;
         }
 
@@ -1536,6 +1536,9 @@
             .cta-section h2 { font-size: 2rem; }
             .nav-logo { font-size: 1rem; }
             .hero-terminal { display: none; }
+            .coffee-terminal { padding: 40px 0; }
+            .coffee-prompt { font-size: 0.8rem; }
+            .coffee-btn { padding: 12px 20px; font-size: 0.85rem; }
         }
 
         @media (max-width: 480px) {
@@ -1543,6 +1546,10 @@
             .hero-stats { flex-direction: column; gap: 12px; align-items: center; }
             .about-highlights { grid-template-columns: 1fr; }
             .nav-logo { font-size: 0.85rem; }
+            .coffee-ps1 { display: none; }
+            .coffee-cmd { font-size: 0.85rem; }
+            .coffee-btn { margin: 0 12px 16px; }
+            .footer p { font-size: 0.75rem; }
         }
 
         @media (prefers-reduced-motion: reduce) {
