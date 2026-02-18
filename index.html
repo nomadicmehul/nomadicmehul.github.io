@@ -1379,6 +1379,94 @@
         .footer a { color: var(--term-green); }
         .footer a:hover { color: var(--term-green-bright); }
 
+        /* ===== Buy Me a Coffee Terminal ===== */
+        .coffee-terminal {
+            background: var(--bg-primary);
+            padding: 60px 0;
+            border-top: 1px solid var(--border-default);
+        }
+
+        .coffee-box {
+            max-width: 640px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, rgba(15, 22, 35, 0.9), rgba(10, 14, 23, 0.95));
+            border: 1px solid var(--border-default);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .coffee-box::before {
+            content: '● ● ●';
+            display: block;
+            padding: 10px 16px 0;
+            font-size: 0.6rem;
+            letter-spacing: 4px;
+            color: var(--text-muted);
+        }
+
+        .coffee-prompt {
+            padding: 12px 20px 8px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .coffee-ps1 { white-space: nowrap; }
+
+        .coffee-cmd {
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .coffee-cursor {
+            color: var(--term-green);
+            animation: blink 1s step-end infinite;
+            font-size: 0.85rem;
+        }
+
+        .coffee-output {
+            padding: 4px 20px 16px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+
+        .coffee-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0 20px 20px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(251, 191, 36, 0.08));
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 8px;
+            color: var(--term-amber);
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .coffee-btn:hover {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(251, 191, 36, 0.15));
+            border-color: var(--term-amber);
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.15);
+        }
+
+        .coffee-btn-icon { font-size: 1.2rem; }
+        .coffee-btn-arrow {
+            transition: transform 0.3s ease;
+        }
+        .coffee-btn:hover .coffee-btn-arrow {
+            transform: translateX(4px);
+        }
+
         /* ===== Scanline Effect ===== */
         .scanline {
             position: fixed;
@@ -1923,6 +2011,27 @@
 
     </main>
 
+    <!-- Buy Me a Coffee — Terminal Style -->
+    <section class="coffee-terminal" aria-label="Support this project">
+        <div class="container">
+            <div class="coffee-box">
+                <div class="coffee-prompt">
+                    <span class="coffee-ps1"><span style="color:var(--term-green)">root</span><span style="color:var(--term-amber)">@</span><span style="color:var(--term-cyan)">opensource</span><span style="color:var(--text-muted)">:</span><span style="color:var(--term-blue)">~/support</span><span style="color:var(--term-red)">#</span></span>
+                    <span class="coffee-cmd" id="coffee-typed"></span><span class="coffee-cursor">█</span>
+                </div>
+                <div class="coffee-output">
+                    <p style="color:var(--term-green);margin-bottom:4px">☕ Brewing open-source goodness...</p>
+                    <p style="color:var(--text-secondary)">If this theme saved you time or you just love the terminal vibes — fuel the next feature with a coffee.</p>
+                </div>
+                <a href="https://buymeacoffee.com/nomadicmehul" target="_blank" rel="noopener noreferrer" class="coffee-btn">
+                    <span class="coffee-btn-icon">☕</span>
+                    <span>Buy Me a Coffee</span>
+                    <span class="coffee-btn-arrow">→</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer" role="contentinfo">
         <div class="container">
@@ -2108,6 +2217,28 @@
             resize();
             window.addEventListener('resize', resize);
             setInterval(draw, 50);
+        })();
+
+        // ===== Coffee Typing Effect =====
+        (function() {
+            const el = document.getElementById('coffee-typed');
+            if (!el) return;
+            const text = 'brew install mass-caffeine --global';
+            let i = 0;
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && i === 0) {
+                    const type = () => {
+                        if (i < text.length) {
+                            el.textContent += text[i];
+                            i++;
+                            setTimeout(type, 40 + Math.random() * 40);
+                        }
+                    };
+                    setTimeout(type, 500);
+                    observer.disconnect();
+                }
+            }, { threshold: 0.5 });
+            observer.observe(el.closest('.coffee-terminal'));
         })();
     </script>
 </body>

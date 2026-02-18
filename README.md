@@ -7,6 +7,7 @@ A Linux terminal-inspired portfolio theme for developers, DevOps engineers, and 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-blue.svg)](https://pages.github.com/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=flat&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/nomadicmehul)
 
 [Live Demo](https://nomadicmehul.github.io) · [Report Bug](https://github.com/nomadicmehul/nomadicmehul.github.io/issues) · [Request Feature](https://github.com/nomadicmehul/nomadicmehul.github.io/issues)
 
@@ -203,9 +204,17 @@ Contributions are welcome! Whether it's a bug fix, new feature, or improvement:
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details. Use it, fork it, make it yours.
 
+## Support This Project
+
+This theme is free and open source — and it always will be. If it saved you time, helped you land a gig, or you just dig the terminal vibes, consider buying me a coffee. Every cup fuels late-night commits and new features for the community.
+
+<a href="https://buymeacoffee.com/nomadicmehul" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="200"></a>
+
+Other ways to support: give this repo a star, share it with a friend, or open a PR with your improvements. Open source runs on community energy.
+
 ## Credits
 
-Built by [Mehul Patel](https://github.com/nomadicmehul) with caffeine, vim, and a love for terminals.
+Built by [Mehul Patel](https://github.com/nomadicmehul) with mass-caffeine, vim, and a love for terminals.
 
 Fonts: [Inter](https://rsms.me/inter/) & [JetBrains Mono](https://www.jetbrains.com/lp/mono/)
 
@@ -216,5 +225,7 @@ Fonts: [Inter](https://rsms.me/inter/) & [JetBrains Mono](https://www.jetbrains.
 **If this theme helped you, give it a ⭐ on GitHub!**
 
 `chmod +x life.sh && ./life.sh`
+
+[☕ Buy Me a Coffee](https://buymeacoffee.com/nomadicmehul)
 
 </div>
