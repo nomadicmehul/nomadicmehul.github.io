@@ -65,6 +65,13 @@ horizontal: false
 <div class="row">
     <div class="col-sm-6 mt-3">
         <div class="project-card">
+            <h4>✉️ Dispatch</h4>
+            <p>Lightweight event-driven workflow dispatcher for automating and triggering CI/CD pipelines, GitHub Actions, and custom automation tasks.</p>
+            <p><a href="https://github.com/nomadicmehul/dispatch">GitHub</a></p>
+        </div>
+    </div>
+    <div class="col-sm-6 mt-3">
+        <div class="project-card">
             <h4>⚡ Gemini CLI Tool</h4>
             <p>Command-line interface for Google's Gemini AI with DevOps workflow integration.</p>
             <p><a href="https://github.com/nomadicmehul/gemini-cli">GitHub</a></p>

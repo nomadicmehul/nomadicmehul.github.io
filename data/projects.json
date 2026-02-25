@@ -1,5 +1,14 @@
 [
   {
+    "title": "Dispatch",
+    "description": "A lightweight event-driven workflow dispatcher — automate and trigger CI/CD pipelines, GitHub Actions, and custom automation tasks with a simple, flexible interface.",
+    "icon": "fas fa-paper-plane",
+    "iconColor": "#16a34a",
+    "repo": "https://github.com/nomadicmehul/dispatch",
+    "tech": ["Automation", "GitHub Actions", "CI/CD", "DevOps"],
+    "featured": true
+  },
+  {
     "title": "Azure MCP Server",
     "description": "Model Context Protocol server for Azure services, enabling AI agents to interact with Azure resources through a standardized protocol.",
     "icon": "fas fa-cloud",
