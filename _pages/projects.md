@@ -65,11 +65,21 @@ horizontal: false
 <div class="row">
     <div class="col-sm-6 mt-3">
         <div class="project-card">
+            <h4>⚡ Dispatch</h4>
+            <p>AI-powered CLI tool that solves GitHub issues in batch — creating branches, implementing fixes, and opening pull requests automatically using Claude AI.</p>
+            <p><a href="https://github.com/nomadicmehul/dispatch">GitHub</a></p>
+        </div>
+    </div>
+    <div class="col-sm-6 mt-3">
+        <div class="project-card">
             <h4>⚡ Gemini CLI Tool</h4>
             <p>Command-line interface for Google's Gemini AI with DevOps workflow integration.</p>
             <p><a href="https://github.com/nomadicmehul/gemini-cli">GitHub</a></p>
         </div>
     </div>
+</div>
+
+<div class="row">
     <div class="col-sm-6 mt-3">
         <div class="project-card">
             <h4>📦 Kubernetes Toolbox</h4>
@@ -77,9 +87,6 @@ horizontal: false
             <p><a href="https://github.com/nomadicmehul/k8s-toolbox">GitHub</a></p>
         </div>
     </div>
-</div>
-
-<div class="row">
     <div class="col-sm-6 mt-3">
         <div class="project-card">
             <h4>🔐 Container Security Scanner</h4>

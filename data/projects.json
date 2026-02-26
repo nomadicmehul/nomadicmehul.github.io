@@ -1,5 +1,14 @@
 [
   {
+    "title": "Dispatch",
+    "description": "AI-powered CLI tool that solves GitHub issues in batch — creating branches, implementing fixes, and opening pull requests automatically using Claude AI.",
+    "icon": "fas fa-bolt",
+    "iconColor": "#f59e0b",
+    "repo": "https://github.com/nomadicmehul/dispatch",
+    "tech": ["Node.js", "AI", "Claude", "GitHub API", "CLI"],
+    "featured": true
+  },
+  {
     "title": "Azure MCP Server",
     "description": "Model Context Protocol server for Azure services, enabling AI agents to interact with Azure resources through a standardized protocol.",
     "icon": "fas fa-cloud",
