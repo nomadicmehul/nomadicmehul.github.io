@@ -226,6 +226,37 @@
         }
         .resource-link.type-blog:hover { background: rgba(251, 191, 36, 0.22); }
 
+        /* Role badge */
+        .event-role {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono);
+            padding: 3px 10px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .role-speaker {
+            background: rgba(74, 222, 128, 0.12); color: var(--term-green);
+            border: 1px solid rgba(74, 222, 128, 0.25);
+        }
+        .role-organizer {
+            background: rgba(251, 191, 36, 0.12); color: var(--term-amber);
+            border: 1px solid rgba(251, 191, 36, 0.25);
+        }
+        .role-mentor {
+            background: rgba(192, 132, 252, 0.12); color: var(--term-purple);
+            border: 1px solid rgba(192, 132, 252, 0.25);
+        }
+        .role-panelist {
+            background: rgba(34, 211, 238, 0.12); color: var(--term-cyan);
+            border: 1px solid rgba(34, 211, 238, 0.25);
+        }
+        .role-workshop {
+            background: rgba(96, 165, 250, 0.12); color: var(--term-blue);
+            border: 1px solid rgba(96, 165, 250, 0.25);
+        }
+        .role-default {
+            background: rgba(148, 163, 184, 0.12); color: var(--text-secondary);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+        }
+
         /* Empty state */
         .no-results { text-align: center; padding: 64px 24px; color: var(--text-muted); }
         .no-results i { font-size: 3rem; margin-bottom: 16px; display: block; color: var(--term-green); opacity: 0.3; }
@@ -379,6 +410,32 @@
             blog: 'fas fa-blog'
         };
 
+        const ROLE_ICONS = {
+            'Speaker': 'fas fa-microphone-alt',
+            'Event Organizer': 'fas fa-users-cog',
+            'Mentor': 'fas fa-chalkboard-teacher',
+            'Panelist': 'fas fa-comments',
+            'Workshop Lead': 'fas fa-laptop-code'
+        };
+
+        function getRoleClass(role) {
+            if (!role) return '';
+            const r = role.toLowerCase();
+            if (r.includes('speaker')) return 'role-speaker';
+            if (r.includes('organizer')) return 'role-organizer';
+            if (r.includes('mentor')) return 'role-mentor';
+            if (r.includes('panelist')) return 'role-panelist';
+            if (r.includes('workshop')) return 'role-workshop';
+            return 'role-default';
+        }
+
+        function renderRole(role) {
+            if (!role) return '';
+            const icon = ROLE_ICONS[role] || 'fas fa-tag';
+            const cls = getRoleClass(role);
+            return `<span class="event-role ${cls}"><i class="${icon}"></i> ${role}</span>`;
+        }
+
         let allEvents = [];
 
         async function loadEvents() {
@@ -483,6 +540,7 @@
                             ${events.map(e => `
                                 <div class="event-card">
                                     <h4>${e.title}</h4>
+                                    ${renderRole(e.role)}
                                     <div class="event-meta">
                                         ${e.date ? `<span class="event-date"><i class="fas fa-calendar-day"></i> ${formatDate(e.date)}</span>` : ''}
                                         <span><i class="fas fa-map-marker-alt"></i> ${e.location}</span>
