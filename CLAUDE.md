@@ -59,20 +59,69 @@ All dynamic content loads from JSON files via `fetch()` at runtime. Each HTML pa
   "date": "2026-03-17",
   "title": "Event Name",
   "location": "City, Country",
-  "link": "https://event-url.com",
   "role": ["Speaker", "Workshop Facilitator"],
   "topics": ["Topic1", "Topic2"],
   "resources": [
-    { "type": "slides", "label": "Slide Deck", "url": "filename.pdf" },
+    { "type": "event", "label": "Event Page", "url": "https://event-page.com" },
+    { "type": "slides", "label": "Slide Deck", "url": "my-talk.pdf" },
     { "type": "code", "label": "GitHub Repo", "url": "https://github.com/..." }
   ]
 }
 ```
 
-**Key fields:**
-- `role` — String or array. Supported values: `Speaker`, `Event Organizer`, `Mentor`, `Panelist`, `Workshop Lead`, `Workshop Facilitator`
-- `resources[].type` — `slides`, `code`, `demo`, `video`, `blog` (each gets a distinct color badge)
-- `resources[].url` — Full URL for external links, or just a filename for slides in `assets/slides/` (auto-resolved by JS)
+**Fields:**
+
+| Field | Required | Type | Description |
+|-------|----------|------|-------------|
+| `year` | Yes | Number | Event year (used for grouping and year filter) |
+| `date` | Yes | String | `YYYY-MM-DD` format (displayed on card) |
+| `title` | Yes | String | Event name |
+| `location` | Yes | String | City, Country |
+| `role` | No | String or Array | Your role(s) at the event — renders as badge(s) |
+| `topics` | Yes | Array | Topic tags displayed on the card |
+| `resources` | Yes | Array | Links and files — renders as colored action buttons |
+
+### Resource Types
+
+Each resource is an object with `type`, `label`, and `url`.
+
+| Type | Badge Color | Icon | URL Format | Use For |
+|------|-------------|------|------------|---------|
+| `event` | Green | External link | Full URL (`https://...`) | Link to the event page or registration |
+| `slides` | Purple | PowerPoint | Filename (`talk.pdf`) or full URL | Slide decks — local files go in `assets/slides/` |
+| `code` | Blue | GitHub | Full URL (`https://github.com/...`) | Source code, GitHub repos, demos |
+| `demo` | Cyan | Play circle | Full URL (`https://...`) | Live demo links, deployed apps |
+| `video` | Red | Video | Full URL (`https://youtube.com/...`) | Talk recordings, YouTube links |
+| `blog` | Amber | Blog | Full URL (`https://...`) | Blog posts, write-ups, Medium articles |
+
+**URL resolution:** If a URL does NOT start with `http://` or `https://`, it is treated as a local file in `assets/slides/` (e.g. `"url": "my-talk.pdf"` resolves to `assets/slides/my-talk.pdf`). Full URLs are used as-is.
+
+**Example with all resource types:**
+```json
+{
+  "resources": [
+    { "type": "event", "label": "Event Page", "url": "https://conf.example.com" },
+    { "type": "slides", "label": "Slide Deck", "url": "my-talk-2026.pdf" },
+    { "type": "code", "label": "GitHub Repo", "url": "https://github.com/user/repo" },
+    { "type": "demo", "label": "Live Demo", "url": "https://demo.example.com" },
+    { "type": "video", "label": "Recording", "url": "https://youtube.com/watch?v=..." },
+    { "type": "blog", "label": "Blog Post", "url": "https://medium.com/@user/post" }
+  ]
+}
+```
+
+### Role Types
+
+The `role` field accepts a single string or an array of strings.
+
+| Role | Badge Color | Icon |
+|------|-------------|------|
+| `Speaker` | Green | Microphone |
+| `Event Organizer` | Amber | Users-cog |
+| `Mentor` | Purple | Chalkboard |
+| `Panelist` | Cyan | Comments |
+| `Workshop Lead` | Blue | Laptop |
+| `Workshop Facilitator` | Blue | Laptop |
 
 ### projects.json Structure
 
@@ -90,7 +139,7 @@ All dynamic content loads from JSON files via `fetch()` at runtime. Each HTML pa
 
 ## Adding a New Speaking Event
 
-1. Drop any slide deck into `assets/slides/` (e.g. `my-talk.pdf`)
+1. (Optional) Drop any slide deck into `assets/slides/` (e.g. `my-talk.pdf`)
 2. Add a new entry at the **top** of `data/speaking.json`:
    ```json
    {
@@ -98,15 +147,17 @@ All dynamic content loads from JSON files via `fetch()` at runtime. Each HTML pa
      "date": "2026-06-15",
      "title": "My New Talk",
      "location": "City, Country",
-     "link": "https://event-link.com",
      "role": ["Speaker"],
      "topics": ["Topic1", "Topic2"],
      "resources": [
-       { "type": "slides", "label": "Slide Deck", "url": "my-talk.pdf" }
+       { "type": "event", "label": "Event Page", "url": "https://event-link.com" },
+       { "type": "slides", "label": "Slide Deck", "url": "my-talk.pdf" },
+       { "type": "code", "label": "GitHub Repo", "url": "https://github.com/user/repo" }
      ]
    }
    ```
 3. The home page shows the first 6 events; the speaking page shows all.
+4. Only add the resources you have — empty `"resources": []` is fine too.
 
 ## Color Palette (Terminal Theme)
 
