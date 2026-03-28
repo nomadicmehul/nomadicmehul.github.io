@@ -231,6 +231,7 @@
             display: inline-flex; align-items: center; gap: 5px;
             font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono);
             padding: 3px 10px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.5px;
+            margin: 6px 0;
         }
         .role-speaker {
             background: rgba(74, 222, 128, 0.12); color: var(--term-green);
@@ -501,9 +502,7 @@
                     const icon = RESOURCE_ICONS[r.type] || 'fas fa-link';
                     const typeClass = 'type-' + (r.type || 'code');
                     const href = resolveUrl(r.url);
-                    const isLocal = !/^https?:\/\//.test(r.url);
-                    const downloadAttr = isLocal ? ' download' : '';
-                    return `<a href="${href}" target="_blank" rel="noopener"${downloadAttr} class="resource-link ${typeClass}"><i class="${icon}"></i> ${r.label}</a>`;
+                    return `<a href="${href}" target="_blank" rel="noopener" class="resource-link ${typeClass}"><i class="${icon}"></i> ${r.label}</a>`;
                 }).join('')
             }</div>`;
         }
