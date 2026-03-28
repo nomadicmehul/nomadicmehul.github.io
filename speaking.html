@@ -416,7 +416,8 @@
             'Event Organizer': 'fas fa-users-cog',
             'Mentor': 'fas fa-chalkboard-teacher',
             'Panelist': 'fas fa-comments',
-            'Workshop Lead': 'fas fa-laptop-code'
+            'Workshop Lead': 'fas fa-laptop-code',
+            'Workshop Facilitator': 'fas fa-laptop-code'
         };
 
         function getRoleClass(role) {
@@ -426,15 +427,19 @@
             if (r.includes('organizer')) return 'role-organizer';
             if (r.includes('mentor')) return 'role-mentor';
             if (r.includes('panelist')) return 'role-panelist';
-            if (r.includes('workshop')) return 'role-workshop';
+            if (r.includes('workshop') || r.includes('facilitator')) return 'role-workshop';
             return 'role-default';
         }
 
         function renderRole(role) {
             if (!role) return '';
-            const icon = ROLE_ICONS[role] || 'fas fa-tag';
-            const cls = getRoleClass(role);
-            return `<span class="event-role ${cls}"><i class="${icon}"></i> ${role}</span>`;
+            // Support both string and array
+            const roles = Array.isArray(role) ? role : [role];
+            return roles.map(r => {
+                const icon = ROLE_ICONS[r] || 'fas fa-tag';
+                const cls = getRoleClass(r);
+                return `<span class="event-role ${cls}"><i class="${icon}"></i> ${r}</span>`;
+            }).join(' ');
         }
 
         let allEvents = [];

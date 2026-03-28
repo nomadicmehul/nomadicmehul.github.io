@@ -5,7 +5,7 @@
     "title": "Google Cloud Builders Day in Berlin",
     "location": "Berlin, Germany",
     "link": "https://cloud.google.com/events/builders-day-berlin?hl=en",
-    "role": "Speaker",
+    "role": ["Speaker", "Workshop Facilitator"],
     "topics": ["Google Cloud", "Cloud", "Builders Day"],
     "resources": [
       { "type": "slides", "label": "Slide Deck", "url": "TheNightOps_GCBuildersDay_Berlin_26.pptx.pdf" }
