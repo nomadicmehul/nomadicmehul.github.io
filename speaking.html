@@ -225,6 +225,11 @@
             border: 1px solid rgba(251, 191, 36, 0.25);
         }
         .resource-link.type-blog:hover { background: rgba(251, 191, 36, 0.22); }
+        .resource-link.type-event {
+            background: rgba(74, 222, 128, 0.12); color: var(--term-green);
+            border: 1px solid rgba(74, 222, 128, 0.25);
+        }
+        .resource-link.type-event:hover { background: rgba(74, 222, 128, 0.22); }
 
         /* Role badge */
         .event-roles { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
@@ -404,6 +409,7 @@
     <script>
         // Resource type icon mapping
         const RESOURCE_ICONS = {
+            event: 'fas fa-external-link-alt',
             slides: 'fas fa-file-powerpoint',
             code: 'fab fa-github',
             demo: 'fas fa-play-circle',
