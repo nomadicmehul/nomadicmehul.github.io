@@ -133,7 +133,8 @@
 
         .nav.scrolled {
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-            border-bottom-color: var(--border-accent);
+            border-bottom-color: transparent;
+            border-image: linear-gradient(90deg, transparent, var(--term-green), var(--term-cyan), var(--term-green), transparent) 1;
         }
 
         .nav-inner {
@@ -524,6 +525,17 @@
 
         .photo-wrapper {
             position: relative;
+            border-radius: 22px;
+            padding: 3px;
+            background: linear-gradient(135deg, var(--term-green), var(--term-cyan), var(--term-purple), var(--term-green));
+            background-size: 300% 300%;
+            animation: gradientBorder 6s ease infinite;
+        }
+
+        @keyframes gradientBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .photo-wrapper img {
@@ -532,13 +544,12 @@
             border-radius: 20px;
             object-fit: cover;
             box-shadow: var(--shadow-xl);
-            border: 2px solid var(--border-default);
+            border: none;
             transition: all 0.4s;
         }
 
         .photo-wrapper:hover img {
-            border-color: var(--border-accent);
-            box-shadow: var(--shadow-glow-strong), var(--shadow-xl);
+            box-shadow: 0 0 40px rgba(74, 222, 128, 0.3), var(--shadow-xl);
         }
 
         .photo-badge {
@@ -635,6 +646,18 @@
             padding: 100px 0;
             position: relative;
             z-index: 1;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--term-green), transparent);
+            opacity: 0.5;
         }
 
         .section-alt {
@@ -903,6 +926,20 @@
             padding: 32px 24px;
             text-align: center;
             transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recognition-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--term-green), var(--term-cyan));
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
         .recognition-card:hover {
@@ -910,6 +947,8 @@
             box-shadow: var(--shadow-glow);
             border-color: var(--border-accent);
         }
+
+        .recognition-card:hover::before { opacity: 1; }
 
         .recognition-icon {
             width: 64px;
@@ -1413,25 +1452,42 @@
         }
 
         .social-link:hover {
-            border-color: var(--border-accent);
-            color: var(--term-green);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-glow);
+            transform: translateY(-4px) scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
+        .social-link:hover.social-github { border-color: #e2e8f0; color: #e2e8f0; background: rgba(226, 232, 240, 0.1); }
+        .social-link:hover.social-linkedin { border-color: #0a66c2; color: #0a66c2; background: rgba(10, 102, 194, 0.1); }
+        .social-link:hover.social-twitter { border-color: #1da1f2; color: #1da1f2; background: rgba(29, 161, 242, 0.1); }
+        .social-link:hover.social-youtube { border-color: #ff0000; color: #ff0000; background: rgba(255, 0, 0, 0.1); }
+        .social-link:hover.social-instagram { border-color: #e4405f; color: #e4405f; background: rgba(228, 64, 95, 0.1); }
+        .social-link:hover.social-medium { border-color: #e2e8f0; color: #e2e8f0; background: rgba(226, 232, 240, 0.1); }
 
         /* ===== Footer ===== */
         .footer {
             background: var(--bg-primary);
             color: var(--text-muted);
-            padding: 32px 0;
+            padding: 40px 0 32px;
             text-align: center;
             font-size: 0.85rem;
-            border-top: 1px solid var(--border-default);
+            border-top: 1px solid transparent;
+            border-image: linear-gradient(90deg, transparent, var(--term-green), var(--term-cyan), var(--term-green), transparent) 1;
             font-family: var(--font-mono);
         }
 
         .footer a { color: var(--term-green); }
         .footer a:hover { color: var(--term-green-bright); }
+
+        .footer-prompt {
+            display: inline-block;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .footer-prompt .fp-user { color: var(--term-green-bright); }
+        .footer-prompt .fp-at { color: var(--term-amber); }
+        .footer-prompt .fp-host { color: var(--term-cyan); }
+        .footer-prompt .fp-path { color: var(--term-blue); }
+        .footer-prompt .fp-cmd { color: var(--term-green); }
 
         /* ===== Buy Me a Coffee Terminal ===== */
         .coffee-terminal {
@@ -2054,22 +2110,22 @@
                 </a>
             </div>
             <div class="social-links">
-                <a href="https://github.com/nomadicmehul" target="_blank" class="social-link" aria-label="GitHub">
+                <a href="https://github.com/nomadicmehul" target="_blank" class="social-link social-github" aria-label="GitHub">
                     <i class="fab fa-github"></i>
                 </a>
-                <a href="https://www.linkedin.com/in/nomadicmehul/" target="_blank" class="social-link" aria-label="LinkedIn">
+                <a href="https://www.linkedin.com/in/nomadicmehul/" target="_blank" class="social-link social-linkedin" aria-label="LinkedIn">
                     <i class="fab fa-linkedin-in"></i>
                 </a>
-                <a href="https://twitter.com/nomadicmehul" target="_blank" class="social-link" aria-label="Twitter">
+                <a href="https://twitter.com/nomadicmehul" target="_blank" class="social-link social-twitter" aria-label="Twitter">
                     <i class="fab fa-twitter"></i>
                 </a>
-                <a href="https://www.youtube.com/@nomadicmehul" target="_blank" class="social-link" aria-label="YouTube">
+                <a href="https://www.youtube.com/@nomadicmehul" target="_blank" class="social-link social-youtube" aria-label="YouTube">
                     <i class="fab fa-youtube"></i>
                 </a>
-                <a href="https://www.instagram.com/nomadicmehul/" target="_blank" class="social-link" aria-label="Instagram">
+                <a href="https://www.instagram.com/nomadicmehul/" target="_blank" class="social-link social-instagram" aria-label="Instagram">
                     <i class="fab fa-instagram"></i>
                 </a>
-                <a href="https://medium.com/@nomadicmehul" target="_blank" class="social-link" aria-label="Medium">
+                <a href="https://medium.com/@nomadicmehul" target="_blank" class="social-link social-medium" aria-label="Medium">
                     <i class="fab fa-medium-m"></i>
                 </a>
             </div>
@@ -2102,7 +2158,10 @@
     <!-- Footer -->
     <footer class="footer" role="contentinfo">
         <div class="container">
-            <p>&copy; 2026 Mehul Patel &mdash; <span style="color:var(--term-green)">chmod +x</span> life.sh &mdash; Built with passion from Berlin, Germany. <a href="https://github.com/nomadicmehul" target="_blank">nomadicmehul</a></p>
+            <div class="footer-prompt">
+                <span class="fp-user">mehul</span><span class="fp-at">@</span><span class="fp-host">berlin</span>:<span class="fp-path">~/portfolio</span>$ <span class="fp-cmd">echo</span> "Made with passion"
+            </div>
+            <p>&copy; 2026 Mehul Patel &mdash; Built with passion from Berlin, Germany &mdash; <a href="https://github.com/nomadicmehul" target="_blank">nomadicmehul</a></p>
         </div>
     </footer>
 
@@ -2299,6 +2358,36 @@
             const cards = testimonials.map(buildCard).join('');
             track.innerHTML = cards + cards;
         }
+
+        // Animated counter for stat numbers
+        function animateCounter(el) {
+            const text = el.textContent.trim();
+            const match = text.match(/^([\d.]+)(\+|K\+|%)?$/);
+            if (!match) return;
+            const target = parseFloat(match[1]);
+            const suffix = match[2] || '';
+            const isDecimal = text.includes('.');
+            const duration = 1500;
+            const start = performance.now();
+            el.textContent = '0' + suffix;
+            function tick(now) {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+                const current = isDecimal ? (target * eased).toFixed(1) : Math.floor(target * eased);
+                el.textContent = current + suffix;
+                if (progress < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+        const statObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    statObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('.hero-stat-value, .speaking-stat-value').forEach(el => statObserver.observe(el));
 
         // Load data on page load
         loadProjects();
