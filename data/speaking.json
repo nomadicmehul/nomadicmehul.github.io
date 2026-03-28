@@ -1,5 +1,16 @@
 [
   {
+    "year": 2026,
+    "date": "2026-03-17",
+    "title": "Google Cloud Builders Day in Berlin",
+    "location": "Berlin, Germany",
+    "link": "https://cloud.google.com/events/builders-day-berlin?hl=en",
+    "topics": ["Google Cloud", "Cloud", "Builders Day"],
+    "resources": [
+      { "type": "slides", "label": "Slide Deck", "url": "TheNightOps_GCBuildersDay_Berlin_26.pptx.pdf" }
+    ]
+  },
+  {
     "year": 2025,
     "date": "2025-01-15",
     "title": "Google Cloud AI Labs",
