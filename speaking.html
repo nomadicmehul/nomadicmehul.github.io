@@ -176,22 +176,101 @@
         .event-card:hover::before { opacity: 1; }
 
         .event-card h4 { font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
-        .event-location { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        .event-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; font-size: 0.85rem; color: var(--text-muted); }
+        .event-meta span { display: flex; align-items: center; gap: 5px; }
+        .event-date { color: var(--term-amber); }
         .event-topics { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; align-content: flex-start; }
         .event-topic {
             font-size: 0.75rem; background: var(--bg-tertiary); color: var(--text-secondary);
             padding: 4px 10px; border-radius: 4px; font-weight: 500; font-family: var(--font-mono);
         }
+        .event-footer { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
         .event-link {
             display: inline-flex; align-items: center; gap: 6px;
             color: var(--term-green); font-size: 0.85rem; font-weight: 600;
-            transition: gap 0.2s; margin-top: auto;
+            transition: gap 0.2s;
         }
         .event-link:hover { gap: 10px; }
+
+        /* Resource links */
+        .event-resources { display: flex; flex-wrap: wrap; gap: 8px; }
+        .resource-link {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.75rem; font-weight: 600; font-family: var(--font-mono);
+            padding: 4px 10px; border-radius: 6px; transition: all 0.2s;
+        }
+        .resource-link:hover { transform: translateY(-1px); }
+        .resource-link.type-slides {
+            background: rgba(192, 132, 252, 0.12); color: var(--term-purple);
+            border: 1px solid rgba(192, 132, 252, 0.25);
+        }
+        .resource-link.type-slides:hover { background: rgba(192, 132, 252, 0.22); }
+        .resource-link.type-code {
+            background: rgba(96, 165, 250, 0.12); color: var(--term-blue);
+            border: 1px solid rgba(96, 165, 250, 0.25);
+        }
+        .resource-link.type-code:hover { background: rgba(96, 165, 250, 0.22); }
+        .resource-link.type-demo {
+            background: rgba(34, 211, 238, 0.12); color: var(--term-cyan);
+            border: 1px solid rgba(34, 211, 238, 0.25);
+        }
+        .resource-link.type-demo:hover { background: rgba(34, 211, 238, 0.22); }
+        .resource-link.type-video {
+            background: rgba(248, 113, 113, 0.12); color: var(--term-red);
+            border: 1px solid rgba(248, 113, 113, 0.25);
+        }
+        .resource-link.type-video:hover { background: rgba(248, 113, 113, 0.22); }
+        .resource-link.type-blog {
+            background: rgba(251, 191, 36, 0.12); color: var(--term-amber);
+            border: 1px solid rgba(251, 191, 36, 0.25);
+        }
+        .resource-link.type-blog:hover { background: rgba(251, 191, 36, 0.22); }
+        .resource-link.type-event {
+            background: rgba(74, 222, 128, 0.12); color: var(--term-green);
+            border: 1px solid rgba(74, 222, 128, 0.25);
+        }
+        .resource-link.type-event:hover { background: rgba(74, 222, 128, 0.22); }
+
+        /* Role badge */
+        .event-roles { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+        .event-role {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono);
+            padding: 3px 10px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .role-speaker {
+            background: rgba(74, 222, 128, 0.12); color: var(--term-green);
+            border: 1px solid rgba(74, 222, 128, 0.25);
+        }
+        .role-organizer {
+            background: rgba(251, 191, 36, 0.12); color: var(--term-amber);
+            border: 1px solid rgba(251, 191, 36, 0.25);
+        }
+        .role-mentor {
+            background: rgba(192, 132, 252, 0.12); color: var(--term-purple);
+            border: 1px solid rgba(192, 132, 252, 0.25);
+        }
+        .role-panelist {
+            background: rgba(34, 211, 238, 0.12); color: var(--term-cyan);
+            border: 1px solid rgba(34, 211, 238, 0.25);
+        }
+        .role-workshop {
+            background: rgba(96, 165, 250, 0.12); color: var(--term-blue);
+            border: 1px solid rgba(96, 165, 250, 0.25);
+        }
+        .role-default {
+            background: rgba(148, 163, 184, 0.12); color: var(--text-secondary);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+        }
 
         /* Empty state */
         .no-results { text-align: center; padding: 64px 24px; color: var(--text-muted); }
         .no-results i { font-size: 3rem; margin-bottom: 16px; display: block; color: var(--term-green); opacity: 0.3; }
+
+        /* Loading state */
+        .loading-state { text-align: center; padding: 80px 24px; color: var(--text-muted); font-family: var(--font-mono); }
+        .loading-state i { font-size: 2rem; margin-bottom: 16px; display: block; color: var(--term-green); animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         /* CTA */
         .cta-section {
@@ -299,7 +378,12 @@
 
     <!-- Timeline -->
     <section class="timeline">
-        <div class="container" id="timeline-container"></div>
+        <div class="container" id="timeline-container">
+            <div class="loading-state">
+                <i class="fas fa-circle-notch"></i>
+                <p>Loading events...</p>
+            </div>
+        </div>
     </section>
 
     <!-- CTA -->
@@ -322,20 +406,69 @@
         </div>
     </footer>
 
-    <script>window.__SPEAKING_DATA = [{"year":2025,"title":"Google Cloud AI Labs ","location":"Bangalore, India","link":"https://vision.hack2skill.com/event/genaiexchange?tab=cloudAiLab&utm_source=hack2skill&utm_medium=homepage","topics":["Google Cloud","AI Labs","Gemini 3","Community"]},{"year":2023,"title":"Mozilla Gujarat Meetup","location":"Gujarat, India","link":"https://community.mozilla.org/en/events/mozilla-gujarat-reborn/","topics":["Mozilla","Open Source","Community"]},{"year":2023,"title":"SwasthyaCon 2023","location":"India","link":"https://github.com/nomadicmehul/SwasthyaCon-2023","topics":["HealthTech","Security","Cloud"]},{"year":2022,"title":"Developer Day Seattle 2022","location":"Seattle, USA","link":"https://regionalevents.okta.com/DeveloperDaySeattle2022","topics":["Identity","Auth0","Security"]},{"year":2022,"title":"Identity and Security Meetup Gujarat","location":"Gujarat, India","link":"https://www.meetup.com/gujarat-identity-and-security-meetup/events/286053128/","topics":["Identity","Security","Meetup"]},{"year":2021,"title":"HackBMU 4.0","location":"India","link":"https://github.com/nomadicmehul/HackBMU-4.0","topics":["Hackathon","Open Source","Mentoring"]},{"year":2021,"title":"Software Freedom Day 2021","location":"Global (Virtual)","link":"https://github.com/nomadicmehul/software-freedom-day-2021","topics":["FOSS","Open Source","Community"]},{"year":2020,"title":"Hacktoberfest 2020","location":"Global (Virtual)","link":"https://github.com/nomadicmehul/Hacktoberfest-2020","topics":["Hacktoberfest","Open Source","Git"]},{"year":2020,"title":"AppSec Days - Summer of Security","location":"Virtual","link":"https://github.com/nomadicmehul/AppSec-Days-Summer-of-Security","topics":["AppSec","OWASP","Security"]},{"year":2020,"title":"Merge Intern Webinar","location":"Virtual","link":"https://github.com/nomadicmehul/Merge-Intern-Webinar","topics":["Career","Internship","DevOps"]},{"year":2020,"title":"SecurityVue India Webinar","location":"Virtual","link":"https://github.com/nomadicmehul/SecurityVue-India-Webinar","topics":["Security","India","Webinar"]},{"year":2020,"title":"The Hackers Meetup India Webinar","location":"Virtual","link":"https://github.com/nomadicmehul/The-Hackers-Meetup-India-Webinar","topics":["Security","Hacking","Community"]},{"year":2020,"title":"HackerU India Webinar","location":"Virtual","link":"https://github.com/nomadicmehul/HackerU-India-Webinar","topics":["Security","Education","DevOps"]},{"year":2020,"title":"Git + Github = Easy (SCM + Collaboration)","location":"Nashik, India","link":"https://www.meetup.com/GDG-Nashik/events/270224329/","topics":["Git","GitHub","GDG"]},{"year":2020,"title":"Hello Rust","location":"India","link":"https://github.com/nomadicmehul/Hello-Rust","topics":["Rust","Systems Programming","Workshop"]},{"year":2019,"title":"Mozilla Whistler All Hands 2019","location":"Whistler, Canada","link":"https://wiki.mozilla.org/All_Hands/Whistler2019","topics":["Mozilla","Web Standards","Open Source"]},{"year":2019,"title":"TRU Open Source Club - Weekly TechMeetup","location":"Kamloops, Canada","link":"https://github.com/nomadicmehul/TRU-OPEN-SOURCE-CLUB","topics":["Open Source","University","Mentoring"]},{"year":2019,"title":"Cloud Study Jams: GDG Nashik","location":"Nashik, India","link":"https://www.meetup.com/GDG-Nashik/events/260845707/","topics":["Google Cloud","GDG","Workshop"]},{"year":2019,"title":"Serverless Auckland Meetup","location":"Auckland, New Zealand","link":"https://github.com/nomadicmehul/Serverless-Auckland-Meetup","topics":["Serverless","Cloud","Meetup"]},{"year":2019,"title":"OWASP New Zealand Day 2019","location":"Auckland, New Zealand","link":"https://github.com/nomadicmehul/OWASP-New-Zealand-Day-2019","topics":["OWASP","AppSec","Security"]},{"year":2018,"title":"Hackference India 2018","location":"India","link":"https://github.com/nomadicmehul/Hackference-India-2018","topics":["Hackathon","Conference","DevOps"]},{"year":2018,"title":"OpenAlt 2018","location":"Brno, Czech Republic","link":"https://github.com/nomadicmehul/OpenAlt-2018","topics":["Open Source","Linux","Community"]},{"year":2018,"title":"Mozilla Festival 2018","location":"London, UK","link":"https://github.com/nomadicmehul/MozFest-2018","topics":["MozFest","Open Web","Privacy"]},{"year":2018,"title":"AllThingsOpen 2018","location":"Raleigh, USA","link":"https://github.com/nomadicmehul/AllThingsOpen2018","topics":["Open Source","DevOps","Cloud"]},{"year":2018,"title":"ServerlessDays Milano","location":"Milano, Italy","link":"https://github.com/nomadicmehul/ServerlessDays-Milano","topics":["Serverless","Cloud","Architecture"]},{"year":2018,"title":"OWASP AppSec Israel 2018","location":"Tel Aviv, Israel","link":"https://github.com/nomadicmehul/OWASP-s-AppSec-Israel-2018","topics":["OWASP","AppSec","Security"]},{"year":2018,"title":"DevConfIN 2018","location":"India","link":"https://github.com/nomadicmehul/devconfIN","topics":["DevConf","Red Hat","Open Source"]},{"year":2018,"title":"ServerlessDays Auckland","location":"Auckland, New Zealand","link":"https://medium.com/@nomadicmehul/serverlessdays-auckland-2018-8e3a78e8793e","topics":["Serverless","Cloud","Architecture"]},{"year":2018,"title":"RustFest Paris 2018","location":"Paris, France","link":"https://paris.rustfest.eu/","topics":["Rust","Systems","Performance"]},{"year":2018,"title":"DevHost'18","location":"India","link":"https://github.com/nomadicmehul/DevHost18","topics":["DevOps","Hackathon","Workshop"]},{"year":2018,"title":"Rust Hacks at Cummins","location":"Pune, India","link":"https://github.com/nomadicmehul/Rust-Hacks-at-Cummins","topics":["Rust","Workshop","University"]},{"year":2018,"title":"GNUnify'18","location":"Pune, India","link":"https://github.com/nomadicmehul/GNUnify-2018","topics":["GNU/Linux","FOSS","Community"]},{"year":2018,"title":"Mozilla l10n Gujarati Training Meetup","location":"Gujarat, India","link":"https://reps.mozilla.org/e/mozilla-l10n-gujarati-training-meetup-2018/","topics":["Mozilla","Localization","Gujarati"]},{"year":2018,"title":"Maker Fest 2018","location":"India","link":"","topics":["Maker","Innovation","IoT"]},{"year":2017,"title":"GSIndia Summit 2017","location":"India","link":"","topics":["Google","Summit","Community"]},{"year":2017,"title":"GDG DevFest Ahmedabad 2017","location":"Ahmedabad, India","link":"","topics":["GDG","DevFest","Google"]},{"year":2017,"title":"Mozilla Festival London 2017","location":"London, UK","link":"https://mozillafestival.org","topics":["MozFest","Open Web","Digital Rights"]},{"year":2017,"title":"IEEE R10 Sectional Leadership Summit","location":"India","link":"","topics":["IEEE","Leadership","Technology"]},{"year":2017,"title":"Rain Of Rust - Global Campaign","location":"Global","link":"","topics":["Rust","Mozilla","Global Campaign"]},{"year":2017,"title":"Maker Fest 2017","location":"India","link":"https://blog.mozillaindia.org/1761","topics":["Maker","Innovation","Mozilla"]},{"year":2016,"title":"i.Fest'16","location":"India","link":"","topics":["Tech Fest","Mozilla","Community"]}];</script>
     <script>
-        let allEvents = window.__SPEAKING_DATA || [];
+        // Resource type icon mapping
+        const RESOURCE_ICONS = {
+            event: 'fas fa-external-link-alt',
+            slides: 'fas fa-file-powerpoint',
+            code: 'fab fa-github',
+            demo: 'fas fa-play-circle',
+            video: 'fas fa-video',
+            blog: 'fas fa-blog'
+        };
+
+        const ROLE_ICONS = {
+            'Speaker': 'fas fa-microphone-alt',
+            'Event Organizer': 'fas fa-users-cog',
+            'Mentor': 'fas fa-chalkboard-teacher',
+            'Panelist': 'fas fa-comments',
+            'Workshop Lead': 'fas fa-laptop-code',
+            'Workshop Facilitator': 'fas fa-laptop-code'
+        };
+
+        function getRoleClass(role) {
+            if (!role) return '';
+            const r = role.toLowerCase();
+            if (r.includes('speaker')) return 'role-speaker';
+            if (r.includes('organizer')) return 'role-organizer';
+            if (r.includes('mentor')) return 'role-mentor';
+            if (r.includes('panelist')) return 'role-panelist';
+            if (r.includes('workshop') || r.includes('facilitator')) return 'role-workshop';
+            return 'role-default';
+        }
+
+        function renderRole(role) {
+            if (!role) return '';
+            // Support both string and array
+            const roles = Array.isArray(role) ? role : [role];
+            const badges = roles.map(r => {
+                const icon = ROLE_ICONS[r] || 'fas fa-tag';
+                const cls = getRoleClass(r);
+                return `<span class="event-role ${cls}"><i class="${icon}"></i> ${r}</span>`;
+            }).join('');
+            return `<div class="event-roles">${badges}</div>`;
+        }
+
+        let allEvents = [];
 
         async function loadEvents() {
-            if (allEvents.length === 0) {
-                try {
-                    const response = await fetch('data/speaking.json');
-                    allEvents = await response.json();
-                } catch (e) {
-                    console.warn('Could not fetch speaking.json — using inline data if available.');
-                }
+            try {
+                const response = await fetch('data/speaking.json');
+                if (!response.ok) throw new Error('Failed to load speaking data');
+                allEvents = await response.json();
+            } catch (e) {
+                document.getElementById('timeline-container').innerHTML =
+                    '<div class="no-results"><i class="fas fa-exclamation-triangle"></i><p>Could not load speaking data.</p></div>';
+                console.error('Error loading speaking.json:', e);
+                return;
             }
             init();
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr + 'T00:00:00');
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         }
 
         function init() {
@@ -367,6 +500,25 @@
             renderTimeline('all');
         }
 
+        // If url doesn't start with http/https, treat it as a filename in assets/slides/
+        function resolveUrl(url) {
+            if (!url) return '';
+            if (/^https?:\/\//.test(url)) return url;
+            return 'assets/slides/' + url;
+        }
+
+        function renderResources(resources) {
+            if (!resources || resources.length === 0) return '';
+            return `<div class="event-resources">${
+                resources.map(r => {
+                    const icon = RESOURCE_ICONS[r.type] || 'fas fa-link';
+                    const typeClass = 'type-' + (r.type || 'code');
+                    const href = resolveUrl(r.url);
+                    return `<a href="${href}" target="_blank" rel="noopener" class="resource-link ${typeClass}"><i class="${icon}"></i> ${r.label}</a>`;
+                }).join('')
+            }</div>`;
+        }
+
         function renderTimeline(filterYear) {
             const container = document.getElementById('timeline-container');
             const filtered = filterYear === 'all' ? allEvents : allEvents.filter(e => e.year == filterYear);
@@ -374,7 +526,7 @@
             document.getElementById('event-count').textContent = `Showing ${filtered.length} event${filtered.length !== 1 ? 's' : ''}`;
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="no-results"><i class="fas fa-calendar-xmark"></i><p>No events found.</p></div>`;
+                container.innerHTML = '<div class="no-results"><i class="fas fa-calendar-xmark"></i><p>No events found.</p></div>';
                 return;
             }
 
@@ -399,13 +551,17 @@
                             ${events.map(e => `
                                 <div class="event-card">
                                     <h4>${e.title}</h4>
-                                    <div class="event-location">
-                                        <i class="fas fa-map-marker-alt"></i> ${e.location}
+                                    ${renderRole(e.role)}
+                                    <div class="event-meta">
+                                        ${e.date ? `<span class="event-date"><i class="fas fa-calendar-day"></i> ${formatDate(e.date)}</span>` : ''}
+                                        <span><i class="fas fa-map-marker-alt"></i> ${e.location}</span>
                                     </div>
                                     <div class="event-topics">
                                         ${e.topics.map(t => `<span class="event-topic">${t}</span>`).join('')}
                                     </div>
-                                    ${e.link ? `<a href="${e.link}" target="_blank" class="event-link">View Details <i class="fas fa-arrow-right"></i></a>` : ''}
+                                    <div class="event-footer">
+                                        ${renderResources(e.resources)}
+                                    </div>
                                 </div>
                             `).join('')}
                         </div>

@@ -90,10 +90,67 @@ Everything personal lives in `config.json`. Edit this one file to make it yours:
 | `data/projects.json` | Your open-source projects |
 | `data/testimonials.json` | Testimonials from colleagues/mentees |
 | `assets/img/profile.jpg` | Your profile photo |
+| `assets/slides/` | Slide decks (PDF/PPTX) for speaking events |
 | `assets/favicon.svg` | Your favicon (edit the SVG) |
 | `index.html` | Hero section, about section, skills |
 | `speaking.html` | Page title and description |
 | `projects.html` | Page title and description |
+
+## Speaking Events Data
+
+All speaking events are managed in `data/speaking.json`. Each event entry renders as a card on both the home page (first 6) and the speaking page (all events).
+
+### Event Structure
+
+```json
+{
+  "year": 2026,
+  "date": "2026-03-17",
+  "title": "Google Cloud Builders Day in Berlin",
+  "location": "Berlin, Germany",
+  "role": ["Speaker", "Workshop Facilitator"],
+  "topics": ["Google Cloud", "Cloud", "Builders Day"],
+  "resources": [
+    { "type": "event", "label": "Event Page", "url": "https://cloud.google.com/..." },
+    { "type": "slides", "label": "Slide Deck", "url": "my-talk.pdf" },
+    { "type": "code", "label": "GitHub Repo", "url": "https://github.com/user/repo" }
+  ]
+}
+```
+
+### Resource Types
+
+Resources render as colored action buttons on each event card. Add only what you have — `"resources": []` is valid.
+
+| Type | Color | Icon | URL Format | Use For |
+|------|-------|------|------------|---------|
+| `event` | Green | External link | Full URL (`https://...`) | Event page or registration link |
+| `slides` | Purple | PowerPoint | Filename (`talk.pdf`) or full URL | Slide decks — local files go in `assets/slides/` |
+| `code` | Blue | GitHub | Full URL (`https://github.com/...`) | Source code, repos, demo code |
+| `demo` | Cyan | Play | Full URL (`https://...`) | Live demo links, deployed apps |
+| `video` | Red | Video | Full URL (`https://youtube.com/...`) | Talk recordings |
+| `blog` | Amber | Blog | Full URL (`https://...`) | Blog posts, write-ups |
+
+> **Local files:** If a URL does NOT start with `http://` or `https://`, it resolves to `assets/slides/<filename>`. Drop your file in that folder and just use the filename in the JSON.
+
+### Role Types
+
+The `role` field shows colored badges indicating your role at the event. Supports a single string or array for multiple roles.
+
+| Role | Color |
+|------|-------|
+| `Speaker` | Green |
+| `Event Organizer` | Amber |
+| `Mentor` | Purple |
+| `Panelist` | Cyan |
+| `Workshop Lead` | Blue |
+| `Workshop Facilitator` | Blue |
+
+### Adding a New Event
+
+1. (Optional) Drop slide deck into `assets/slides/`
+2. Add entry at the **top** of `data/speaking.json`
+3. Push — both home page and speaking page update automatically
 
 ## Project Structure
 
@@ -112,6 +169,7 @@ Everything personal lives in `config.json`. Edit this one file to make it yours:
 │   │   └── main.js         # Shared utilities (matrix rain, nav, scroll)
 │   ├── img/
 │   │   └── profile.jpg     # Profile photo
+│   ├── slides/             # Slide decks for speaking events (PDF/PPTX)
 │   └── favicon.svg         # Terminal prompt favicon
 └── data/
     ├── projects.json       # Projects data

@@ -1049,20 +1049,74 @@
             font-family: var(--font-mono);
         }
 
-        .event-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--term-green);
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: gap 0.2s;
-            margin-top: auto;
+        .event-roles { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+        .event-role {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono);
+            padding: 3px 10px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .role-speaker {
+            background: rgba(74, 222, 128, 0.12); color: var(--term-green);
+            border: 1px solid rgba(74, 222, 128, 0.25);
+        }
+        .role-organizer {
+            background: rgba(251, 191, 36, 0.12); color: var(--term-amber);
+            border: 1px solid rgba(251, 191, 36, 0.25);
+        }
+        .role-mentor {
+            background: rgba(192, 132, 252, 0.12); color: var(--term-purple);
+            border: 1px solid rgba(192, 132, 252, 0.25);
+        }
+        .role-panelist {
+            background: rgba(34, 211, 238, 0.12); color: var(--term-cyan);
+            border: 1px solid rgba(34, 211, 238, 0.25);
+        }
+        .role-workshop {
+            background: rgba(96, 165, 250, 0.12); color: var(--term-blue);
+            border: 1px solid rgba(96, 165, 250, 0.25);
+        }
+        .role-default {
+            background: rgba(148, 163, 184, 0.12); color: var(--text-secondary);
+            border: 1px solid rgba(148, 163, 184, 0.25);
         }
 
-        .event-link:hover {
-            gap: 10px;
+        .event-resources { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+        .resource-link {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.75rem; font-weight: 600; font-family: var(--font-mono);
+            padding: 4px 10px; border-radius: 6px; transition: all 0.2s;
         }
+        .resource-link:hover { transform: translateY(-1px); }
+        .resource-link.type-event {
+            background: rgba(74, 222, 128, 0.12); color: var(--term-green);
+            border: 1px solid rgba(74, 222, 128, 0.25);
+        }
+        .resource-link.type-event:hover { background: rgba(74, 222, 128, 0.22); }
+        .resource-link.type-slides {
+            background: rgba(192, 132, 252, 0.12); color: var(--term-purple);
+            border: 1px solid rgba(192, 132, 252, 0.25);
+        }
+        .resource-link.type-slides:hover { background: rgba(192, 132, 252, 0.22); }
+        .resource-link.type-code {
+            background: rgba(96, 165, 250, 0.12); color: var(--term-blue);
+            border: 1px solid rgba(96, 165, 250, 0.25);
+        }
+        .resource-link.type-code:hover { background: rgba(96, 165, 250, 0.22); }
+        .resource-link.type-demo {
+            background: rgba(34, 211, 238, 0.12); color: var(--term-cyan);
+            border: 1px solid rgba(34, 211, 238, 0.25);
+        }
+        .resource-link.type-demo:hover { background: rgba(34, 211, 238, 0.22); }
+        .resource-link.type-video {
+            background: rgba(248, 113, 113, 0.12); color: var(--term-red);
+            border: 1px solid rgba(248, 113, 113, 0.25);
+        }
+        .resource-link.type-video:hover { background: rgba(248, 113, 113, 0.22); }
+        .resource-link.type-blog {
+            background: rgba(251, 191, 36, 0.12); color: var(--term-amber);
+            border: 1px solid rgba(251, 191, 36, 0.25);
+        }
+        .resource-link.type-blog:hover { background: rgba(251, 191, 36, 0.22); }
 
         /* ===== Projects Section ===== */
         .projects-grid {
@@ -2053,6 +2107,62 @@
     </footer>
 
     <script>
+        // Role badge helpers for speaking cards
+        const ROLE_ICONS = {
+            'Speaker': 'fas fa-microphone-alt',
+            'Event Organizer': 'fas fa-users-cog',
+            'Mentor': 'fas fa-chalkboard-teacher',
+            'Panelist': 'fas fa-comments',
+            'Workshop Lead': 'fas fa-laptop-code',
+            'Workshop Facilitator': 'fas fa-laptop-code'
+        };
+        function getRoleClass(role) {
+            if (!role) return '';
+            const r = role.toLowerCase();
+            if (r.includes('speaker')) return 'role-speaker';
+            if (r.includes('organizer')) return 'role-organizer';
+            if (r.includes('mentor')) return 'role-mentor';
+            if (r.includes('panelist')) return 'role-panelist';
+            if (r.includes('workshop') || r.includes('facilitator')) return 'role-workshop';
+            return 'role-default';
+        }
+        function renderRole(role) {
+            if (!role) return '';
+            const roles = Array.isArray(role) ? role : [role];
+            const badges = roles.map(r => {
+                const icon = ROLE_ICONS[r] || 'fas fa-tag';
+                const cls = getRoleClass(r);
+                return `<span class="event-role ${cls}"><i class="${icon}"></i> ${r}</span>`;
+            }).join('');
+            return `<div class="event-roles">${badges}</div>`;
+        }
+
+        // Resource rendering helpers
+        const RESOURCE_ICONS = {
+            event: 'fas fa-external-link-alt',
+            slides: 'fas fa-file-powerpoint',
+            code: 'fab fa-github',
+            demo: 'fas fa-play-circle',
+            video: 'fas fa-video',
+            blog: 'fas fa-blog'
+        };
+        function resolveUrl(url) {
+            if (!url) return '';
+            if (/^https?:\/\//.test(url)) return url;
+            return 'assets/slides/' + url;
+        }
+        function renderResources(resources) {
+            if (!resources || resources.length === 0) return '';
+            return `<div class="event-resources">${
+                resources.map(r => {
+                    const icon = RESOURCE_ICONS[r.type] || 'fas fa-link';
+                    const typeClass = 'type-' + (r.type || 'code');
+                    const href = resolveUrl(r.url);
+                    return `<a href="${href}" target="_blank" rel="noopener" class="resource-link ${typeClass}"><i class="${icon}"></i> ${r.label}</a>`;
+                }).join('')
+            }</div>`;
+        }
+
         // Mobile menu toggle
         function toggleMenu() {
             const menu = document.getElementById('mobile-menu');
@@ -2139,11 +2249,12 @@
                 <div class="event-card animate-on-scroll">
                     <span class="event-year">${event.year}</span>
                     <h4>${event.title}</h4>
+                    ${renderRole(event.role)}
                     <div class="event-meta"><i class="fas fa-map-marker-alt"></i> ${event.location}</div>
                     <div class="event-topics">
                         ${event.topics.map(topic => `<span class="event-topic">${topic}</span>`).join('')}
                     </div>
-                    ${event.link ? `<a href="${event.link}" target="_blank" class="event-link">View Details <i class="fas fa-arrow-right"></i></a>` : ''}
+                    ${renderResources(event.resources)}
                 </div>
             `).join('');
 
