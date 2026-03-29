@@ -28,7 +28,7 @@
   },
   {
     "year": 2025,
-    "date": "2025-01-15",
+    "date": "2025-12-13",
     "title": "Google Cloud AI Labs",
     "location": "Bangalore, India",
     "topics": [
@@ -42,6 +42,11 @@
         "type": "event",
         "label": "Event Page",
         "url": "https://vision.hack2skill.com/event/genaiexchange?tab=cloudAiLab&utm_source=hack2skill&utm_medium=homepage"
+      }
+       {
+        "type": "slides",
+        "label": "Slide Deck",
+        "url": "Agents for All - Mehul Patel.pdf"
       }
     ],
     "role": "Speaker"
