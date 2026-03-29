@@ -42,8 +42,8 @@
         "type": "event",
         "label": "Event Page",
         "url": "https://vision.hack2skill.com/event/genaiexchange?tab=cloudAiLab&utm_source=hack2skill&utm_medium=homepage"
-      }
-       {
+      },
+      {
         "type": "slides",
         "label": "Slide Deck",
         "url": "Agents for All - Mehul Patel.pdf"
