@@ -180,6 +180,10 @@ The `role` field accepts a single string or an array of strings.
 - **`.nojekyll`** — Must remain in repo root so GitHub Pages serves raw HTML
 - **Local dev** — Run `python3 -m http.server 8080` from project root and open `http://localhost:8080`
 
+## Commit Messages
+
+- Do **not** add `Co-Authored-By` or any Claude/AI attribution lines to commit messages.
+
 ## Branches
 
 - `main` — Production (deployed to GitHub Pages)

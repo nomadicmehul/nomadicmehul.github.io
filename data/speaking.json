@@ -53,7 +53,7 @@
   },
   {
     "year": 2023,
-    "date": "2023-01-01",
+    "date": "2023-01-22",
     "title": "Mozilla Gujarat Meetup",
     "location": "Gujarat, India",
     "topics": [
@@ -72,7 +72,7 @@
   },
   {
     "year": 2023,
-    "date": "2023-01-01",
+    "date": "2023-01-06",
     "title": "SwasthyaCon 2023",
     "location": "India",
     "topics": [
@@ -96,7 +96,7 @@
   },
   {
     "year": 2022,
-    "date": "2022-01-01",
+    "date": "2022-08-24",
     "title": "Developer Day Seattle 2022",
     "location": "Seattle, USA",
     "topics": [
@@ -115,7 +115,7 @@
   },
   {
     "year": 2022,
-    "date": "2022-01-01",
+    "date": "2022-05-28",
     "title": "Identity and Security Meetup Gujarat",
     "location": "Gujarat, India",
     "topics": [
@@ -134,7 +134,7 @@
   },
   {
     "year": 2021,
-    "date": "2021-01-01",
+    "date": "2021-03-11",
     "title": "HackBMU 4.0",
     "location": "India",
     "topics": [
@@ -158,7 +158,7 @@
   },
   {
     "year": 2021,
-    "date": "2021-01-01",
+    "date": "2021-03-07",
     "title": "Software Freedom Day 2021",
     "location": "Global (Virtual)",
     "topics": [
@@ -182,7 +182,7 @@
   },
   {
     "year": 2020,
-    "date": "2020-01-01",
+    "date": "2020-10-09",
     "title": "Hacktoberfest 2020",
     "location": "Global (Virtual)",
     "topics": [
@@ -206,31 +206,7 @@
   },
   {
     "year": 2020,
-    "date": "2020-01-01",
-    "title": "AppSec Days - Summer of Security",
-    "location": "Virtual",
-    "topics": [
-      "AppSec",
-      "OWASP",
-      "Security"
-    ],
-    "resources": [
-      {
-        "type": "event",
-        "label": "Event Page",
-        "url": "https://github.com/nomadicmehul/AppSec-Days-Summer-of-Security"
-      },
-      {
-        "type": "code",
-        "label": "GitHub Repo",
-        "url": "https://github.com/nomadicmehul/AppSec-Days-Summer-of-Security"
-      }
-    ],
-    "role": "Speaker"
-  },
-  {
-    "year": 2020,
-    "date": "2020-01-01",
+    "date": "2020-09-26",
     "title": "Merge Intern Webinar",
     "location": "Virtual",
     "topics": [
@@ -254,7 +230,31 @@
   },
   {
     "year": 2020,
-    "date": "2020-01-01",
+    "date": "2020-08-25",
+    "title": "AppSec Days - Summer of Security",
+    "location": "Virtual",
+    "topics": [
+      "AppSec",
+      "OWASP",
+      "Security"
+    ],
+    "resources": [
+      {
+        "type": "event",
+        "label": "Event Page",
+        "url": "https://github.com/nomadicmehul/AppSec-Days-Summer-of-Security"
+      },
+      {
+        "type": "code",
+        "label": "GitHub Repo",
+        "url": "https://github.com/nomadicmehul/AppSec-Days-Summer-of-Security"
+      }
+    ],
+    "role": "Speaker"
+  },
+  {
+    "year": 2020,
+    "date": "2020-07-04",
     "title": "SecurityVue India Webinar",
     "location": "Virtual",
     "topics": [
@@ -278,7 +278,7 @@
   },
   {
     "year": 2020,
-    "date": "2020-01-01",
+    "date": "2020-06-21",
     "title": "The Hackers Meetup India Webinar",
     "location": "Virtual",
     "topics": [
@@ -302,7 +302,7 @@
   },
   {
     "year": 2020,
-    "date": "2020-01-01",
+    "date": "2020-06-19",
     "title": "HackerU India Webinar",
     "location": "Virtual",
     "topics": [
@@ -326,7 +326,7 @@
   },
   {
     "year": 2020,
-    "date": "2020-01-01",
+    "date": "2020-04-26",
     "title": "Git + Github = Easy (SCM + Collaboration)",
     "location": "Nashik, India",
     "topics": [
@@ -345,7 +345,7 @@
   },
   {
     "year": 2020,
-    "date": "2020-01-01",
+    "date": "2020-04-17",
     "title": "Hello Rust",
     "location": "India",
     "topics": [
@@ -369,7 +369,7 @@
   },
   {
     "year": 2019,
-    "date": "2019-06-01",
+    "date": "2019-06-17",
     "title": "Mozilla Whistler All Hands 2019",
     "location": "Whistler, Canada",
     "topics": [
@@ -412,7 +412,7 @@
   },
   {
     "year": 2019,
-    "date": "2019-01-01",
+    "date": "2019-05-26",
     "title": "Cloud Study Jams: GDG Nashik",
     "location": "Nashik, India",
     "topics": [
@@ -431,7 +431,7 @@
   },
   {
     "year": 2019,
-    "date": "2019-01-01",
+    "date": "2019-02-19",
     "title": "Serverless Auckland Meetup",
     "location": "Auckland, New Zealand",
     "topics": [
@@ -479,7 +479,7 @@
   },
   {
     "year": 2018,
-    "date": "2018-01-01",
+    "date": "2018-12-15",
     "title": "Hackference India 2018",
     "location": "India",
     "topics": [
@@ -503,7 +503,26 @@
   },
   {
     "year": 2018,
-    "date": "2018-11-01",
+    "date": "2018-12-01",
+    "title": "Mozilla l10n Gujarati Training Meetup",
+    "location": "Gujarat, India",
+    "topics": [
+      "Mozilla",
+      "Localization",
+      "Gujarati"
+    ],
+    "resources": [
+      {
+        "type": "event",
+        "label": "Event Page",
+        "url": "https://reps.mozilla.org/e/mozilla-l10n-gujarati-training-meetup-2018/"
+      }
+    ],
+    "role": "Speaker"
+  },
+  {
+    "year": 2018,
+    "date": "2018-11-03",
     "title": "OpenAlt 2018",
     "location": "Brno, Czech Republic",
     "topics": [
@@ -521,6 +540,54 @@
         "type": "code",
         "label": "GitHub Repo",
         "url": "https://github.com/nomadicmehul/OpenAlt-2018"
+      }
+    ],
+    "role": "Speaker"
+  },
+  {
+    "year": 2018,
+    "date": "2018-10-21",
+    "title": "AllThingsOpen 2018",
+    "location": "Raleigh, USA",
+    "topics": [
+      "Open Source",
+      "DevOps",
+      "Cloud"
+    ],
+    "resources": [
+      {
+        "type": "event",
+        "label": "Event Page",
+        "url": "https://github.com/nomadicmehul/AllThingsOpen2018"
+      },
+      {
+        "type": "code",
+        "label": "GitHub Repo",
+        "url": "https://github.com/nomadicmehul/AllThingsOpen2018"
+      }
+    ],
+    "role": "Speaker"
+  },
+  {
+    "year": 2018,
+    "date": "2018-10-19",
+    "title": "ServerlessDays Milano",
+    "location": "Milano, Italy",
+    "topics": [
+      "Serverless",
+      "Cloud",
+      "Architecture"
+    ],
+    "resources": [
+      {
+        "type": "event",
+        "label": "Event Page",
+        "url": "https://github.com/nomadicmehul/ServerlessDays-Milano"
+      },
+      {
+        "type": "code",
+        "label": "GitHub Repo",
+        "url": "https://github.com/nomadicmehul/ServerlessDays-Milano"
       }
     ],
     "role": "Speaker"
@@ -551,55 +618,7 @@
   },
   {
     "year": 2018,
-    "date": "2018-10-01",
-    "title": "AllThingsOpen 2018",
-    "location": "Raleigh, USA",
-    "topics": [
-      "Open Source",
-      "DevOps",
-      "Cloud"
-    ],
-    "resources": [
-      {
-        "type": "event",
-        "label": "Event Page",
-        "url": "https://github.com/nomadicmehul/AllThingsOpen2018"
-      },
-      {
-        "type": "code",
-        "label": "GitHub Repo",
-        "url": "https://github.com/nomadicmehul/AllThingsOpen2018"
-      }
-    ],
-    "role": "Speaker"
-  },
-  {
-    "year": 2018,
-    "date": "2018-09-01",
-    "title": "ServerlessDays Milano",
-    "location": "Milano, Italy",
-    "topics": [
-      "Serverless",
-      "Cloud",
-      "Architecture"
-    ],
-    "resources": [
-      {
-        "type": "event",
-        "label": "Event Page",
-        "url": "https://github.com/nomadicmehul/ServerlessDays-Milano"
-      },
-      {
-        "type": "code",
-        "label": "GitHub Repo",
-        "url": "https://github.com/nomadicmehul/ServerlessDays-Milano"
-      }
-    ],
-    "role": "Speaker"
-  },
-  {
-    "year": 2018,
-    "date": "2018-09-01",
+    "date": "2018-09-05",
     "title": "OWASP AppSec Israel 2018",
     "location": "Tel Aviv, Israel",
     "topics": [
@@ -623,31 +642,7 @@
   },
   {
     "year": 2018,
-    "date": "2018-08-01",
-    "title": "DevConfIN 2018",
-    "location": "India",
-    "topics": [
-      "DevConf",
-      "Red Hat",
-      "Open Source"
-    ],
-    "resources": [
-      {
-        "type": "event",
-        "label": "Event Page",
-        "url": "https://github.com/nomadicmehul/devconfIN"
-      },
-      {
-        "type": "code",
-        "label": "GitHub Repo",
-        "url": "https://github.com/nomadicmehul/devconfIN"
-      }
-    ],
-    "role": "Speaker"
-  },
-  {
-    "year": 2018,
-    "date": "2018-07-01",
+    "date": "2018-06-05",
     "title": "ServerlessDays Auckland",
     "location": "Auckland, New Zealand",
     "topics": [
@@ -671,7 +666,7 @@
   },
   {
     "year": 2018,
-    "date": "2018-05-01",
+    "date": "2018-05-26",
     "title": "RustFest Paris 2018",
     "location": "Paris, France",
     "topics": [
@@ -684,6 +679,78 @@
         "type": "event",
         "label": "Event Page",
         "url": "https://paris.rustfest.eu/"
+      }
+    ],
+    "role": "Speaker"
+  },
+  {
+    "year": 2018,
+    "date": "2018-05-04",
+    "title": "DevConfIN 2018",
+    "location": "India",
+    "topics": [
+      "DevConf",
+      "Red Hat",
+      "Open Source"
+    ],
+    "resources": [
+      {
+        "type": "event",
+        "label": "Event Page",
+        "url": "https://github.com/nomadicmehul/devconfIN"
+      },
+      {
+        "type": "code",
+        "label": "GitHub Repo",
+        "url": "https://github.com/nomadicmehul/devconfIN"
+      }
+    ],
+    "role": "Speaker"
+  },
+  {
+    "year": 2018,
+    "date": "2018-03-17",
+    "title": "Rust Hacks at Cummins",
+    "location": "Pune, India",
+    "topics": [
+      "Rust",
+      "Workshop",
+      "University"
+    ],
+    "resources": [
+      {
+        "type": "event",
+        "label": "Event Page",
+        "url": "https://github.com/nomadicmehul/Rust-Hacks-at-Cummins"
+      },
+      {
+        "type": "code",
+        "label": "GitHub Repo",
+        "url": "https://github.com/nomadicmehul/Rust-Hacks-at-Cummins"
+      }
+    ],
+    "role": "Speaker"
+  },
+  {
+    "year": 2018,
+    "date": "2018-02-16",
+    "title": "GNUnify'18",
+    "location": "Pune, India",
+    "topics": [
+      "GNU/Linux",
+      "FOSS",
+      "Community"
+    ],
+    "resources": [
+      {
+        "type": "event",
+        "label": "Event Page",
+        "url": "https://github.com/nomadicmehul/GNUnify-2018"
+      },
+      {
+        "type": "code",
+        "label": "GitHub Repo",
+        "url": "https://github.com/nomadicmehul/GNUnify-2018"
       }
     ],
     "role": "Speaker"
@@ -715,73 +782,6 @@
   {
     "year": 2018,
     "date": "2018-01-01",
-    "title": "Rust Hacks at Cummins",
-    "location": "Pune, India",
-    "topics": [
-      "Rust",
-      "Workshop",
-      "University"
-    ],
-    "resources": [
-      {
-        "type": "event",
-        "label": "Event Page",
-        "url": "https://github.com/nomadicmehul/Rust-Hacks-at-Cummins"
-      },
-      {
-        "type": "code",
-        "label": "GitHub Repo",
-        "url": "https://github.com/nomadicmehul/Rust-Hacks-at-Cummins"
-      }
-    ],
-    "role": "Speaker"
-  },
-  {
-    "year": 2018,
-    "date": "2018-02-01",
-    "title": "GNUnify'18",
-    "location": "Pune, India",
-    "topics": [
-      "GNU/Linux",
-      "FOSS",
-      "Community"
-    ],
-    "resources": [
-      {
-        "type": "event",
-        "label": "Event Page",
-        "url": "https://github.com/nomadicmehul/GNUnify-2018"
-      },
-      {
-        "type": "code",
-        "label": "GitHub Repo",
-        "url": "https://github.com/nomadicmehul/GNUnify-2018"
-      }
-    ],
-    "role": "Speaker"
-  },
-  {
-    "year": 2018,
-    "date": "2018-01-01",
-    "title": "Mozilla l10n Gujarati Training Meetup",
-    "location": "Gujarat, India",
-    "topics": [
-      "Mozilla",
-      "Localization",
-      "Gujarati"
-    ],
-    "resources": [
-      {
-        "type": "event",
-        "label": "Event Page",
-        "url": "https://reps.mozilla.org/e/mozilla-l10n-gujarati-training-meetup-2018/"
-      }
-    ],
-    "role": "Speaker"
-  },
-  {
-    "year": 2018,
-    "date": "2018-01-01",
     "title": "Maker Fest 2018",
     "location": "India",
     "topics": [
@@ -794,7 +794,7 @@
   },
   {
     "year": 2017,
-    "date": "2017-01-01",
+    "date": "2017-12-16",
     "title": "GSIndia Summit 2017",
     "location": "India",
     "topics": [
@@ -807,7 +807,7 @@
   },
   {
     "year": 2017,
-    "date": "2017-01-01",
+    "date": "2017-11-05",
     "title": "GDG DevFest Ahmedabad 2017",
     "location": "Ahmedabad, India",
     "topics": [
@@ -839,7 +839,7 @@
   },
   {
     "year": 2017,
-    "date": "2017-01-01",
+    "date": "2017-08-03",
     "title": "IEEE R10 Sectional Leadership Summit",
     "location": "India",
     "topics": [
@@ -852,7 +852,7 @@
   },
   {
     "year": 2017,
-    "date": "2017-01-01",
+    "date": "2017-06-01",
     "title": "Rain Of Rust - Global Campaign",
     "location": "Global",
     "topics": [
@@ -889,7 +889,7 @@
   },
   {
     "year": 2016,
-    "date": "2016-01-01",
+    "date": "2016-10-22",
     "title": "i.Fest'16",
     "location": "India",
     "topics": [
