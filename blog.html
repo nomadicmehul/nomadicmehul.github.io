@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog — Mehul Patel</title>
+    <meta name="description" content="Technical articles on DevOps, Cloud, Docker, Kubernetes, and open-source by Mehul Patel. Read on Medium.">
+    <meta name="author" content="Mehul Patel">
+    <meta property="og:title" content="Blog — Mehul Patel">
+    <meta property="og:description" content="Technical articles on DevOps, Cloud, Docker, Kubernetes, and open-source technologies.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nomadicmehul.github.io/blog.html">
+    <meta property="og:image" content="https://nomadicmehul.github.io/assets/img/profile.jpg">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@nomadicmehul">
+    <link rel="canonical" href="https://nomadicmehul.github.io/blog.html">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --term-green: #4ade80; --term-green-dim: #22c55e; --term-green-bright: #86efac;
+            --term-amber: #fbbf24; --term-cyan: #22d3ee; --term-red: #f87171;
+            --term-purple: #c084fc; --term-blue: #60a5fa;
+            --bg-primary: #0a0e17; --bg-secondary: #0f1623; --bg-tertiary: #151d2e;
+            --bg-card: #111827; --bg-elevated: #1e293b;
+            --text-primary: #e2e8f0; --text-secondary: #94a3b8; --text-muted: #64748b;
+            --border-default: #1e293b; --border-hover: #334155;
+            --border-accent: rgba(74, 222, 128, 0.3);
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+            --shadow-glow: 0 0 20px rgba(74, 222, 128, 0.15);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-sans); color: var(--text-primary); background: var(--bg-primary); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* Scanline */
+        .scanline {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.015) 2px, rgba(0,0,0,0.015) 4px);
+        }
+
+        /* Nav */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(10, 14, 23, 0.9); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-default);
+        }
+        .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+        .nav-logo {
+            font-weight: 700; font-size: 1.25rem; display: flex; align-items: center; gap: 0;
+            font-family: var(--font-mono); color: var(--term-green);
+        }
+        .nav-logo .prompt-user { color: var(--term-green-bright); }
+        .nav-logo .prompt-at { color: var(--term-amber); }
+        .nav-logo .prompt-host { color: var(--term-cyan); }
+        .nav-logo .prompt-colon { color: var(--text-secondary); }
+        .nav-logo .prompt-path { color: var(--term-blue); }
+        .nav-logo .prompt-hash { color: var(--term-red); font-weight: 800; animation: blink-hash 1.2s step-end infinite; }
+        .nav-logo .cursor-block {
+            display: inline-block; width: 10px; height: 18px;
+            background: var(--term-green); margin-left: 2px;
+            animation: cursor-blink 1s step-end infinite; vertical-align: text-bottom;
+        }
+        @keyframes blink-hash { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .nav-links { display: flex; align-items: center; gap: 24px; }
+        .nav-links a { font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); transition: color 0.2s; font-family: var(--font-mono); }
+        .nav-links a:hover { color: var(--term-green); }
+        .mobile-toggle { display: none; background: none; border: 1px solid var(--border-default); color: var(--text-secondary); padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 1.1rem; }
+        .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 72px; left: 0; right: 0; background: var(--bg-secondary); padding: 24px; border-bottom: 1px solid var(--border-default); gap: 16px; z-index: 999; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px;
+            border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; border: none; cursor: pointer;
+        }
+        .btn-primary {
+            background: rgba(74, 222, 128, 0.15); color: var(--term-green);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+        .btn-primary:hover { background: rgba(74, 222, 128, 0.25); transform: translateY(-1px); box-shadow: var(--shadow-glow); }
+        .btn-book {
+            background: rgba(251, 191, 36, 0.15); color: var(--term-amber);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+        .btn-book:hover { background: rgba(251, 191, 36, 0.25); box-shadow: 0 0 20px rgba(251, 191, 36, 0.15); }
+
+        /* Hero */
+        .page-hero {
+            padding: 140px 0 64px;
+            background: var(--bg-primary);
+            text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .page-hero::before {
+            content: ''; position: absolute; top: -50%; right: -20%; width: 600px; height: 600px;
+            border-radius: 50%; background: radial-gradient(circle, rgba(74, 222, 128, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .page-hero h1 { font-size: 3rem; font-weight: 800; color: var(--text-primary); margin-bottom: 16px; position: relative; z-index: 1; }
+        .page-hero h1 .hl {
+            background: linear-gradient(135deg, var(--term-green), var(--term-cyan));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .page-hero p { font-size: 1.15rem; color: var(--text-secondary); max-width: 640px; margin: 0 auto 32px; position: relative; z-index: 1; }
+
+        /* Stats bar */
+        .stats-bar { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; position: relative; z-index: 1; }
+        .stat {
+            text-align: center; background: var(--bg-secondary); border: 1px solid var(--border-default);
+            border-radius: 12px; padding: 16px 24px; min-width: 120px; transition: all 0.3s;
+        }
+        .stat:hover { border-color: var(--border-accent); box-shadow: var(--shadow-glow); }
+        .stat-value { font-size: 1.75rem; font-weight: 800; color: var(--term-green); font-family: var(--font-mono); }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+
+        /* Filter bar */
+        .filter-bar {
+            position: sticky; top: 72px; z-index: 50;
+            background: rgba(10, 14, 23, 0.9); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-default);
+            padding: 16px 0;
+        }
+        .filter-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        .tag-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag-btn {
+            padding: 6px 16px; border-radius: 100px; font-size: 0.85rem; font-weight: 600;
+            border: 1px solid var(--border-default); background: var(--bg-card); color: var(--text-secondary);
+            cursor: pointer; transition: all 0.2s; font-family: var(--font-mono);
+        }
+        .tag-btn:hover { border-color: var(--border-accent); color: var(--term-green); }
+        .tag-btn.active { background: rgba(74, 222, 128, 0.15); color: var(--term-green); border-color: rgba(74, 222, 128, 0.4); box-shadow: var(--shadow-glow); }
+        .article-count { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; font-family: var(--font-mono); }
+
+        /* Blog grid */
+        .blog-section { padding: 48px 0 100px; }
+        .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+        .blog-card {
+            background: var(--bg-card); border: 1px solid var(--border-default); border-radius: 14px;
+            overflow: hidden; transition: all 0.3s; position: relative;
+            display: flex; flex-direction: column;
+        }
+        .blog-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--term-green), var(--term-cyan));
+            opacity: 0; transition: opacity 0.3s; z-index: 2;
+        }
+        .blog-card:hover { border-color: var(--border-accent); box-shadow: var(--shadow-glow); transform: translateY(-3px); }
+        .blog-card:hover::before { opacity: 1; }
+
+        .blog-card-thumb {
+            position: relative; width: 100%; height: 200px; overflow: hidden;
+            background: var(--bg-tertiary);
+        }
+        .blog-card-thumb img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.4s, filter 0.4s;
+        }
+        .blog-card:hover .blog-card-thumb img { transform: scale(1.05); }
+        .blog-card-thumb-placeholder {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-card));
+        }
+        .blog-card-thumb-placeholder i { font-size: 3rem; color: var(--term-green); opacity: 0.3; }
+
+        .blog-card-body { padding: 24px; display: flex; flex-direction: column; flex: 1; }
+
+        .blog-card-meta {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+            font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);
+        }
+        .blog-card-date { color: var(--term-amber); }
+        .blog-card-readtime { display: flex; align-items: center; gap: 4px; }
+
+        .blog-card-body h3 {
+            font-size: 1.1rem; font-weight: 700; color: var(--text-primary);
+            margin-bottom: 10px; line-height: 1.4;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .blog-card:hover .blog-card-body h3 { color: var(--term-green); }
+
+        .blog-card-excerpt {
+            font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;
+            margin-bottom: 16px; flex: 1;
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+        }
+
+        .blog-card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+        .blog-tag {
+            font-size: 0.7rem; background: var(--bg-tertiary); color: var(--text-secondary);
+            padding: 3px 10px; border-radius: 4px; font-weight: 500; font-family: var(--font-mono);
+            text-transform: lowercase;
+        }
+
+        .blog-card-link {
+            display: inline-flex; align-items: center; gap: 6px; margin-top: auto;
+            color: var(--term-green); font-size: 0.85rem; font-weight: 600; transition: gap 0.2s;
+        }
+        .blog-card-link:hover { gap: 10px; }
+
+        /* Loading skeleton */
+        .skeleton-card {
+            background: var(--bg-card); border: 1px solid var(--border-default); border-radius: 14px;
+            overflow: hidden;
+        }
+        .skeleton-thumb { height: 200px; background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-elevated) 50%, var(--bg-tertiary) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+        .skeleton-body { padding: 24px; }
+        .skeleton-line { height: 14px; background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-elevated) 50%, var(--bg-tertiary) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; margin-bottom: 12px; }
+        .skeleton-line.w60 { width: 60%; }
+        .skeleton-line.w80 { width: 80%; }
+        .skeleton-line.w40 { width: 40%; }
+        .skeleton-line.title { height: 20px; margin-bottom: 16px; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* Empty state */
+        .no-results { text-align: center; padding: 64px 24px; color: var(--text-muted); }
+        .no-results i { font-size: 3rem; margin-bottom: 16px; display: block; color: var(--term-green); opacity: 0.3; }
+
+        /* CTA */
+        .cta-section {
+            background: var(--bg-secondary); color: var(--text-primary);
+            padding: 64px 0; text-align: center; border-top: 1px solid var(--border-default);
+        }
+        .cta-section h2 { font-size: 2rem; font-weight: 800; margin-bottom: 12px; }
+        .cta-section p { color: var(--text-secondary); margin-bottom: 32px; max-width: 480px; margin-left: auto; margin-right: auto; }
+        .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn-white {
+            background: rgba(74, 222, 128, 0.15); color: var(--term-green); font-weight: 700;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+        .btn-white:hover { background: rgba(74, 222, 128, 0.25); transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+        .btn-ghost {
+            background: transparent; color: var(--text-secondary); border: 1px solid var(--border-hover);
+        }
+        .btn-ghost:hover { border-color: var(--term-green); color: var(--term-green); transform: translateY(-2px); }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-primary); color: var(--text-muted);
+            padding: 40px 0 32px; text-align: center; font-size: 0.85rem;
+            border-top: 1px solid transparent;
+            border-image: linear-gradient(90deg, transparent, var(--term-green), var(--term-cyan), var(--term-green), transparent) 1;
+            font-family: var(--font-mono);
+        }
+        .footer a { color: var(--term-green); }
+        .footer a:hover { color: var(--term-green-bright); }
+        .footer-prompt { display: inline-block; margin-bottom: 12px; font-size: 0.9rem; color: var(--text-secondary); }
+        .footer-prompt .fp-user { color: var(--term-green-bright); }
+        .footer-prompt .fp-at { color: var(--term-amber); }
+        .footer-prompt .fp-host { color: var(--term-cyan); }
+        .footer-prompt .fp-path { color: var(--term-blue); }
+        .footer-prompt .fp-cmd { color: var(--term-green); }
+
+        /* Responsive */
+        @media (max-width: 1024px) { .blog-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) {
+            .blog-grid { grid-template-columns: 1fr; }
+            .page-hero h1 { font-size: 2.25rem; }
+            .nav-links { display: none; }
+            .nav-links.open { display: flex; }
+            .mobile-toggle { display: block; }
+            .stats-bar { gap: 16px; }
+            .nav-logo { font-size: 1rem; }
+        }
+        @media (max-width: 480px) { .nav-logo { font-size: 0.85rem; } .footer p { font-size: 0.75rem; } }
+
+        /* Accessibility */
+        .skip-link {
+            position: absolute; top: -100px; left: 16px; z-index: 10001;
+            background: var(--term-green); color: var(--bg-primary); padding: 12px 24px;
+            border-radius: 0 0 8px 8px; font-weight: 700; font-family: var(--font-mono);
+            transition: top 0.2s;
+        }
+        .skip-link:focus { top: 0; }
+        *:focus-visible { outline: 2px solid var(--term-green); outline-offset: 2px; }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div class="scanline"></div>
+
+    <!-- Nav -->
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+        <div class="container">
+            <div class="nav-inner">
+                <a href="index.html" class="nav-logo">
+                    <span class="prompt-user">root</span><span class="prompt-at">@</span><span class="prompt-host">mehul</span><span class="prompt-colon">:</span><span class="prompt-path">~</span><span class="prompt-hash">#</span><span class="cursor-block"></span>
+                </a>
+                <button class="mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#about">About</a>
+                    <a href="index.html#speaking">Speaking</a>
+                    <a href="index.html#projects">Projects</a>
+                    <a href="blog.html" style="color:var(--term-green)">Blog</a>
+                    <a href="https://github.com/nomadicmehul" target="_blank" class="btn btn-primary"><i class="fab fa-github"></i> GitHub</a>
+                    <a href="https://topmate.io/nomadicmehul" target="_blank" class="btn btn-book"><i class="fas fa-calendar-check"></i> Book Session</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <main id="main-content">
+    <section class="page-hero">
+        <div class="container">
+            <h1>Technical <span class="hl">Blog</span></h1>
+            <p>Thoughts on DevOps, cloud-native technologies, containers, and the open-source ecosystem — published on Medium.</p>
+            <div class="stats-bar">
+                <div class="stat"><div class="stat-value" id="article-count">-</div><div class="stat-label">Articles</div></div>
+                <div class="stat"><div class="stat-value" id="topic-count">-</div><div class="stat-label">Topics</div></div>
+                <div class="stat"><div class="stat-value"><i class="fab fa-medium" style="font-size:1.5rem"></i></div><div class="stat-label">On Medium</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="container">
+            <div class="filter-inner">
+                <div class="tag-filters" id="tag-filters">
+                    <button class="tag-btn active" data-tag="all">All Topics</button>
+                </div>
+                <div class="article-count" id="showing-count"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blog Grid -->
+    <section class="blog-section">
+        <div class="container">
+            <div class="blog-grid" id="blog-grid">
+                <!-- Loading skeletons -->
+                <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-body"><div class="skeleton-line w60"></div><div class="skeleton-line title"></div><div class="skeleton-line w80"></div><div class="skeleton-line w80"></div><div class="skeleton-line w40"></div></div></div>
+                <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-body"><div class="skeleton-line w60"></div><div class="skeleton-line title"></div><div class="skeleton-line w80"></div><div class="skeleton-line w80"></div><div class="skeleton-line w40"></div></div></div>
+                <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-body"><div class="skeleton-line w60"></div><div class="skeleton-line title"></div><div class="skeleton-line w80"></div><div class="skeleton-line w80"></div><div class="skeleton-line w40"></div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Read More on Medium</h2>
+            <p>Follow me on Medium for the latest articles on DevOps, cloud, and open-source.</p>
+            <div class="cta-buttons">
+                <a href="https://medium.com/@nomadicmehul" target="_blank" class="btn btn-white"><i class="fab fa-medium"></i> Follow on Medium</a>
+                <a href="https://github.com/nomadicmehul" target="_blank" class="btn btn-ghost"><i class="fab fa-github"></i> GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-prompt">
+                <span class="fp-user">mehul</span><span class="fp-at">@</span><span class="fp-host">berlin</span>:<span class="fp-path">~/blog</span>$ <span class="fp-cmd">uptime</span>
+            </div>
+            <p>&copy; 2026 Mehul Patel &mdash; <a href="index.html">Back to Home</a> &mdash; <a href="https://buymeacoffee.com/nomadicmehul" target="_blank" rel="noopener noreferrer" style="color:var(--term-amber)">☕ Buy Me a Coffee</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const MEDIUM_RSS_URL = 'https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@nomadicmehul';
+
+        let allArticles = [];
+
+        // Extract first image from HTML string
+        function extractImage(html) {
+            if (!html) return null;
+            const match = html.match(/<img[^>]+src="([^"]+)"/);
+            return match ? match[1] : null;
+        }
+
+        // Strip HTML tags and decode entities
+        function stripHtml(html) {
+            if (!html) return '';
+            const tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || '';
+        }
+
+        // Estimate read time from content
+        function estimateReadTime(html) {
+            const text = stripHtml(html);
+            const words = text.split(/\s+/).filter(Boolean).length;
+            const minutes = Math.max(1, Math.round(words / 200));
+            return minutes + ' min read';
+        }
+
+        // Format date
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        // Build a blog card
+        function buildCard(article) {
+            const thumb = article.thumbnail;
+            const thumbHtml = thumb
+                ? `<img src="${thumb}" alt="${article.title}" loading="lazy">`
+                : `<div class="blog-card-thumb-placeholder"><i class="fab fa-medium"></i></div>`;
+
+            const tags = (article.categories || []).slice(0, 4).map(
+                tag => `<span class="blog-tag">${tag}</span>`
+            ).join('');
+
+            return `
+                <a href="${article.link}" target="_blank" rel="noopener" class="blog-card">
+                    <div class="blog-card-thumb">${thumbHtml}</div>
+                    <div class="blog-card-body">
+                        <div class="blog-card-meta">
+                            <span class="blog-card-date"><i class="fas fa-calendar-day"></i> ${formatDate(article.pubDate)}</span>
+                            <span class="blog-card-readtime"><i class="fas fa-clock"></i> ${article.readTime}</span>
+                        </div>
+                        <h3>${article.title}</h3>
+                        <p class="blog-card-excerpt">${article.excerpt}</p>
+                        <div class="blog-card-tags">${tags}</div>
+                        <span class="blog-card-link">Read on Medium <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+            `;
+        }
+
+        // Render articles to grid
+        function renderArticles(articles) {
+            const grid = document.getElementById('blog-grid');
+            document.getElementById('showing-count').textContent = `Showing ${articles.length} article${articles.length !== 1 ? 's' : ''}`;
+
+            if (articles.length === 0) {
+                grid.innerHTML = '<div class="no-results"><i class="fas fa-newspaper"></i><p>No articles found for this topic.</p></div>';
+                return;
+            }
+            grid.innerHTML = articles.map(buildCard).join('');
+        }
+
+        // Build filter buttons from all categories
+        function buildFilters() {
+            const allTags = {};
+            allArticles.forEach(a => {
+                (a.categories || []).forEach(tag => {
+                    const lower = tag.toLowerCase();
+                    allTags[lower] = (allTags[lower] || 0) + 1;
+                });
+            });
+
+            // Sort by frequency, take top 8
+            const topTags = Object.entries(allTags)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 8)
+                .map(([tag]) => tag);
+
+            const container = document.getElementById('tag-filters');
+            topTags.forEach(tag => {
+                const btn = document.createElement('button');
+                btn.className = 'tag-btn';
+                btn.dataset.tag = tag;
+                btn.textContent = tag;
+                container.appendChild(btn);
+            });
+
+            container.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('tag-btn')) return;
+                container.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                const tag = e.target.dataset.tag;
+                if (tag === 'all') {
+                    renderArticles(allArticles);
+                } else {
+                    renderArticles(allArticles.filter(a =>
+                        (a.categories || []).some(c => c.toLowerCase() === tag)
+                    ));
+                }
+            });
+        }
+
+        // Parse RSS items into our article format
+        function parseItems(items) {
+            return items.map(item => ({
+                title: item.title,
+                link: item.link,
+                pubDate: item.pubDate,
+                excerpt: stripHtml(item.description).substring(0, 160).trim() + '...',
+                thumbnail: item.thumbnail || extractImage(item.description) || extractImage(item.content),
+                categories: item.categories || [],
+                readTime: estimateReadTime(item.content || item.description)
+            }));
+        }
+
+        async function loadBlog() {
+            try {
+                const response = await fetch(MEDIUM_RSS_URL);
+                if (!response.ok) throw new Error('RSS fetch failed');
+                const data = await response.json();
+                if (data.status !== 'ok' || !data.items) throw new Error('Invalid RSS response');
+                allArticles = parseItems(data.items);
+            } catch (e) {
+                console.warn('Failed to load Medium RSS, using fallback:', e);
+                allArticles = parseItems(__inlineBlog);
+            }
+
+            // Update stats
+            document.getElementById('article-count').textContent = allArticles.length;
+            const uniqueTopics = new Set();
+            allArticles.forEach(a => (a.categories || []).forEach(c => uniqueTopics.add(c.toLowerCase())));
+            document.getElementById('topic-count').textContent = uniqueTopics.size;
+
+            buildFilters();
+            renderArticles(allArticles);
+        }
+
+        // Inline fallback data for file:// protocol support
+        const __inlineBlog = [
+            {
+                title: "ServerlessDays Auckland 2018",
+                link: "https://medium.com/@nomadicmehul/serverlessdays-auckland-2018-8e3a78e8793e",
+                pubDate: "2018-09-01 00:00:00",
+                description: "A recap of ServerlessDays Auckland 2018 conference experience and key takeaways from the serverless community.",
+                content: "A recap of ServerlessDays Auckland 2018 conference experience and key takeaways from the serverless community.",
+                thumbnail: "",
+                categories: ["serverless", "cloud", "conference"]
+            },
+            {
+                title: "Getting Started with Docker",
+                link: "https://medium.com/@nomadicmehul",
+                pubDate: "2020-01-15 00:00:00",
+                description: "A beginner-friendly guide to understanding Docker containers, images, and the container ecosystem.",
+                content: "A beginner-friendly guide to understanding Docker containers, images, and the container ecosystem.",
+                thumbnail: "",
+                categories: ["docker", "devops", "containers"]
+            },
+            {
+                title: "Cloud Native Journey",
+                link: "https://medium.com/@nomadicmehul",
+                pubDate: "2021-06-10 00:00:00",
+                description: "Exploring the cloud-native landscape and best practices for modern application deployment.",
+                content: "Exploring the cloud-native landscape and best practices for modern application deployment.",
+                thumbnail: "",
+                categories: ["cloud", "kubernetes", "devops"]
+            }
+        ];
+
+        loadBlog();
+    </script>
+</body>
+</html>
