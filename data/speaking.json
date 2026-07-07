@@ -1,6 +1,34 @@
 [
   {
     "year": 2026,
+    "date": "2026-06-09",
+    "title": "Google Cloud Summit Czech Republic 2026",
+    "location": "Prague, Czech Republic",
+    "role": [
+      "Speaker"
+    ],
+    "topics": [
+      "SRE",
+      "AI Agents",
+      "Google Cloud",
+      "GKE",
+      "AIOps"
+    ],
+    "resources": [
+      {
+        "type": "event",
+        "label": "Event Page",
+        "url": "https://cloudonair.withgoogle.com/events/summit-czechrepublic-26"
+      },
+      {
+        "type": "slides",
+        "label": "Slide Deck",
+        "url": "The 3 AM Pager Is Solved - Google Cloud Summit Czech Republic 2026.pptx.pdf"
+      }
+    ]
+  },
+  {
+    "year": 2026,
     "date": "2026-03-17",
     "title": "Google Cloud Builders Day in Berlin",
     "location": "Berlin, Germany",
