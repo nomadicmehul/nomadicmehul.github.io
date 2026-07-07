@@ -49,7 +49,7 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 
 ## Data-Driven Architecture
 
-All dynamic content loads from JSON files via `fetch()` at runtime. Each HTML page also embeds **inline fallback data** (e.g. `__inlineSpeaking`) for offline/`file://` protocol support.
+All dynamic content loads from JSON files via `fetch()` at runtime. The JSON files under `data/` are the **single source of truth** — there is no duplicated inline copy to keep in sync. Because the pages use `fetch()`, they must be served over HTTP (use the local dev server below); opening the raw HTML via `file://` will not load the dynamic content.
 
 ### speaking.json Structure
 
@@ -175,7 +175,7 @@ The `role` field accepts a single string or an array of strings.
 ## Important Notes
 
 - **No build step** — edit HTML/CSS/JS directly, push, and GitHub Pages serves it
-- **Inline fallback data** — `index.html` has `__inlineSpeaking`, `__inlineProjects`, `__inlineTestimonials` arrays that should be kept roughly in sync with the JSON files (used when `fetch()` fails)
+- **Single source of truth** — content lives only in the `data/*.json` files; edit those and the pages pick it up via `fetch()`. There is no inline duplicate to update. (The `blog.html` `__inlineBlog` array is a genuine fallback for the external Medium RSS feed, which can fail — that one stays.)
 - **config.json** — Controls site metadata, social links, hero content, skills section, recognition badges
 - **`.nojekyll`** — Must remain in repo root so GitHub Pages serves raw HTML
 - **Local dev** — Run `python3 -m http.server 8080` from project root and open `http://localhost:8080`
