@@ -299,18 +299,18 @@
         </div>
     </footer>
 
-    <script>window.__PROJECTS_DATA = [{"title":"Azure MCP Server","description":"Model Context Protocol server for Azure services, enabling AI agents to interact with Azure resources through a standardized protocol.","icon":"fas fa-cloud","iconColor":"#0078d4","repo":"https://github.com/nomadicmehul/Azure-MCP-Server","tech":["Azure","MCP","AI Agents","Python"],"featured":true},{"title":"Hello GenAI","description":"Getting started with Generative AI \u2014 a collection of examples, tutorials, and hands-on labs for building AI-powered applications.","icon":"fas fa-brain","iconColor":"#9333ea","repo":"https://github.com/nomadicmehul/hello-genai","tech":["GenAI","LLM","Python","Tutorials"],"featured":true},{"title":"CloudCaptain","description":"Comprehensive DevOps and cloud learning resources \u2014 free tutorials, guides, and hands-on labs for mastering cloud-native technologies.","icon":"fas fa-rocket","iconColor":"#2563eb","repo":"https://github.com/nomadicmehul/CloudCaptain","tech":["DevOps","Cloud","Learning","Open Source"],"featured":true}];</script>
     <script>
-        let allProjects = window.__PROJECTS_DATA || [];
+        // Single source of truth: data/projects.json
+        let allProjects = [];
 
         async function loadProjects() {
-            if (allProjects.length === 0) {
-                try {
-                    const response = await fetch('data/projects.json');
-                    allProjects = await response.json();
-                } catch (e) {
-                    console.warn('Could not fetch projects.json — using inline data if available.');
-                }
+            try {
+                const response = await fetch('data/projects.json');
+                if (!response.ok) throw new Error('Failed to load projects data');
+                allProjects = await response.json();
+            } catch (e) {
+                console.error('Could not fetch projects.json — run via a local server, not file://', e);
+                return;
             }
             renderProjects();
         }
