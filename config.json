@@ -21,12 +21,12 @@
   "hero": {
     "badge": "Available for speaking engagements",
     "heading": ["DevOps &", "Cloud Expert"],
-    "subtitle": "Open-source advocate, Docker Captain, and tech mentor with 12+ years helping developers and teams excel in cloud-native technologies across 25+ countries.",
+    "subtitle": "Open-source advocate, Docker Captain, and tech mentor with 14+ years helping developers and teams excel in cloud-native technologies across 25+ countries.",
     "terminal": [
       { "prompt": true, "command": "whoami", "flag": "" },
       { "prompt": false, "output": "DevOps Engineer | Docker Captain | GDE | Open Source Advocate" },
       { "prompt": true, "command": "uptime", "flag": "--experience" },
-      { "prompt": false, "output": "12+ years, 500+ sessions, 25+ countries, 50K+ developers impacted" }
+      { "prompt": false, "output": "14+ years, 500+ sessions, 25+ countries, 50K+ developers impacted" }
     ],
     "stats": [
       { "value": "500+", "label": "Sessions" },
@@ -116,7 +116,7 @@
       "I actively organize events and build communities at CNCF Gandhinagar, HashiCorp Gandhinagar, and GDG Cloud Gandhinagar. Currently based in Berlin, I'm focused on AI-powered DevOps, self-healing infrastructure, and Kubernetes security."
     ],
     "highlights": [
-      { "icon": "fas fa-briefcase", "value": "12+", "label": "Years Experience" },
+      { "icon": "fas fa-briefcase", "value": "14+", "label": "Years Experience" },
       { "icon": "fas fa-microphone-alt", "value": "500+", "label": "Sessions Delivered" },
       { "icon": "fas fa-globe-americas", "value": "25+", "label": "Countries Reached" },
       { "icon": "fas fa-users", "value": "50K+", "label": "Developers Impacted" }
