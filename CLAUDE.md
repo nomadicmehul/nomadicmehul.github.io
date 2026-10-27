@@ -45,7 +45,7 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 └── .github/
     ├── ISSUE_TEMPLATE/     # Issue forms: add speaking event / project / testimonial, update or remove entry
     ├── scripts/            # issue_to_data.py, sync_medium.py, check_links.py
-    └── workflows/          # deploy.yml, issue-to-data.yml, sync-medium.yml, check-links.yml
+    └── workflows/          # deploy.yml, issue-to-data.yml, sync-medium.yml, check-links.yml, auto-assign.yml (assigns new PRs to the repo owner)
 ```
 
 ## Data-Driven Architecture

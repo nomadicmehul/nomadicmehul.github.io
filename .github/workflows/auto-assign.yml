@@ -1,0 +1,23 @@
+name: Auto-assign PRs
+
+# Assigns every new PR to the repo owner.
+# pull_request_target so it also has write access on PRs from forks — safe here
+# because the job never checks out or runs the PR's code.
+
+on:
+  pull_request_target:
+    types: [opened, reopened, ready_for_review]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign to repo owner
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          OWNER: ${{ github.repository_owner }}
+        run: gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --add-assignee "$OWNER"
