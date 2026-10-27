@@ -45,7 +45,7 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 └── .github/
     ├── ISSUE_TEMPLATE/     # Issue forms: add + update/remove (generated) for speaking events, projects, testimonials
     ├── scripts/            # issue_to_data.py, build_edit_forms.py, sync_medium.py, check_links.py
-    └── workflows/          # deploy.yml, issue-to-data.yml, sync-medium.yml, check-links.yml, edit-forms.yml, auto-assign.yml (assigns new PRs to the repo owner)
+    └── workflows/          # deploy.yml, issue-to-data.yml, sync-medium.yml, check-links.yml, edit-forms.yml, labels.yml, auto-assign.yml (assigns new PRs to the repo owner)
 ```
 
 ## Data-Driven Architecture
@@ -140,7 +140,7 @@ The `role` field accepts a single string or an array of strings.
 
 ## Updating Content via GitHub Issues (recommended)
 
-Open a new issue and pick an **Add …** or **Update or remove …** form for speaking events, projects or testimonials (labels `data:speaking`, `data:project`, `data:testimonial`, `data:edit` must exist). On submit, `.github/workflows/issue-to-data.yml`:
+Open a new issue and pick an **Add …** or **Update or remove …** form for speaking events, projects or testimonials (labels `data:speaking`, `data:project`, `data:testimonial`, `data:edit` are created by `labels.yml`). On submit, `.github/workflows/issue-to-data.yml`:
 
 1. Parses the form with `.github/scripts/issue_to_data.py` and validates it (dates, URLs, duplicates)
 2. Commits the change to the matching `data/*.json` file on `main` (speaking events are kept sorted newest-first by `date`)

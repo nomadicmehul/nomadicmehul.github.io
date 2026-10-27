@@ -47,7 +47,7 @@ All forms: [Issues → New issue](https://github.com/nomadicmehul/nomadicmehul.g
 
 **One-time setup** (required before the forms work)
 
-1. Create the labels `data:speaking`, `data:project`, `data:testimonial` and `data:edit` (**Issues → Labels → New label**). The forms apply them, and the workflow only runs on labelled issues.
+1. Labels `data:speaking`, `data:project`, `data:testimonial` and `data:edit` are created automatically by `.github/workflows/labels.yml` on merge to `main` (or run **Actions → Sync labels** manually). The forms apply them, and the workflow only runs on labelled issues.
 2. **Settings → Pages → Source:** GitHub Actions.
 3. If `main` has branch protection, allow GitHub Actions to push to it.
 
