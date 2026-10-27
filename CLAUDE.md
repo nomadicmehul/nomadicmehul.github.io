@@ -29,7 +29,6 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 ├── MANAGE.md               # Generated admin index: all entries by year/month + update/remove links
 ├── robots.txt              # SEO
 ├── sitemap.xml             # SEO
-├── .nojekyll               # Disables Jekyll on GitHub Pages
 │
 ├── data/
 │   ├── speaking.json       # All speaking events (source of truth)
@@ -131,6 +130,8 @@ Current roles: Speaker (green), Event Organizer (amber), Mentor (purple), Paneli
 
 ### projects.json Structure
 
+`featured: true` projects show on the home page. On the Projects page the Featured badge/count only appear when some projects are *not* featured. 2 or 4 cards lay out as a 2×2 grid instead of leaving one card alone on a row.
+
 ```json
 {
   "title": "Project Name",
@@ -174,7 +175,7 @@ Commits made by workflows with `GITHUB_TOKEN` don't trigger other workflows, so 
 ## Adding a New Speaking Event (manually)
 
 1. (Optional) Drop any slide deck into `assets/slides/` (e.g. `my-talk.pdf`)
-2. Add a new entry at the **top** of `data/speaking.json`:
+2. Add the entry to `data/speaking.json`, newest first (don't add `added`/`updated`; they're stamped on push):
    ```json
    {
      "year": 2026,
@@ -191,6 +192,7 @@ Commits made by workflows with `GITHUB_TOKEN` don't trigger other workflows, so 
    }
    ```
 3. The home page shows the first 6 events; the speaking page shows all.
+   Events dated today or later get an amber **Upcoming** badge automatically (no field needed).
 4. Only add the resources you have — empty `"resources": []` is fine too.
 
 ## Color Palette (Terminal Theme)
@@ -211,7 +213,7 @@ Commits made by workflows with `GITHUB_TOKEN` don't trigger other workflows, so 
 - **No build step** — edit HTML/CSS/JS directly, push, and GitHub Pages serves it
 - **Single source of truth** — content lives only in the `data/*.json` files; edit those and the pages pick it up via `fetch()`. There is no inline duplicate to update.
 - **Self-contained pages** — each HTML file carries its own inline CSS and JS (matrix rain, nav, etc.); there is no shared stylesheet/script. Personal content (hero, about, skills, Awards & Community Roles, ticker, social links) is hardcoded in `index.html`.
-- **`.nojekyll`** — Must remain in repo root so GitHub Pages serves raw HTML
+- **Deploys via GitHub Actions** (Pages source = GitHub Actions), so no Jekyll runs and `.nojekyll` isn't needed. `upload-pages-artifact` v4+ skips dotfiles, so don't rely on any dotfile being served.
 - **Local dev** — Run `python3 -m http.server 8080` from project root and open `http://localhost:8080`
 
 ## Commit Messages
@@ -220,5 +222,5 @@ Commits made by workflows with `GITHUB_TOKEN` don't trigger other workflows, so 
 
 ## Branches
 
-- `main` — Production (deployed to GitHub Pages)
-- `feature/speaking-redesign` — Speaking page overhaul with dates, roles, resource links, slides folder
+- `main` — Production (deployed to GitHub Pages on every push)
+- Work on a feature branch and open a PR; PRs are auto-assigned to the repo owner

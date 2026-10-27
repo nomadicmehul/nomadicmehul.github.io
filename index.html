@@ -24,6 +24,29 @@
 
     <!-- Canonical & Favicon -->
     <link rel="canonical" href="https://nomadicmehul.dev/">
+    <!-- Structured data for search engines (schema.org Person) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Mehul Patel",
+        "url": "https://nomadicmehul.dev/",
+        "image": "https://nomadicmehul.dev/assets/img/profile.jpg",
+        "jobTitle": "DevOps & Cloud Expert",
+        "description": "DevOps and Cloud expert, Docker Captain, Google Developer Expert and AWS Community Builder. 500+ sessions across 25+ countries.",
+        "address": { "@type": "PostalAddress", "addressLocality": "Berlin", "addressCountry": "DE" },
+        "knowsAbout": ["DevOps", "Cloud Computing", "Kubernetes", "Docker", "Google Cloud", "AWS", "Azure", "Terraform", "AI Agents", "Model Context Protocol"],
+        "award": ["Docker Captain", "Google Developer Expert", "AWS Community Builder", "Auth0 Ambassador", "Claude Ambassador"],
+        "sameAs": [
+            "https://github.com/nomadicmehul",
+            "https://www.linkedin.com/in/nomadicmehul/",
+            "https://twitter.com/nomadicmehul",
+            "https://www.youtube.com/@nomadicmehul",
+            "https://www.instagram.com/nomadicmehul/",
+            "https://medium.com/@nomadicmehul"
+        ]
+    }
+    </script>
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 
     <!-- Fonts -->
@@ -426,7 +449,6 @@
         .term-command { color: var(--text-primary); }
         .term-flag { color: var(--term-amber); }
         .term-output { color: var(--text-secondary); }
-        .term-string { color: var(--term-cyan); }
 
         .hero-subtitle {
             font-size: 1.15rem;
@@ -976,6 +998,11 @@
             line-height: 1.5;
         }
 
+        /* 2 or 4 cards: 2x2 instead of a lone card on the second row */
+        @media (min-width: 1025px) {
+            .projects-grid[data-count="2"], .projects-grid[data-count="4"] { grid-template-columns: repeat(2, 1fr); }
+        }
+
         /* ===== Speaking Section ===== */
         .speaking-stats {
             display: grid;
@@ -1042,6 +1069,22 @@
             border-color: var(--border-accent);
             box-shadow: var(--shadow-glow);
             transform: translateY(-2px);
+        }
+
+        /* Future events (date >= today) */
+        .event-card.upcoming { border-color: rgba(251, 191, 36, 0.45); }
+        .upcoming-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 3px 10px; border-radius: 100px;
+            background: rgba(251, 191, 36, 0.12); color: var(--term-amber);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            align-self: flex-start; width: fit-content; margin-bottom: 8px;
+        }
+        .upcoming-badge::before {
+            content: ''; width: 6px; height: 6px; border-radius: 50%;
+            background: var(--term-amber); box-shadow: 0 0 6px var(--term-amber);
         }
 
         .event-year {
@@ -1264,7 +1307,7 @@
         .blog-preview-card:hover::before { opacity: 1; }
 
         .blog-preview-thumb {
-            position: relative; width: 100%; height: 180px; overflow: hidden;
+            position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden;
             background: var(--bg-tertiary);
         }
         .blog-preview-thumb img {
@@ -2378,6 +2421,7 @@
 
             const container = document.getElementById('projects-container');
             const featuredProjects = projects.filter(p => p.featured);
+            container.dataset.count = featuredProjects.length;
 
             container.innerHTML = featuredProjects.map(project => `
                 <div class="project-card animate-on-scroll">
@@ -2397,6 +2441,9 @@
         }
 
         // Load speaking events from JSON (single source of truth: data/speaking.json; shows 6 = 2 rows of 3)
+        // date is YYYY-MM-DD, so string comparison works; today counts as upcoming
+        const TODAY = new Date().toISOString().slice(0, 10);
+        const isUpcoming = e => Boolean(e.date) && e.date >= TODAY;
         async function loadSpeaking() {
             let events = [];
             try {
@@ -2408,8 +2455,9 @@
             const recentEvents = events.slice(0, 6);
 
             container.innerHTML = recentEvents.map(event => `
-                <div class="event-card animate-on-scroll">
+                <div class="event-card animate-on-scroll${isUpcoming(event) ? ' upcoming' : ''}">
                     <span class="event-year">${event.year}</span>
+                    ${isUpcoming(event) ? '<span class="upcoming-badge">Upcoming</span>' : ''}
                     <h4>${event.title}</h4>
                     ${renderRole(event.role)}
                     <div class="event-meta"><i class="fas fa-map-marker-alt"></i> ${event.location}</div>
@@ -2579,7 +2627,7 @@
 
             resize();
             window.addEventListener('resize', resize);
-            setInterval(draw, 50);
+            setInterval(() => { if (!document.hidden) draw(); }, 50);
         })();
 
         // ===== Coffee Typing Effect =====

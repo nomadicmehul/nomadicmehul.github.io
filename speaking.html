@@ -167,6 +167,22 @@
             padding: 24px; transition: all 0.3s; position: relative; overflow: hidden;
             display: flex; flex-direction: column;
         }
+        /* Future events (date >= today) */
+        .event-card.upcoming { border-color: rgba(251, 191, 36, 0.45); }
+        .upcoming-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 3px 10px; border-radius: 100px;
+            background: rgba(251, 191, 36, 0.12); color: var(--term-amber);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            align-self: flex-start; width: fit-content; margin-bottom: 8px;
+        }
+        .upcoming-badge::before {
+            content: ''; width: 6px; height: 6px; border-radius: 50%;
+            background: var(--term-amber); box-shadow: 0 0 6px var(--term-amber);
+        }
+
         .event-card::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
             background: linear-gradient(90deg, var(--term-green), var(--term-cyan));
@@ -185,12 +201,6 @@
             padding: 4px 10px; border-radius: 4px; font-weight: 500; font-family: var(--font-mono);
         }
         .event-footer { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
-        .event-link {
-            display: inline-flex; align-items: center; gap: 6px;
-            color: var(--term-green); font-size: 0.85rem; font-weight: 600;
-            transition: gap 0.2s;
-        }
-        .event-link:hover { gap: 10px; }
 
         /* Resource links */
         .event-resources { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -333,6 +343,16 @@
         }
         .skip-link:focus { top: 0; }
         *:focus-visible { outline: 2px solid var(--term-green); outline-offset: 2px; }
+
+        /* Respect the OS "reduce motion" setting */
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -368,9 +388,9 @@
     <section class="page-hero">
         <div class="container">
             <h1>Speaking <span class="hl">Engagements</span></h1>
-            <p>A complete timeline of my conference talks, workshops, and community sessions across 25+ countries since 2016.</p>
+            <p>Highlights from 500+ sessions: conference talks, workshops, and community events across 25+ countries since 2016.</p>
             <div class="stats-bar">
-                <div class="stat"><div class="stat-value" id="total-count">0</div><div class="stat-label">Total Events</div></div>
+                <div class="stat"><div class="stat-value" id="total-count">0</div><div class="stat-label">Featured Events</div></div>
                 <div class="stat"><div class="stat-value" id="year-span">0</div><div class="stat-label">Years Active</div></div>
                 <div class="stat"><div class="stat-value" id="country-count">0</div><div class="stat-label">Locations</div></div>
             </div>
@@ -454,6 +474,9 @@
         }
 
         let allEvents = [];
+        // date is YYYY-MM-DD, so string comparison works; today counts as upcoming
+        const TODAY = new Date().toISOString().slice(0, 10);
+        const isUpcoming = e => Boolean(e.date) && e.date >= TODAY;
 
         async function loadEvents() {
             try {
@@ -481,7 +504,7 @@
             const years = [...new Set(allEvents.map(e => e.year))].sort((a, b) => b - a);
             const locations = [...new Set(allEvents.map(e => e.location))];
 
-            document.getElementById('total-count').textContent = allEvents.length + '+';
+            document.getElementById('total-count').textContent = allEvents.length;
             document.getElementById('year-span').textContent = (years[0] - years[years.length - 1] + 1);
             document.getElementById('country-count').textContent = locations.length + '+';
 
@@ -553,7 +576,8 @@
                         </div>
                         <div class="events-grid">
                             ${events.map(e => `
-                                <div class="event-card">
+                                <div class="event-card${isUpcoming(e) ? ' upcoming' : ''}">
+                                    ${isUpcoming(e) ? '<span class="upcoming-badge">Upcoming</span>' : ''}
                                     <h4>${e.title}</h4>
                                     ${renderRole(e.role)}
                                     <div class="event-meta">

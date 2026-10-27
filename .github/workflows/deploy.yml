@@ -10,7 +10,6 @@ on:
       - 'robots.txt'
       - 'sitemap.xml'
       - '.github/workflows/deploy.yml'
-      - '.nojekyll'
 
   # Allow manual trigger
   workflow_dispatch:
@@ -185,7 +184,6 @@ jobs:
           test -f 404.html && echo "404.html OK" || (echo "404.html MISSING" && exit 1)
           test -f robots.txt && echo "robots.txt OK" || echo "robots.txt missing (optional)"
           test -f sitemap.xml && echo "sitemap.xml OK" || echo "sitemap.xml missing (optional)"
-          test -f .nojekyll && echo ".nojekyll OK" || echo ".nojekyll missing (optional)"
 
       - name: Summary
         run: |

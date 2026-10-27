@@ -161,7 +161,7 @@
         .blog-card:hover::before { opacity: 1; }
 
         .blog-card-thumb {
-            position: relative; width: 100%; height: 200px; overflow: hidden;
+            position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden;
             background: var(--bg-tertiary);
         }
         .blog-card-thumb img {
@@ -286,6 +286,16 @@
         }
         .skip-link:focus { top: 0; }
         *:focus-visible { outline: 2px solid var(--term-green); outline-offset: 2px; }
+
+        /* Respect the OS "reduce motion" setting */
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>

@@ -126,6 +126,16 @@
             .error-terminal { padding: 32px 24px; }
             .error-line { font-size: 0.85rem; }
         }
+
+        /* Respect the OS "reduce motion" setting */
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
