@@ -206,6 +206,11 @@
         .footer a { color: var(--term-green); }
         .footer a:hover { color: var(--term-green-bright); }
 
+        /* 2 or 4 cards: 2x2 instead of a lone card on the second row */
+        @media (min-width: 1025px) {
+            .projects-grid[data-count="2"], .projects-grid[data-count="4"] { grid-template-columns: repeat(2, 1fr); }
+        }
+
         /* Responsive */
         @media (max-width: 1024px) { .projects-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 768px) {
@@ -332,14 +337,18 @@
             allProjects.forEach(p => (p.tech || []).forEach(t => allTech.add(t)));
             document.getElementById('total-count').textContent = allProjects.length;
             document.getElementById('featured-count').textContent = allProjects.filter(p => p.featured).length;
+            // when every project is featured, the badge and the count say nothing — hide both
+            const allFeatured = allProjects.every(p => p.featured);
+            document.getElementById('featured-count').closest('.stat').hidden = allFeatured;
             document.getElementById('tech-count').textContent = allTech.size;
 
             const sorted = [...allProjects].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
             const container = document.getElementById('projects-container');
+            container.dataset.count = sorted.length;
 
             container.innerHTML = sorted.map(project => `
                 <div class="project-card">
-                    ${project.featured ? '<span class="featured-badge">Featured</span>' : ''}
+                    ${project.featured && !allFeatured ? '<span class="featured-badge">Featured</span>' : ''}
                     <div class="project-icon"><i class="${project.icon || 'fas fa-code-branch'}" style="color:${project.iconColor || 'var(--term-green)'}"></i></div>
                     <h3>${project.title}</h3>
                     <p class="desc">${project.description}</p>

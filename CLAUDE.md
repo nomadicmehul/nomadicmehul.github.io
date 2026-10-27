@@ -130,6 +130,8 @@ Current roles: Speaker (green), Event Organizer (amber), Mentor (purple), Paneli
 
 ### projects.json Structure
 
+`featured: true` projects show on the home page. On the Projects page the Featured badge/count only appear when some projects are *not* featured. 2 or 4 cards lay out as a 2×2 grid instead of leaving one card alone on a row.
+
 ```json
 {
   "title": "Project Name",
@@ -190,6 +192,7 @@ Commits made by workflows with `GITHUB_TOKEN` don't trigger other workflows, so 
    }
    ```
 3. The home page shows the first 6 events; the speaking page shows all.
+   Events dated today or later get an amber **Upcoming** badge automatically (no field needed).
 4. Only add the resources you have — empty `"resources": []` is fine too.
 
 ## Color Palette (Terminal Theme)
