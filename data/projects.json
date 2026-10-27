@@ -5,7 +5,13 @@
     "icon": "fas fa-bolt",
     "iconColor": "#f59e0b",
     "repo": "https://github.com/nomadicmehul/dispatch",
-    "tech": ["Node.js", "AI", "Claude", "GitHub API", "CLI"],
+    "tech": [
+      "Node.js",
+      "AI",
+      "Claude",
+      "GitHub API",
+      "CLI"
+    ],
     "featured": true
   },
   {
@@ -14,7 +20,12 @@
     "icon": "fas fa-cloud",
     "iconColor": "#0078d4",
     "repo": "https://github.com/nomadicmehul/Azure-MCP-Server",
-    "tech": ["Azure", "MCP", "AI Agents", "Python"],
+    "tech": [
+      "Azure",
+      "MCP",
+      "AI Agents",
+      "Python"
+    ],
     "featured": true
   },
   {
@@ -23,7 +34,12 @@
     "icon": "fas fa-brain",
     "iconColor": "#9333ea",
     "repo": "https://github.com/nomadicmehul/hello-genai",
-    "tech": ["GenAI", "LLM", "Python", "Tutorials"],
+    "tech": [
+      "GenAI",
+      "LLM",
+      "Python",
+      "Tutorials"
+    ],
     "featured": true
   },
   {
@@ -32,7 +48,12 @@
     "icon": "fas fa-rocket",
     "iconColor": "#2563eb",
     "repo": "https://github.com/nomadicmehul/CloudCaptain",
-    "tech": ["DevOps", "Cloud", "Learning", "Open Source"],
+    "tech": [
+      "DevOps",
+      "Cloud",
+      "Learning",
+      "Open Source"
+    ],
     "featured": true
   }
 ]

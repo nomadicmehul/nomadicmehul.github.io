@@ -63,7 +63,8 @@
     { "icon": "fab fa-docker", "iconColor": "#2496ed", "title": "Docker Captain", "description": "Official Docker community leader, recognized for expertise and contributions to container technologies." },
     { "icon": "fab fa-google", "iconColor": "#4285f4", "title": "Google Developer Expert", "description": "GDE for Google Cloud Platform, recognized for deep technical knowledge and community impact." },
     { "icon": "fab fa-aws", "iconColor": "#ff9900", "title": "AWS Community Builder", "description": "Selected for the AWS Community Builders program in Cloud Architecture and DevOps." },
-    { "icon": "fas fa-shield-alt", "iconColor": "#635dff", "title": "Auth0 Ambassador", "description": "Auth0 by Okta Ambassador, promoting identity and security best practices." }
+    { "icon": "fas fa-shield-alt", "iconColor": "#635dff", "title": "Auth0 Ambassador", "description": "Auth0 by Okta Ambassador, promoting identity and security best practices." },
+    { "icon": "fas fa-asterisk", "iconColor": "#d97757", "title": "Claude Ambassador", "description": "Anthropic Claude Ambassador, helping developers and communities build with Claude and Claude Code." }
   ],
 
   "ticker": [
@@ -71,6 +72,7 @@
     { "icon": "fab fa-google", "label": "Google Developer Expert" },
     { "icon": "fab fa-aws", "label": "AWS Community Builder" },
     { "icon": "fas fa-shield-alt", "label": "Auth0 Ambassador" },
+    { "icon": "fas fa-asterisk", "label": "Claude Ambassador" },
     { "icon": "fab fa-firefox-browser", "label": "Mozilla Reps Council" },
     { "icon": "fas fa-cloud", "label": "CloudCaptain Founder" },
     { "icon": "fas fa-users", "label": "CNCF Gandhinagar Organizer" }

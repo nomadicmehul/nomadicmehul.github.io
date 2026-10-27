@@ -33,7 +33,8 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 ├── data/
 │   ├── speaking.json       # All speaking events (source of truth)
 │   ├── projects.json       # Featured projects
-│   └── testimonials.json   # Testimonials
+│   ├── testimonials.json   # Testimonials
+│   └── blog.json           # Medium posts — auto-synced, don't hand-edit
 │
 ├── assets/
 │   ├── css/styles.css      # Shared base styles
@@ -44,7 +45,10 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 │   └── Mehul_Patel_Resume.pdf
 │
 ├── _pages/                 # Markdown content pages (about, blog, etc.)
-└── .github/                # GitHub workflows
+└── .github/
+    ├── ISSUE_TEMPLATE/     # Issue forms: add speaking event / project / testimonial
+    ├── scripts/            # issue_to_data.py, sync_medium.py
+    └── workflows/          # deploy.yml, issue-to-data.yml, sync-medium.yml
 ```
 
 ## Data-Driven Architecture
@@ -137,7 +141,23 @@ The `role` field accepts a single string or an array of strings.
 }
 ```
 
-## Adding a New Speaking Event
+## Updating Content via GitHub Issues (recommended)
+
+Open a new issue and pick **Add speaking event**, **Add project** or **Add testimonial**. On submit, `.github/workflows/issue-to-data.yml`:
+
+1. Parses the form with `.github/scripts/issue_to_data.py` and validates it (dates, URLs, duplicates)
+2. Commits the entry to the matching `data/*.json` file on `main`
+3. Triggers `deploy.yml`, comments the added JSON on the issue, and closes it
+
+If validation fails, the errors are posted on the issue — edit the issue and it re-runs. Only issues opened by the repo **owner** are processed. Slides referenced by filename must already exist in `assets/slides/` (or paste a full URL / drag the file into the field to get a GitHub attachment URL).
+
+## Blog (Medium)
+
+Browsers can't read Medium's RSS directly (no CORS) and the `rss2json` proxy is behind a Cloudflare challenge, so `.github/workflows/sync-medium.yml` fetches the feed daily (06:00 UTC, or run it manually) and merges it into `data/blog.json`, which `blog.html` and the home page read. Medium's feed only holds the latest ~10 posts; older ones are kept because the sync merges by link.
+
+Commits made by workflows with `GITHUB_TOKEN` don't trigger other workflows, so both data workflows start `deploy.yml` explicitly via `gh workflow run`.
+
+## Adding a New Speaking Event (manually)
 
 1. (Optional) Drop any slide deck into `assets/slides/` (e.g. `my-talk.pdf`)
 2. Add a new entry at the **top** of `data/speaking.json`:
@@ -175,8 +195,8 @@ The `role` field accepts a single string or an array of strings.
 ## Important Notes
 
 - **No build step** — edit HTML/CSS/JS directly, push, and GitHub Pages serves it
-- **Single source of truth** — content lives only in the `data/*.json` files; edit those and the pages pick it up via `fetch()`. There is no inline duplicate to update. (The `blog.html` `__inlineBlog` array is a genuine fallback for the external Medium RSS feed, which can fail — that one stays.)
-- **config.json** — Controls site metadata, social links, hero content, skills section, recognition badges
+- **Single source of truth** — content lives only in the `data/*.json` files; edit those and the pages pick it up via `fetch()`. There is no inline duplicate to update.
+- **config.json** — Describes site metadata, social links, hero, skills and recognition, but **no page reads it yet** (`loadConfig()` in `main.js` is never called). The Awards & Community Roles section and the ticker are hardcoded in `index.html` — update both there and in `config.json`.
 - **`.nojekyll`** — Must remain in repo root so GitHub Pages serves raw HTML
 - **Local dev** — Run `python3 -m http.server 8080` from project root and open `http://localhost:8080`
 

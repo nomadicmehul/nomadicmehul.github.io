@@ -1,0 +1,74 @@
+name: Issue form → site data
+
+# Owner opens an issue from one of the .github/ISSUE_TEMPLATE forms →
+# entry is validated, committed to data/*.json, the site is redeployed and the issue closed.
+# If validation fails, the errors are commented on the issue; editing the issue re-runs this.
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+permissions:
+  contents: write
+  issues: write
+  actions: write
+
+# serialize so two submissions never race on the same JSON file
+concurrency:
+  group: issue-to-data
+  cancel-in-progress: false
+
+jobs:
+  add-entry:
+    if: >-
+      github.event.issue.state == 'open' &&
+      github.event.issue.author_association == 'OWNER' &&
+      (contains(github.event.issue.labels.*.name, 'data:speaking') ||
+       contains(github.event.issue.labels.*.name, 'data:project') ||
+       contains(github.event.issue.labels.*.name, 'data:testimonial'))
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ISSUE: ${{ github.event.issue.number }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Parse issue into data file
+        id: parse
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_LABELS: ${{ toJSON(github.event.issue.labels.*.name) }}
+          RESULT_FILE: ${{ runner.temp }}/result.md
+        run: python3 .github/scripts/issue_to_data.py
+
+      - name: Commit and push
+        env:
+          FILE: ${{ steps.parse.outputs.file }}
+          NOUN: ${{ steps.parse.outputs.noun }}
+          NAME: ${{ steps.parse.outputs.name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$FILE"
+          git commit -m "data: add $NOUN \"$NAME\" (closes #$ISSUE)"
+          git push origin main
+
+      # pushes made with GITHUB_TOKEN don't trigger other workflows, so start the deploy explicitly
+      - name: Trigger deploy
+        run: gh workflow run deploy.yml --ref main --repo "$GITHUB_REPOSITORY"
+
+      - name: Report success
+        run: |
+          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/result.md"
+          gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason completed
+
+      - name: Report failure
+        if: failure()
+        env:
+          PARSE_OUTCOME: ${{ steps.parse.outcome }}
+        run: |
+          # parse errors already wrote a helpful message; anything later (push, deploy) gets a generic one
+          [ "$PARSE_OUTCOME" = "failure" ] && [ -s "$RUNNER_TEMP/result.md" ] || echo "❌ Workflow failed — see $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > "$RUNNER_TEMP/result.md"
+          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/result.md"

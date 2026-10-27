@@ -1,0 +1,79 @@
+name: "🎤 Add speaking event"
+description: Add a talk/workshop to data/speaking.json — the site updates automatically.
+title: "[speaking] "
+labels: ["data:speaking"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Submitting this form commits the event to `data/speaking.json` and redeploys the site.
+        Only issues opened by the repo owner are processed.
+  - type: input
+    id: title
+    attributes:
+      label: Event title
+      placeholder: Google Cloud Summit Czech Republic 2026
+    validations:
+      required: true
+  - type: input
+    id: date
+    attributes:
+      label: Date
+      description: "Format: YYYY-MM-DD"
+      placeholder: "2026-06-09"
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      placeholder: Prague, Czech Republic
+    validations:
+      required: true
+  - type: checkboxes
+    id: role
+    attributes:
+      label: Role
+      options:
+        - label: Speaker
+        - label: Event Organizer
+        - label: Mentor
+        - label: Panelist
+        - label: Workshop Lead
+        - label: Workshop Facilitator
+  - type: input
+    id: topics
+    attributes:
+      label: Topics
+      description: Comma-separated
+      placeholder: Kubernetes, GKE, AI Agents
+    validations:
+      required: true
+  - type: input
+    id: event_url
+    attributes:
+      label: Event page URL
+      placeholder: https://...
+  - type: input
+    id: slides_url
+    attributes:
+      label: Slides
+      description: A full URL, or the filename of a deck already in assets/slides/ (e.g. my-talk.pdf)
+  - type: input
+    id: code_url
+    attributes:
+      label: Code repo URL
+      placeholder: https://github.com/...
+  - type: input
+    id: demo_url
+    attributes:
+      label: Live demo URL
+  - type: input
+    id: video_url
+    attributes:
+      label: Recording URL
+      placeholder: https://youtube.com/watch?v=...
+  - type: input
+    id: blog_url
+    attributes:
+      label: Blog post URL

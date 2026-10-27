@@ -915,7 +915,7 @@
         /* ===== Recognition Section ===== */
         .recognition-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 24px;
         }
 
@@ -1709,7 +1709,7 @@
             .photo-badge.badge-bottom { bottom: -10px; left: -12px; }
             .about-grid { grid-template-columns: 1fr; }
             .skills-grid { grid-template-columns: repeat(2, 1fr); }
-            .recognition-grid { grid-template-columns: repeat(2, 1fr); }
+            .recognition-grid { grid-template-columns: repeat(3, 1fr); }
             .speaking-stats { grid-template-columns: repeat(2, 1fr); }
             .speaking-events { grid-template-columns: repeat(2, 1fr); }
             .projects-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1894,6 +1894,8 @@
             <span class="ticker-dot"></span>
             <span class="ticker-item"><i class="fas fa-shield-alt"></i> Auth0 Ambassador</span>
             <span class="ticker-dot"></span>
+            <span class="ticker-item"><i class="fas fa-asterisk"></i> Claude Ambassador</span>
+            <span class="ticker-dot"></span>
             <span class="ticker-item"><i class="fab fa-firefox-browser"></i> Mozilla Reps Council</span>
             <span class="ticker-dot"></span>
             <span class="ticker-item"><i class="fas fa-cloud"></i> CloudCaptain Founder</span>
@@ -1908,6 +1910,8 @@
             <span class="ticker-item"><i class="fab fa-aws"></i> AWS Community Builder</span>
             <span class="ticker-dot"></span>
             <span class="ticker-item"><i class="fas fa-shield-alt"></i> Auth0 Ambassador</span>
+            <span class="ticker-dot"></span>
+            <span class="ticker-item"><i class="fas fa-asterisk"></i> Claude Ambassador</span>
             <span class="ticker-dot"></span>
             <span class="ticker-item"><i class="fab fa-firefox-browser"></i> Mozilla Reps Council</span>
             <span class="ticker-dot"></span>
@@ -1931,7 +1935,7 @@
                         I'm Mehul Patel, a DevOps and Cloud expert with over 12 years of hands-on experience in cutting-edge technologies like AWS, Google Cloud, Docker, Kubernetes, Ansible, Jenkins, and Terraform. Sharing knowledge is my driving force.
                     </p>
                     <p>
-                        Through my initiative <strong>CloudCaptain</strong>, I've conducted over 500 sessions across 25+ countries, helping individuals and organizations excel in DevOps and cloud technologies. I'm honored to serve in leadership roles, including the Mozilla Reps Council, Auth0 by Okta Ambassador, and founder of OSW and OSCF.
+                        Through my initiative <strong>CloudCaptain</strong>, I've conducted over 500 sessions across 25+ countries, helping individuals and organizations excel in DevOps and cloud technologies. I'm honored to serve in leadership roles, including the Mozilla Reps Council, Auth0 by Okta Ambassador, Claude Ambassador, and founder of OSW and OSCF.
                     </p>
                     <p>
                         I actively organize events and build communities at CNCF Gandhinagar, HashiCorp Gandhinagar, and GDG Cloud Gandhinagar. Currently based in Berlin, I'm focused on AI-powered DevOps, self-healing infrastructure, and Kubernetes security.
@@ -2103,6 +2107,11 @@
                     <div class="recognition-icon"><i class="fas fa-shield-alt" style="color:#635dff"></i></div>
                     <h4>Auth0 Ambassador</h4>
                     <p>Auth0 by Okta Ambassador, promoting identity and security best practices.</p>
+                </div>
+                <div class="recognition-card animate-on-scroll">
+                    <div class="recognition-icon"><i class="fas fa-asterisk" style="color:#d97757"></i></div>
+                    <h4>Claude Ambassador</h4>
+                    <p>Anthropic Claude Ambassador, helping developers and communities build with Claude and Claude Code.</p>
                 </div>
             </div>
         </div>
@@ -2490,40 +2499,20 @@
         }, { threshold: 0.5 });
         document.querySelectorAll('.hero-stat-value, .speaking-stat-value').forEach(el => statObserver.observe(el));
 
-        // Load blog preview from Medium RSS (show 3 latest articles)
+        // Load blog preview from data/blog.json (synced from Medium by .github/workflows/sync-medium.yml)
         async function loadBlogPreview() {
-            const MEDIUM_RSS_URL = 'https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@nomadicmehul';
             const container = document.getElementById('blog-preview-container');
             let items = [];
 
             try {
-                const response = await fetch(MEDIUM_RSS_URL);
-                if (!response.ok) throw new Error('RSS fetch failed');
-                const data = await response.json();
-                if (data.status !== 'ok' || !data.items) throw new Error('Invalid RSS');
-                items = data.items.slice(0, 3);
+                const response = await fetch('data/blog.json');
+                if (!response.ok) throw new Error('blog.json fetch failed');
+                items = (await response.json()).slice(0, 3);
+                if (!items.length) throw new Error('No articles');
             } catch (e) {
                 // Fallback: hide skeletons and show a simple message
                 container.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);font-family:var(--font-mono)"><i class="fab fa-medium" style="font-size:2rem;display:block;margin-bottom:12px;color:var(--term-green);opacity:0.4"></i><p>Visit <a href="https://medium.com/@nomadicmehul" target="_blank" style="color:var(--term-green)">Medium</a> to read my latest articles.</p></div>';
                 return;
-            }
-
-            function extractImage(html) {
-                if (!html) return null;
-                const match = html.match(/<img[^>]+src="([^"]+)"/);
-                return match ? match[1] : null;
-            }
-
-            function stripHtml(html) {
-                if (!html) return '';
-                const tmp = document.createElement('div');
-                tmp.innerHTML = html;
-                return tmp.textContent || tmp.innerText || '';
-            }
-
-            function estimateReadTime(html) {
-                const words = stripHtml(html).split(/\s+/).filter(Boolean).length;
-                return Math.max(1, Math.round(words / 200)) + ' min read';
             }
 
             function formatBlogDate(dateStr) {
@@ -2531,13 +2520,10 @@
             }
 
             container.innerHTML = items.map(item => {
-                const thumb = item.thumbnail || extractImage(item.description) || extractImage(item.content);
-                const thumbHtml = thumb
-                    ? `<img src="${thumb}" alt="${item.title}" loading="lazy">`
+                const thumbHtml = item.thumbnail
+                    ? `<img src="${item.thumbnail}" alt="${item.title}" loading="lazy">`
                     : `<div class="blog-preview-thumb-placeholder"><i class="fab fa-medium"></i></div>`;
-                const excerpt = stripHtml(item.description).substring(0, 120).trim() + '...';
                 const tags = (item.categories || []).slice(0, 3).map(t => `<span class="blog-preview-tag">${t}</span>`).join('');
-                const readTime = estimateReadTime(item.content || item.description);
 
                 return `
                     <a href="${item.link}" target="_blank" rel="noopener" class="blog-preview-card animate-on-scroll">
@@ -2545,10 +2531,10 @@
                         <div class="blog-preview-body">
                             <div class="blog-preview-meta">
                                 <span class="blog-preview-date"><i class="fas fa-calendar-day"></i> ${formatBlogDate(item.pubDate)}</span>
-                                <span><i class="fas fa-clock"></i> ${readTime}</span>
+                                <span><i class="fas fa-clock"></i> ${item.readTime}</span>
                             </div>
                             <h4>${item.title}</h4>
-                            <p class="blog-preview-excerpt">${excerpt}</p>
+                            <p class="blog-preview-excerpt">${item.excerpt}</p>
                             <div class="blog-preview-tags">${tags}</div>
                             <span class="blog-preview-link">Read on Medium <i class="fas fa-arrow-right"></i></span>
                         </div>

@@ -1,0 +1,152 @@
+[
+  {
+    "title": "Your AI Keeps Writing MCP Servers. I Fixed It With One File. (Part II)",
+    "link": "https://medium.com/@nomadicmehul/your-ai-keeps-writing-mcp-servers-i-fixed-it-with-one-file-part-ii-8674fe45dad0",
+    "pubDate": "2026-10-09T10:59:26Z",
+    "thumbnail": "https://cdn-images-1.medium.com/max/1024/1*5DY_417EfPTNnIcGQfjT7w.png",
+    "excerpt": "I let Claude discover and call my real backend methods over MCP — no MCP server, no tool definitions, no JSON schemas. The method is the tool. If you’ve...",
+    "readTime": "6 min read",
+    "categories": [
+      "graftcode",
+      "mcp-server",
+      "ai",
+      "open-source",
+      "claude"
+    ]
+  },
+  {
+    "title": "I Deleted My REST API and My React App Didn’t Even Notice (Part I)",
+    "link": "https://medium.com/@nomadicmehul/i-deleted-my-rest-api-and-my-react-app-didnt-even-notice-part-i-7313df98724a",
+    "pubDate": "2026-10-09T10:58:28Z",
+    "thumbnail": "https://cdn-images-1.medium.com/max/1024/1*fIDPstrLVMl2rDRyecIV4w.png",
+    "excerpt": "How I got a React frontend to call a .NET method like it was a local function — no controller, no DTOs, no OpenAPI, no `fetch` client. Cross-language. In about...",
+    "readTime": "11 min read",
+    "categories": [
+      "ai",
+      "graftcode",
+      "claude",
+      "open-source",
+      "mcp-server"
+    ]
+  },
+  {
+    "title": "I Deleted 30 Lines of MCP Server Code. My Claude Desktop Agent Still Works.",
+    "link": "https://medium.com/@nomadicmehul/i-deleted-30-lines-of-mcp-server-code-my-claude-desktop-agent-still-works-b6ea55a693dd",
+    "pubDate": "2026-05-27T11:02:52Z",
+    "thumbnail": "https://cdn-images-1.medium.com/max/1024/1*Uj0cAbaaHHe-kxMT9zom4A.jpeg",
+    "excerpt": "Actually, it works better. Here’s how plain Python classes can become MCP tools without a single decorator. TL;DR Most MCP servers in Python force you to write...",
+    "readTime": "4 min read",
+    "categories": [
+      "mcp-server",
+      "open-source",
+      "claude-code",
+      "graftcode",
+      "docker"
+    ]
+  },
+  {
+    "title": "Enhancing Developer Productivity with AI: A Guide to Using Refact.ai with Docker Model Runner",
+    "link": "https://medium.com/@nomadicmehul/enhancing-developer-productivity-with-ai-a-guide-to-using-refact-ai-with-docker-model-runner-8520b72b8411",
+    "pubDate": "2025-04-21T09:02:36Z",
+    "thumbnail": "https://cdn-images-1.medium.com/max/816/1*t1PX_r0kDqmvDkkAzhGg4A.png",
+    "excerpt": "This guide will teach you how to leverage AI, specifically Refact.ai and Docker Model Runner to enhance your developer productivity. You will learn how to use...",
+    "readTime": "3 min read",
+    "categories": [
+      "llm-deployment",
+      "llm",
+      "docker",
+      "open-source",
+      "docker-desktop"
+    ]
+  },
+  {
+    "title": "Terraform on Cloud: Leveraging Cloud-Native Infrastructure Management",
+    "link": "https://medium.com/@nomadicmehul/terraform-on-cloud-leveraging-cloud-native-infrastructure-management-136c25b0b66c",
+    "pubDate": "2023-07-30T04:31:57Z",
+    "thumbnail": "https://cdn-images-1.medium.com/max/1024/0*2KDeUBCXxK39eEPZ.jpg",
+    "excerpt": "Introduction: Terraform is an open-source tool that has revolutionized infrastructure provisioning and management. By defining infrastructure resources using a...",
+    "readTime": "3 min read",
+    "categories": [
+      "terraform",
+      "open-source",
+      "infrastructure-as-code",
+      "devops",
+      "cloud-computing"
+    ]
+  },
+  {
+    "title": "CKA Exam Preparation Series — 15 Important Terms Explained",
+    "link": "https://medium.com/@nomadicmehul/cka-exam-preparation-series-15-important-terms-explained-42af76a2a043",
+    "pubDate": "2023-07-27T14:49:43Z",
+    "thumbnail": "https://cdn-images-1.medium.com/max/1024/0*0Gj60aIlJ8eqGMXD.jpeg",
+    "excerpt": "CKA Exam Preparation Series — 15 Important Terms Explained Container: Containers are a lightweight and portable way to package and run software applications....",
+    "readTime": "5 min read",
+    "categories": [
+      "cloud-native",
+      "kubernetes",
+      "kubernetes-cluster",
+      "cloud-computing",
+      "kubectl"
+    ]
+  },
+  {
+    "title": "10 Essential Things to Know About Docker",
+    "link": "https://medium.com/@nomadicmehul/10-essential-things-to-know-about-docker-19b827235bfa",
+    "pubDate": "2023-07-15T15:56:31Z",
+    "thumbnail": "https://cdn-images-1.medium.com/max/684/0*EdFQHppXhfscp5Fb.jpg",
+    "excerpt": "Introduction: In recent years, Docker has rapidly gained popularity in the software development industry. This open-source containerization platform has...",
+    "readTime": "3 min read",
+    "categories": [
+      "dockerfiles",
+      "docker",
+      "docker-compose",
+      "docker-swarm",
+      "docker-image"
+    ]
+  },
+  {
+    "title": "MakerFest Vadodara 2023 — A Celebration of Innovation and Creativity",
+    "link": "https://medium.com/@nomadicmehul/makerfest-vadodara-2023-a-celebration-of-innovation-and-creativity-2897dfea5cb3",
+    "pubDate": "2023-02-27T13:35:27Z",
+    "thumbnail": "https://cdn-images-1.medium.com/max/1024/1*EAMS_DFa94SsWxz-y9UUUA.png",
+    "excerpt": "MakerFest Vadodara 2023 — A Celebration of Innovation and Creativity Introduction MakerFest Vadodara 2023 was an exciting event that brought together...",
+    "readTime": "5 min read",
+    "categories": [
+      "open-source",
+      "firefox",
+      "mozilla",
+      "mozilla-hubs",
+      "mozillareps"
+    ]
+  },
+  {
+    "title": "Run-through of Containers & Kubernetes",
+    "link": "https://medium.com/@nomadicmehul/run-through-of-containers-kubernetes-d10bc65730be",
+    "pubDate": "2020-05-07T18:19:17Z",
+    "thumbnail": "https://cdn-images-1.medium.com/max/1024/1*KVw-wm3rFXCM31Tu77mHXg.png",
+    "excerpt": "In this blog , we will have a glimpse at some of the tasks required to deploy and implement Kubernetes Engine resources. But first, let’s do a bit of a review...",
+    "readTime": "3 min read",
+    "categories": [
+      "containers",
+      "automation",
+      "virtualization",
+      "google-cloud-platform",
+      "kubernetes"
+    ]
+  },
+  {
+    "title": "Deploy Kubernetes Load Balancer Service with Terraform on GCP",
+    "link": "https://medium.com/@nomadicmehul/deploy-kubernetes-load-balancer-service-with-terraform-on-gcp-6538c5be7f83",
+    "pubDate": "2020-05-02T03:31:01Z",
+    "thumbnail": "https://cdn-images-1.medium.com/max/1024/1*LZw22WOTHIV2C48A5VZ40A.png",
+    "excerpt": "In this blog , we will see how to set up a Kubernetes cluster and deploy Load Balancer type NGINX service on it using Terraform . I have used Google Qwiklabs...",
+    "readTime": "3 min read",
+    "categories": [
+      "automation",
+      "google-cloud",
+      "kubernetes",
+      "terraform",
+      "google-cloud-platform"
+    ]
+  }
+]

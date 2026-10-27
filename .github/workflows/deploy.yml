@@ -164,12 +164,25 @@ jobs:
           print(f'Config: site=\"{site.get(\"title\")}\", prompt={terminal.get(\"user\")}@{terminal.get(\"host\")}')
           "
 
+      - name: Validate blog.json
+        run: |
+          echo "=== Validating data/blog.json ==="
+          python3 -c "
+          import json, sys
+          data = json.load(open('data/blog.json'))
+          errors = [f'Post {i}: missing \"{k}\"' for i, p in enumerate(data) for k in ('title', 'link', 'pubDate') if not p.get(k)]
+          if errors:
+              print('Validation FAILED:'); [print(f'  - {e}') for e in errors]; sys.exit(1)
+          print(f'Blog: {len(data)} posts')
+          "
+
       - name: Validate HTML files
         run: |
           echo "=== Checking HTML files ==="
           test -f index.html && echo "index.html OK" || (echo "index.html MISSING" && exit 1)
           test -f speaking.html && echo "speaking.html OK" || (echo "speaking.html MISSING" && exit 1)
           test -f projects.html && echo "projects.html OK" || (echo "projects.html MISSING" && exit 1)
+          test -f blog.html && echo "blog.html OK" || (echo "blog.html MISSING" && exit 1)
           test -f 404.html && echo "404.html OK" || (echo "404.html MISSING" && exit 1)
           test -f config.json && echo "config.json OK" || (echo "config.json MISSING" && exit 1)
           test -f robots.txt && echo "robots.txt OK" || echo "robots.txt missing (optional)"
@@ -195,58 +208,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Inject JSON data into HTML pages
-        run: |
-          python3 << 'PYEOF'
-          import json, re
-
-          def safe_inject(html, pattern, replacement, flags=re.DOTALL):
-              """Replace using string slicing to avoid re.sub escape issues"""
-              m = re.search(pattern, html, flags)
-              if m:
-                  return html[:m.start()] + replacement + html[m.end():]
-              return html
-
-          def inject_window_var(html_file, json_file, var_name):
-              """Inject data into <script>window.VAR = ...;</script> tags"""
-              with open(json_file) as f:
-                  data = json.load(f)
-              json_str = json.dumps(data, separators=(",",":"))
-              replacement = f'<script>window.{var_name} = {json_str};</script>'
-              with open(html_file) as f:
-                  html = f.read()
-              pattern = rf'<script>window\.{re.escape(var_name)}\s*=\s*\[.*?\];\s*</script>'
-              html = safe_inject(html, pattern, replacement)
-              with open(html_file, 'w') as f:
-                  f.write(html)
-              print(f"  {html_file}: injected {len(data)} items via window.{var_name}")
-
-          def inject_const_var(html_file, json_file, var_name):
-              """Inject data into const VAR = [...]; declarations in index.html"""
-              with open(json_file) as f:
-                  data = json.load(f)
-              json_str = json.dumps(data, separators=(",",":"))
-              replacement = f'const {var_name} = {json_str};'
-              with open(html_file) as f:
-                  html = f.read()
-              pattern = rf'const\s+{re.escape(var_name)}\s*=\s*\[.*?\];'
-              html = safe_inject(html, pattern, replacement)
-              with open(html_file, 'w') as f:
-                  f.write(html)
-              print(f"  {html_file}: injected {len(data)} items via const {var_name}")
-
-          # Inject into speaking.html and projects.html (window.__VAR pattern)
-          inject_window_var('speaking.html', 'data/speaking.json', '__SPEAKING_DATA')
-          inject_window_var('projects.html', 'data/projects.json', '__PROJECTS_DATA')
-
-          # Inject into index.html (const __inline* pattern)
-          inject_const_var('index.html', 'data/speaking.json', '__inlineSpeaking')
-          inject_const_var('index.html', 'data/projects.json', '__inlineProjects')
-          inject_const_var('index.html', 'data/testimonials.json', '__inlineTestimonials')
-
-          print("=== Injection complete ===")
-          PYEOF
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
