@@ -1,0 +1,8 @@
+[
+  { "name": "Speaker", "icon": "fas fa-microphone-alt", "color": "green" },
+  { "name": "Event Organizer", "icon": "fas fa-users-cog", "color": "amber" },
+  { "name": "Mentor", "icon": "fas fa-chalkboard-teacher", "color": "purple" },
+  { "name": "Panelist", "icon": "fas fa-comments", "color": "cyan" },
+  { "name": "Workshop Lead", "icon": "fas fa-laptop-code", "color": "blue" },
+  { "name": "Workshop Facilitator", "icon": "fas fa-laptop-code", "color": "blue" }
+]

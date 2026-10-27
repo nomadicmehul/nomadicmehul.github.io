@@ -1,0 +1,30 @@
+name: Sync labels
+
+# Creates (or updates) the labels the issue forms rely on — issue-to-data.yml
+# only runs on issues carrying one of them, and GitHub silently drops a form's
+# label if it doesn't exist. Runs on merge to main and can be run manually.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/labels.yml'
+      - '.github/ISSUE_TEMPLATE/**'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  labels:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Create or update labels
+        run: |
+          label() { gh label create "$1" --color "$2" --description "$3" --force --repo "$GITHUB_REPOSITORY"; }
+          label "data:speaking"    "4ade80" "Issue form: add a speaking event"
+          label "data:project"     "60a5fa" "Issue form: add a project"
+          label "data:testimonial" "fbbf24" "Issue form: add a testimonial"
+          label "data:edit"        "c084fc" "Issue form: update or remove an entry"

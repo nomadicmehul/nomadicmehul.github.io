@@ -34,6 +34,7 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 │   ├── speaking.json       # All speaking events (source of truth)
 │   ├── projects.json       # Featured projects
 │   ├── testimonials.json   # Testimonials
+│   ├── roles.json          # Speaking role list (name, icon, color) — single source for pages + forms
 │   └── blog.json           # Medium posts — auto-synced, don't hand-edit
 │
 ├── assets/
@@ -43,9 +44,9 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 │   └── Mehul_Patel_Resume.pdf
 │
 └── .github/
-    ├── ISSUE_TEMPLATE/     # Issue forms: add speaking event / project / testimonial, update or remove entry
-    ├── scripts/            # issue_to_data.py, sync_medium.py, check_links.py
-    └── workflows/          # deploy.yml, issue-to-data.yml, sync-medium.yml, check-links.yml, auto-assign.yml (assigns new PRs to the repo owner)
+    ├── ISSUE_TEMPLATE/     # Issue forms: add + update/remove (generated) for speaking events, projects, testimonials
+    ├── scripts/            # issue_to_data.py, build_edit_forms.py, sync_medium.py, check_links.py
+    └── workflows/          # deploy.yml, issue-to-data.yml, sync-medium.yml, check-links.yml, edit-forms.yml, labels.yml, auto-assign.yml (assigns new PRs to the repo owner)
 ```
 
 ## Data-Driven Architecture
@@ -113,16 +114,18 @@ Each resource is an object with `type`, `label`, and `url`.
 
 ### Role Types
 
-The `role` field accepts a single string or an array of strings.
+The `role` field accepts a single string or an array of strings. The list of roles lives in **`data/roles.json`**, the one place to add, rename or recolor a role:
 
-| Role | Badge Color | Icon |
-|------|-------------|------|
-| `Speaker` | Green | Microphone |
-| `Event Organizer` | Amber | Users-cog |
-| `Mentor` | Purple | Chalkboard |
-| `Panelist` | Cyan | Comments |
-| `Workshop Lead` | Blue | Laptop |
-| `Workshop Facilitator` | Blue | Laptop |
+```json
+{ "name": "Keynote Speaker", "icon": "fas fa-star", "color": "red" }
+```
+
+- `icon`: any FontAwesome 6 class
+- `color`: `green`, `amber`, `purple`, `cyan`, `blue`, `red` or `default` (grey)
+
+Both pages render badges from it, and the role checkboxes in the **Add speaking event** and **Update or remove speaking event** issue forms are regenerated from it automatically. Deploy fails if an event uses a role that isn't in `roles.json`.
+
+Current roles: Speaker (green), Event Organizer (amber), Mentor (purple), Panelist (cyan), Workshop Lead and Workshop Facilitator (blue).
 
 ### projects.json Structure
 
@@ -140,13 +143,15 @@ The `role` field accepts a single string or an array of strings.
 
 ## Updating Content via GitHub Issues (recommended)
 
-Open a new issue and pick **Add speaking event**, **Add project**, **Add testimonial** or **Update or remove entry** (labels `data:speaking`, `data:project`, `data:testimonial`, `data:edit` must exist). On submit, `.github/workflows/issue-to-data.yml`:
+Open a new issue and pick an **Add …** or **Update or remove …** form for speaking events, projects or testimonials (labels `data:speaking`, `data:project`, `data:testimonial`, `data:edit` are created by `labels.yml`). On submit, `.github/workflows/issue-to-data.yml`:
 
 1. Parses the form with `.github/scripts/issue_to_data.py` and validates it (dates, URLs, duplicates)
 2. Commits the change to the matching `data/*.json` file on `main` (speaking events are kept sorted newest-first by `date`)
 3. Triggers `deploy.yml`, comments the added JSON on the issue, and closes it
 
 If validation fails, the errors are posted on the issue — edit the issue and it re-runs. Only issues opened by the repo **owner** are processed. Slides referenced by filename must already exist in `assets/slides/` (or paste a full URL / drag the file into the field to get a GitHub attachment URL).
+
+The **Update or remove** forms (`update-*.yml`) are **generated** by `.github/scripts/build_edit_forms.py`: a dropdown of every current entry plus that type's own fields (defined in `TYPES[...]["edit_inputs"]` in `issue_to_data.py`; blank = keep). Don't hand-edit them. They're regenerated in the same commit by `issue-to-data.yml`, and by `edit-forms.yml` when `data/*.json` is pushed directly.
 
 ## Link Checking
 

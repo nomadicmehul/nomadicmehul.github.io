@@ -34,13 +34,15 @@ body:
     id: role
     attributes:
       label: Role
+      # roles:start — generated from data/roles.json by build_edit_forms.py
       options:
-        - label: Speaker
-        - label: Event Organizer
-        - label: Mentor
-        - label: Panelist
-        - label: Workshop Lead
-        - label: Workshop Facilitator
+        - label: "Speaker"
+        - label: "Event Organizer"
+        - label: "Mentor"
+        - label: "Panelist"
+        - label: "Workshop Lead"
+        - label: "Workshop Facilitator"
+      # roles:end
   - type: input
     id: topics
     attributes:

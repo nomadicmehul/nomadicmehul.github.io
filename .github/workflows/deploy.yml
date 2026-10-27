@@ -128,6 +128,25 @@ jobs:
           print(f'  {linked} with external links')
           "
 
+      - name: Validate roles.json
+        run: |
+          echo "=== Validating data/roles.json ==="
+          python3 -c "
+          import json, sys
+          roles = json.load(open('data/roles.json'))
+          colors = {'green', 'amber', 'purple', 'cyan', 'blue', 'red', 'default'}
+          errors = [f'Role {i}: missing \"{k}\"' for i, r in enumerate(roles) for k in ('name', 'icon', 'color') if not r.get(k)]
+          errors += [f'Role {r[\"name\"]}: color must be one of {sorted(colors)}' for r in roles if r.get('color') not in colors]
+          names = {r['name'] for r in roles}
+          for e in json.load(open('data/speaking.json')):
+              for role in ([e['role']] if isinstance(e.get('role'), str) else e.get('role', [])):
+                  if role not in names:
+                      errors.append(f'{e[\"title\"]}: role \"{role}\" is not in roles.json')
+          if errors:
+              print('Validation FAILED:'); [print(f'  - {e}') for e in errors]; sys.exit(1)
+          print(f'Roles: {sorted(names)}')
+          "
+
       - name: Validate blog.json
         run: |
           echo "=== Validating data/blog.json ==="

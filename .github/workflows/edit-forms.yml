@@ -1,0 +1,38 @@
+name: Refresh edit forms
+
+# The "Update or remove …" issue forms list every entry in a dropdown. Issue
+# forms are static YAML, so regenerate them when data/*.json is edited directly.
+# (issue-to-data.yml regenerates them itself; its GITHUB_TOKEN pushes don't trigger this.)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/speaking.json'
+      - 'data/projects.json'
+      - 'data/testimonials.json'
+      - 'data/roles.json'
+      - '.github/scripts/build_edit_forms.py'
+      - '.github/scripts/issue_to_data.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Regenerate forms
+        run: python3 .github/scripts/build_edit_forms.py
+
+      - name: Commit if changed
+        run: |
+          git diff --quiet .github/ISSUE_TEMPLATE && { echo "Forms already up to date"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/ISSUE_TEMPLATE
+          git commit -m "chore: refresh edit form dropdowns"
+          git push
