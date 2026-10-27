@@ -24,8 +24,8 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 ├── index.html              # Main portfolio page (~2300 lines, self-contained)
 ├── speaking.html           # Speaking engagements timeline page
 ├── projects.html           # Open-source projects grid page
+├── blog.html               # Medium articles page
 ├── 404.html                # Custom 404 page
-├── config.json             # Site-wide configuration (metadata, social links, hero, skills)
 ├── robots.txt              # SEO
 ├── sitemap.xml             # SEO
 ├── .nojekyll               # Disables Jekyll on GitHub Pages
@@ -37,14 +37,11 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 │   └── blog.json           # Medium posts — auto-synced, don't hand-edit
 │
 ├── assets/
-│   ├── css/styles.css      # Shared base styles
-│   ├── js/main.js          # Core utilities (matrix rain, nav, config loader)
 │   ├── img/profile.jpg     # Profile photo
 │   ├── favicon.svg         # SVG favicon (terminal prompt)
 │   ├── slides/             # Slide decks for speaking events (PDF/PPTX)
 │   └── Mehul_Patel_Resume.pdf
 │
-├── _pages/                 # Markdown content pages (about, blog, etc.)
 └── .github/
     ├── ISSUE_TEMPLATE/     # Issue forms: add speaking event / project / testimonial
     ├── scripts/            # issue_to_data.py, sync_medium.py
@@ -196,7 +193,7 @@ Commits made by workflows with `GITHUB_TOKEN` don't trigger other workflows, so 
 
 - **No build step** — edit HTML/CSS/JS directly, push, and GitHub Pages serves it
 - **Single source of truth** — content lives only in the `data/*.json` files; edit those and the pages pick it up via `fetch()`. There is no inline duplicate to update.
-- **config.json** — Describes site metadata, social links, hero, skills and recognition, but **no page reads it yet** (`loadConfig()` in `main.js` is never called). The Awards & Community Roles section and the ticker are hardcoded in `index.html` — update both there and in `config.json`.
+- **Self-contained pages** — each HTML file carries its own inline CSS and JS (matrix rain, nav, etc.); there is no shared stylesheet/script. Personal content (hero, about, skills, Awards & Community Roles, ticker, social links) is hardcoded in `index.html`.
 - **`.nojekyll`** — Must remain in repo root so GitHub Pages serves raw HTML
 - **Local dev** — Run `python3 -m http.server 8080` from project root and open `http://localhost:8080`
 

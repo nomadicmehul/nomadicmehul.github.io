@@ -6,7 +6,7 @@ A Linux terminal-inspired portfolio theme for developers, DevOps engineers, and 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-blue.svg)](https://pages.github.com/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=flat&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/nomadicmehul)
 
 [Live Demo](https://nomadicmehul.github.io) · [Report Bug](https://github.com/nomadicmehul/nomadicmehul.github.io/issues) · [Request Feature](https://github.com/nomadicmehul/nomadicmehul.github.io/issues)
@@ -20,10 +20,10 @@ A Linux terminal-inspired portfolio theme for developers, DevOps engineers, and 
 - **Terminal prompt navigation** — `root@you:~#` with colored segments and blinking cursor
 - **Matrix rain background** — animated canvas with falling code characters
 - **CRT scanline overlay** — subtle retro terminal aesthetic
-- **3 complete pages** — Home (portfolio), Speaking (timeline), Projects (grid)
+- **4 complete pages** — Home (portfolio), Speaking (timeline), Projects (grid), Blog (Medium)
 - **Fully responsive** — works on desktop, tablet, and mobile
 - **Dark mode only** — because terminals don't do light mode
-- **Configurable** — single `config.json` to personalize everything
+- **Data-driven** — speaking, projects, testimonials and blog posts live in `data/*.json`
 - **SEO ready** — Open Graph, Twitter Cards, sitemap, robots.txt
 - **Accessible** — skip-to-content, ARIA labels, focus states, reduced motion support
 - **Zero dependencies** — pure HTML, CSS, and vanilla JS (no build tools needed)
@@ -35,7 +35,7 @@ A Linux terminal-inspired portfolio theme for developers, DevOps engineers, and 
 
 1. Click **"Use this template"** on GitHub (or fork the repo)
 2. Rename to `yourusername.github.io`
-3. Edit `config.json` with your info
+3. Replace the personal content in the HTML pages (name, bio, social links, hero, recognition)
 4. Update the data in `data/` folder
 5. Push — your site is live at `https://yourusername.github.io`
 
@@ -57,42 +57,18 @@ Open `http://localhost:8000` and start customizing.
 
 ## Configuration
 
-Everything personal lives in `config.json`. Edit this one file to make it yours:
-
-```json
-{
-  "site": {
-    "title": "Your Name",
-    "tagline": "Your Title",
-    "email": "you@example.com",
-    "url": "https://yourusername.github.io"
-  },
-  "terminal": {
-    "user": "root",
-    "host": "yourname",
-    "promptPath": "~",
-    "footerCommand": "chmod +x life.sh"
-  },
-  "social": {
-    "github": "https://github.com/yourusername",
-    "linkedin": "https://linkedin.com/in/yourusername",
-    "twitter": "https://twitter.com/yourusername"
-  }
-}
-```
-
 ### What to Customize
 
 | File | What to Change |
 |------|----------------|
-| `config.json` | Name, bio, social links, terminal prompt, stats |
 | `data/speaking.json` | Your speaking engagements |
 | `data/projects.json` | Your open-source projects |
 | `data/testimonials.json` | Testimonials from colleagues/mentees |
+| `data/blog.json` | Auto-synced from Medium by `.github/workflows/sync-medium.yml` (set your feed URL in `.github/scripts/sync_medium.py`) |
 | `assets/img/profile.jpg` | Your profile photo |
 | `assets/slides/` | Slide decks (PDF/PPTX) for speaking events |
 | `assets/favicon.svg` | Your favicon (edit the SVG) |
-| `index.html` | Hero section, about section, skills |
+| `index.html` | Name, hero, about, skills, recognition, social links |
 | `speaking.html` | Page title and description |
 | `projects.html` | Page title and description |
 
@@ -158,15 +134,11 @@ The `role` field shows colored badges indicating your role at the event. Support
 ├── index.html              # Main portfolio page
 ├── speaking.html           # Speaking engagements timeline
 ├── projects.html           # Open-source projects grid
+├── blog.html               # Medium articles
 ├── 404.html                # Custom 404 error page
-├── config.json             # Theme configuration
 ├── robots.txt              # SEO crawling rules
 ├── sitemap.xml             # SEO sitemap
 ├── assets/
-│   ├── css/
-│   │   └── styles.css      # Shared base styles
-│   ├── js/
-│   │   └── main.js         # Shared utilities (matrix rain, nav, scroll)
 │   ├── img/
 │   │   └── profile.jpg     # Profile photo
 │   ├── slides/             # Slide decks for speaking events (PDF/PPTX)
@@ -174,8 +146,11 @@ The `role` field shows colored badges indicating your role at the event. Support
 └── data/
     ├── projects.json       # Projects data
     ├── speaking.json       # Speaking events data
-    └── testimonials.json   # Testimonials data
+    ├── testimonials.json   # Testimonials data
+    └── blog.json           # Medium posts (auto-synced)
 ```
+
+Each HTML page is self-contained: its CSS and JS are inline, so there is no shared stylesheet or script to keep in sync.
 
 ## Features Deep Dive
 
@@ -193,7 +168,7 @@ The nav displays a colorized Linux root prompt:
 The homepage features an animated canvas background with falling characters (`01{}[]<>/\|;:=+-*`). It automatically pauses for users who prefer reduced motion.
 
 ### Data-Driven Pages
-Speaking events and projects load from JSON data files (`data/` folder), with inline fallback data embedded in each HTML file. This means the site works both as a static site and when served locally.
+Speaking events, projects, testimonials and blog posts load from JSON files in `data/` via `fetch()`, so serve the site over HTTP (see Local Development) rather than opening the files directly. On this repo, entries can also be added through GitHub issue forms (`.github/ISSUE_TEMPLATE/`), which commit to `data/` and redeploy.
 
 ### Accessibility
 - Skip-to-content link on every page
@@ -208,7 +183,7 @@ Speaking events and projects load from JSON data files (`data/` folder), with in
 ### GitHub Pages (Recommended)
 1. Push to your `yourusername.github.io` repo
 2. Go to **Settings → Pages**
-3. Select **Deploy from branch** → `main`
+3. Set **Source** to **GitHub Actions** (used by `.github/workflows/deploy.yml`)
 4. Your site is live!
 
 ### Netlify
