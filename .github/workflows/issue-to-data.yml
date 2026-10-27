@@ -1,7 +1,7 @@
 name: Issue form → site data
 
-# Owner opens an issue from one of the .github/ISSUE_TEMPLATE forms →
-# entry is validated, committed to data/*.json, the site is redeployed and the issue closed.
+# Owner opens an issue from one of the .github/ISSUE_TEMPLATE forms (add / update / remove) →
+# change is validated, committed to data/*.json, the site is redeployed and the issue closed.
 # If validation fails, the errors are commented on the issue; editing the issue re-runs this.
 
 on:
@@ -25,7 +25,8 @@ jobs:
       github.event.issue.author_association == 'OWNER' &&
       (contains(github.event.issue.labels.*.name, 'data:speaking') ||
        contains(github.event.issue.labels.*.name, 'data:project') ||
-       contains(github.event.issue.labels.*.name, 'data:testimonial'))
+       contains(github.event.issue.labels.*.name, 'data:testimonial') ||
+       contains(github.event.issue.labels.*.name, 'data:edit'))
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
@@ -46,13 +47,12 @@ jobs:
       - name: Commit and push
         env:
           FILE: ${{ steps.parse.outputs.file }}
-          NOUN: ${{ steps.parse.outputs.noun }}
-          NAME: ${{ steps.parse.outputs.name }}
+          MESSAGE: ${{ steps.parse.outputs.message }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "$FILE"
-          git commit -m "data: add $NOUN \"$NAME\" (closes #$ISSUE)"
+          git commit -m "$MESSAGE (closes #$ISSUE)"
           git push origin main
 
       # pushes made with GITHUB_TOKEN don't trigger other workflows, so start the deploy explicitly

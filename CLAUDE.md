@@ -4,7 +4,7 @@
 
 Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deployed on GitHub Pages with a terminal/hacker aesthetic theme.
 
-**URL:** https://nomadicmehul.github.io
+**URL:** https://nomadicmehul.dev (custom domain via `CNAME`; nomadicmehul.github.io redirects here)
 **Hosting:** GitHub Pages (no build step)
 **Framework:** None — pure vanilla HTML, CSS, JavaScript
 
@@ -43,9 +43,9 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 │   └── Mehul_Patel_Resume.pdf
 │
 └── .github/
-    ├── ISSUE_TEMPLATE/     # Issue forms: add speaking event / project / testimonial
-    ├── scripts/            # issue_to_data.py, sync_medium.py
-    └── workflows/          # deploy.yml, issue-to-data.yml, sync-medium.yml
+    ├── ISSUE_TEMPLATE/     # Issue forms: add speaking event / project / testimonial, update or remove entry
+    ├── scripts/            # issue_to_data.py, sync_medium.py, check_links.py
+    └── workflows/          # deploy.yml, issue-to-data.yml, sync-medium.yml, check-links.yml
 ```
 
 ## Data-Driven Architecture
@@ -140,13 +140,17 @@ The `role` field accepts a single string or an array of strings.
 
 ## Updating Content via GitHub Issues (recommended)
 
-Open a new issue and pick **Add speaking event**, **Add project** or **Add testimonial**. On submit, `.github/workflows/issue-to-data.yml`:
+Open a new issue and pick **Add speaking event**, **Add project**, **Add testimonial** or **Update or remove entry** (labels `data:speaking`, `data:project`, `data:testimonial`, `data:edit` must exist). On submit, `.github/workflows/issue-to-data.yml`:
 
 1. Parses the form with `.github/scripts/issue_to_data.py` and validates it (dates, URLs, duplicates)
-2. Commits the entry to the matching `data/*.json` file on `main`
+2. Commits the change to the matching `data/*.json` file on `main` (speaking events are kept sorted newest-first by `date`)
 3. Triggers `deploy.yml`, comments the added JSON on the issue, and closes it
 
 If validation fails, the errors are posted on the issue — edit the issue and it re-runs. Only issues opened by the repo **owner** are processed. Slides referenced by filename must already exist in `assets/slides/` (or paste a full URL / drag the file into the field to get a GitHub attachment URL).
+
+## Link Checking
+
+`.github/workflows/check-links.yml` runs `.github/scripts/check_links.py` every Monday (or manually). It checks every URL in `data/*.json` plus local slide files, and keeps one open **Broken links report** issue updated, closing it once all links work. Only 404/410, unresolvable domains and missing slide files count as broken; bot-blocking responses (403/429/timeouts) are listed as "couldn't verify".
 
 ## Blog (Medium)
 

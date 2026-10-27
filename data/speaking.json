@@ -416,30 +416,6 @@
   },
   {
     "year": 2019,
-    "date": "2019-01-01",
-    "title": "TRU Open Source Club - Weekly TechMeetup",
-    "location": "Kamloops, Canada",
-    "topics": [
-      "Open Source",
-      "University",
-      "Mentoring"
-    ],
-    "resources": [
-      {
-        "type": "event",
-        "label": "Event Page",
-        "url": "https://github.com/nomadicmehul/TRU-OPEN-SOURCE-CLUB"
-      },
-      {
-        "type": "code",
-        "label": "GitHub Repo",
-        "url": "https://github.com/nomadicmehul/TRU-OPEN-SOURCE-CLUB"
-      }
-    ],
-    "role": "Speaker"
-  },
-  {
-    "year": 2019,
     "date": "2019-05-26",
     "title": "Cloud Study Jams: GDG Nashik",
     "location": "Nashik, India",
@@ -501,6 +477,30 @@
         "type": "code",
         "label": "GitHub Repo",
         "url": "https://github.com/nomadicmehul/OWASP-New-Zealand-Day-2019"
+      }
+    ],
+    "role": "Speaker"
+  },
+  {
+    "year": 2019,
+    "date": "2019-01-01",
+    "title": "TRU Open Source Club - Weekly TechMeetup",
+    "location": "Kamloops, Canada",
+    "topics": [
+      "Open Source",
+      "University",
+      "Mentoring"
+    ],
+    "resources": [
+      {
+        "type": "event",
+        "label": "Event Page",
+        "url": "https://github.com/nomadicmehul/TRU-OPEN-SOURCE-CLUB"
+      },
+      {
+        "type": "code",
+        "label": "GitHub Repo",
+        "url": "https://github.com/nomadicmehul/TRU-OPEN-SOURCE-CLUB"
       }
     ],
     "role": "Speaker"
