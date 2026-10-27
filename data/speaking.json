@@ -25,7 +25,9 @@
         "label": "Slide Deck",
         "url": "The 3 AM Pager Is Solved - Google Cloud Summit Czech Republic 2026.pptx.pdf"
       }
-    ]
+    ],
+    "added": "2026-07-07",
+    "updated": "2026-07-07"
   },
   {
     "year": 2026,
@@ -52,7 +54,9 @@
         "label": "Slide Deck",
         "url": "TheNightOps_GCBuildersDay_Berlin_26.pptx.pdf"
       }
-    ]
+    ],
+    "added": "2026-03-28",
+    "updated": "2026-03-28"
   },
   {
     "year": 2025,
@@ -77,7 +81,9 @@
         "url": "Agents for All - Mehul Patel.pdf"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-03-28",
+    "updated": "2026-03-29"
   },
   {
     "year": 2023,
@@ -96,7 +102,9 @@
         "url": "https://community.mozilla.org/en/events/mozilla-gujarat-reborn/"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2023,
@@ -120,7 +128,9 @@
         "url": "https://github.com/nomadicmehul/SwasthyaCon-2023"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2022,
@@ -139,7 +149,9 @@
         "url": "https://regionalevents.okta.com/DeveloperDaySeattle2022"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2022,
@@ -158,7 +170,9 @@
         "url": "https://www.meetup.com/gujarat-identity-and-security-meetup/events/286053128/"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2021,
@@ -182,7 +196,9 @@
         "url": "https://github.com/nomadicmehul/HackBMU-4.0"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2021,
@@ -206,7 +222,9 @@
         "url": "https://github.com/nomadicmehul/software-freedom-day-2021"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2020,
@@ -230,7 +248,9 @@
         "url": "https://github.com/nomadicmehul/Hacktoberfest-2020"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2020,
@@ -254,7 +274,9 @@
         "url": "https://github.com/nomadicmehul/Merge-Intern-Webinar"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2020,
@@ -278,7 +300,9 @@
         "url": "https://github.com/nomadicmehul/AppSec-Days-Summer-of-Security"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2020,
@@ -302,7 +326,9 @@
         "url": "https://github.com/nomadicmehul/SecurityVue-India-Webinar"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2020,
@@ -326,7 +352,9 @@
         "url": "https://github.com/nomadicmehul/The-Hackers-Meetup-India-Webinar"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2020,
@@ -350,7 +378,9 @@
         "url": "https://github.com/nomadicmehul/HackerU-India-Webinar"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2020,
@@ -369,7 +399,9 @@
         "url": "https://www.meetup.com/GDG-Nashik/events/270224329/"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2020,
@@ -393,7 +425,9 @@
         "url": "https://github.com/nomadicmehul/Hello-Rust"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2019,
@@ -412,7 +446,9 @@
         "url": "https://wiki.mozilla.org/All_Hands/Whistler2019"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2019,
@@ -431,7 +467,9 @@
         "url": "https://www.meetup.com/GDG-Nashik/events/260845707/"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2019,
@@ -455,7 +493,9 @@
         "url": "https://github.com/nomadicmehul/Serverless-Auckland-Meetup"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2019,
@@ -479,7 +519,9 @@
         "url": "https://github.com/nomadicmehul/OWASP-New-Zealand-Day-2019"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-28"
   },
   {
     "year": 2019,
@@ -503,7 +545,9 @@
         "url": "https://github.com/nomadicmehul/TRU-OPEN-SOURCE-CLUB"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-28"
   },
   {
     "year": 2018,
@@ -527,7 +571,9 @@
         "url": "https://github.com/nomadicmehul/Hackference-India-2018"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2018,
@@ -546,7 +592,9 @@
         "url": "https://reps.mozilla.org/e/mozilla-l10n-gujarati-training-meetup-2018/"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2018,
@@ -570,7 +618,9 @@
         "url": "https://github.com/nomadicmehul/OpenAlt-2018"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2018,
@@ -594,7 +644,9 @@
         "url": "https://github.com/nomadicmehul/AllThingsOpen2018"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2018,
@@ -618,7 +670,9 @@
         "url": "https://github.com/nomadicmehul/ServerlessDays-Milano"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2018,
@@ -642,7 +696,9 @@
         "url": "https://github.com/nomadicmehul/MozFest-2018"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-28"
   },
   {
     "year": 2018,
@@ -666,7 +722,9 @@
         "url": "https://github.com/nomadicmehul/OWASP-s-AppSec-Israel-2018"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2018,
@@ -690,7 +748,9 @@
         "url": "https://medium.com/@nomadicmehul/serverlessdays-auckland-2018-8e3a78e8793e"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2018,
@@ -709,7 +769,9 @@
         "url": "https://paris.rustfest.eu/"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2018,
@@ -733,7 +795,9 @@
         "url": "https://github.com/nomadicmehul/devconfIN"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2018,
@@ -757,7 +821,9 @@
         "url": "https://github.com/nomadicmehul/Rust-Hacks-at-Cummins"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2018,
@@ -781,7 +847,9 @@
         "url": "https://github.com/nomadicmehul/GNUnify-2018"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2018,
@@ -805,7 +873,9 @@
         "url": "https://github.com/nomadicmehul/DevHost18"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-28"
   },
   {
     "year": 2018,
@@ -818,7 +888,9 @@
       "IoT"
     ],
     "resources": [],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-28"
   },
   {
     "year": 2017,
@@ -831,7 +903,9 @@
       "Community"
     ],
     "resources": [],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2017,
@@ -844,7 +918,9 @@
       "Google"
     ],
     "resources": [],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2017,
@@ -863,7 +939,9 @@
         "url": "https://mozillafestival.org"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-28"
   },
   {
     "year": 2017,
@@ -876,7 +954,9 @@
       "Technology"
     ],
     "resources": [],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2017,
@@ -889,7 +969,9 @@
       "Global Campaign"
     ],
     "resources": [],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   },
   {
     "year": 2017,
@@ -913,7 +995,9 @@
         "url": "https://blog.mozillaindia.org/1761"
       }
     ],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-28"
   },
   {
     "year": 2016,
@@ -926,6 +1010,8 @@
       "Community"
     ],
     "resources": [],
-    "role": "Speaker"
+    "role": "Speaker",
+    "added": "2026-02-18",
+    "updated": "2026-03-30"
   }
 ]

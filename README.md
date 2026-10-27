@@ -19,6 +19,12 @@ A Linux terminal-inspired portfolio theme for developers, DevOps engineers, and 
 
 Add, update or remove speaking events, projects and testimonials by filling in a GitHub issue form. A workflow validates the change, commits it to `data/*.json`, redeploys the site and closes the issue.
 
+### 👉 Start here: [MANAGE.md](https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md)
+
+One page listing everything on the site: speaking events grouped by **year → month**, projects, testimonials, and **recent activity by month**. Every row has **✏️ Update** and **🗑️ Remove** links that open the right form with the entry already filled in. It's also linked at the top of **Issues → New issue**.
+
+Or open a form directly:
+
 | What | Add new | Update or remove existing |
 |------|---------|---------------------------|
 | 🎤 Speaking event | [Add speaking event](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-speaking-event.yml) | [Update or remove speaking event](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=update-speaking-event.yml) |
@@ -41,8 +47,9 @@ All forms: [Issues → New issue](https://github.com/nomadicmehul/nomadicmehul.g
 - **Slides:** paste a full URL, drag a PDF into the field (GitHub uploads it and inserts a link), or use the filename of a deck already in `assets/slides/`.
 - **Topics / Tech:** comma-separated, e.g. `Kubernetes, GKE, AI Agents`.
 - **Date:** `YYYY-MM-DD`. Events are placed in date order automatically.
-- **Update or remove:** pick the entry from the dropdown (it always lists what's currently on the site), then fill in **only the fields that should change**; blank fields keep their current value. Each type has its own fields, e.g. *New location* and *New topics* for events, *Featured* for projects, *Stars* for testimonials.
-- **Add a recording after a talk:** Update or remove speaking event → pick the event → Add resources = `video | https://youtube.com/...`
+- **Tracking:** every entry has `added` and `updated` dates (YYYY-MM-DD), set automatically on add, update and direct JSON edits. Don't type them yourself.
+- **Update or remove:** click the entry's link in [MANAGE.md](https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md), then fill in **only the fields that should change**; blank fields keep their current value. Opening the form directly works too: type the title, or a unique part of it. Each type has its own fields, e.g. *New location* and *New topics* for events, *Featured* for projects, *Stars* for testimonials.
+- **Add a recording after a talk:** MANAGE.md → find the event → ✏️ Update → Add resources = `video | https://youtube.com/...`
 - **Broken links:** every Monday a workflow checks all links in `data/*.json` and keeps a **Broken links report** issue up to date (closed automatically once everything is fixed). Run it any time from **Actions → Check links**.
 
 **One-time setup** (required before the forms work)

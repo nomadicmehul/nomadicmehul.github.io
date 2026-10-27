@@ -51,9 +51,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # keep the "Update or remove" form dropdowns in sync with the data
-          python3 .github/scripts/build_edit_forms.py
-          git add "$FILE" .github/ISSUE_TEMPLATE
+          # stamp added/updated dates, then regenerate MANAGE.md and the forms
+          python3 .github/scripts/stamp_dates.py --base HEAD
+          python3 .github/scripts/build_manage.py
+          git add "$FILE" .github/ISSUE_TEMPLATE MANAGE.md
           git commit -m "$MESSAGE (closes #$ISSUE)"
           git push origin main
 

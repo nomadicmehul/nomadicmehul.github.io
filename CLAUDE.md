@@ -26,6 +26,7 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 ├── projects.html           # Open-source projects grid page
 ├── blog.html               # Medium articles page
 ├── 404.html                # Custom 404 page
+├── MANAGE.md               # Generated admin index: all entries by year/month + update/remove links
 ├── robots.txt              # SEO
 ├── sitemap.xml             # SEO
 ├── .nojekyll               # Disables Jekyll on GitHub Pages
@@ -45,7 +46,7 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 │
 └── .github/
     ├── ISSUE_TEMPLATE/     # Issue forms: add + update/remove (generated) for speaking events, projects, testimonials
-    ├── scripts/            # issue_to_data.py, build_edit_forms.py, sync_medium.py, check_links.py
+    ├── scripts/            # issue_to_data.py, build_manage.py, stamp_dates.py, sync_medium.py, check_links.py
     └── workflows/          # deploy.yml, issue-to-data.yml, sync-medium.yml, check-links.yml, edit-forms.yml, labels.yml, auto-assign.yml (assigns new PRs to the repo owner)
 ```
 
@@ -82,6 +83,7 @@ All dynamic content loads from JSON files via `fetch()` at runtime. The JSON fil
 | `role` | No | String or Array | Your role(s) at the event — renders as badge(s) |
 | `topics` | Yes | Array | Topic tags displayed on the card |
 | `resources` | Yes | Array | Links and files — renders as colored action buttons |
+| `added` / `updated` | Auto | String | `YYYY-MM-DD`, stamped by `stamp_dates.py` — don't set by hand |
 
 ### Resource Types
 
@@ -151,7 +153,13 @@ Open a new issue and pick an **Add …** or **Update or remove …** form for sp
 
 If validation fails, the errors are posted on the issue — edit the issue and it re-runs. Only issues opened by the repo **owner** are processed. Slides referenced by filename must already exist in `assets/slides/` (or paste a full URL / drag the file into the field to get a GitHub attachment URL).
 
-The **Update or remove** forms (`update-*.yml`) are **generated** by `.github/scripts/build_edit_forms.py`: a dropdown of every current entry plus that type's own fields (defined in `TYPES[...]["edit_inputs"]` in `issue_to_data.py`; blank = keep). Don't hand-edit them. They're regenerated in the same commit by `issue-to-data.yml`, and by `edit-forms.yml` when `data/*.json` is pushed directly.
+**`MANAGE.md`** (repo root, linked from the issue-template chooser) is the admin index: all entries, with speaking events grouped by year → month, recent activity by month, and per-entry **Update / Remove** links. Those links open `update-*.yml` with the `entry` text field pre-filled via URL query params (`?template=…&entry=<label>`); labels come from `entry_labels()` in `issue_to_data.py` (speaking: `Title (YYYY-MM-DD)`). Typed values also match: exact title, or a unique substring.
+
+`MANAGE.md`, the `update-*.yml` forms (each type's own fields from `TYPES[...]["edit_inputs"]`; blank = keep) and the role checkboxes in `add-speaking-event.yml` are **generated** by `.github/scripts/build_manage.py`. Don't hand-edit them.
+
+**Entry dates:** every speaking event, project and testimonial has `added` and `updated` (`YYYY-MM-DD`), maintained by `.github/scripts/stamp_dates.py` (it compares with the previous commit; `--backfill` rebuilds them from git history). Entries are identified by speaking: title + year, project: repo, testimonial: quote.
+
+Both are run in the same commit by `issue-to-data.yml`, and by `edit-forms.yml` when `data/*.json` is pushed directly (which also redeploys).
 
 ## Link Checking
 

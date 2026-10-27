@@ -128,6 +128,22 @@ jobs:
           print(f'  {linked} with external links')
           "
 
+      - name: Validate entry dates
+        run: |
+          echo "=== Validating added/updated dates ==="
+          python3 -c "
+          import json, re, sys
+          errors = []
+          for f in ('speaking', 'projects', 'testimonials'):
+              for i, e in enumerate(json.load(open(f'data/{f}.json'))):
+                  for k in ('added', 'updated'):
+                      if k in e and not re.match(r'^\d{4}-\d{2}-\d{2}$', str(e[k])):
+                          errors.append(f'{f}.json entry {i}: {k} must be YYYY-MM-DD (got {e[k]!r})')
+          if errors:
+              print('Validation FAILED:'); [print(f'  - {e}') for e in errors]; sys.exit(1)
+          print('Dates OK')
+          "
+
       - name: Validate roles.json
         run: |
           echo "=== Validating data/roles.json ==="
