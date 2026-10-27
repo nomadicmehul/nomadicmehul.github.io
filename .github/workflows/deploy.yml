@@ -9,6 +9,7 @@ on:
       - 'assets/**'
       - 'robots.txt'
       - 'sitemap.xml'
+      - 'CNAME'
       - '.github/workflows/deploy.yml'
 
   # Allow manual trigger

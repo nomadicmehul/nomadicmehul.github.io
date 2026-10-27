@@ -127,6 +127,15 @@
             .error-line { font-size: 0.85rem; }
         }
 
+        /* Skip link: hidden until focused with the keyboard */
+        .skip-link {
+            position: absolute; top: -100px; left: 16px; z-index: 10001;
+            background: var(--term-green); color: var(--bg-primary); padding: 12px 24px;
+            border-radius: 0 0 8px 8px; font-weight: 700; font-family: var(--font-mono);
+            transition: top 0.2s;
+        }
+        .skip-link:focus { top: 0; }
+
         /* Respect the OS "reduce motion" setting */
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }

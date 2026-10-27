@@ -81,7 +81,8 @@ Everything runs on GitHub Actions; nothing to install.
 - **Fully responsive** — works on desktop, tablet, and mobile
 - **Dark mode only** — because terminals don't do light mode
 - **Data-driven** — speaking, projects, testimonials and blog posts live in `data/*.json`
-- **SEO ready** — Open Graph, Twitter Cards, sitemap, robots.txt
+- **SEO ready** — Open Graph and Twitter Cards with a designed link-preview image, schema.org ProfilePage data, sitemap, robots.txt
+- **Upcoming talks** — events dated today or later get an **Upcoming** badge automatically
 - **Accessible** — skip-to-content, ARIA labels, focus states, reduced motion support
 - **Zero dependencies** — pure HTML, CSS, and vanilla JS (no build tools needed)
 - **Custom 404 page** — `bash: page_not_found: command not found`
@@ -135,7 +136,7 @@ Open `http://localhost:8000` and start customizing.
 
 ## Speaking Events Data
 
-All speaking events are managed in `data/speaking.json`. Each event entry renders as a card on both the home page (first 6) and the speaking page (all events).
+All speaking events are managed in `data/speaking.json`. Each event entry renders as a card on both the home page (first 6) and the speaking page (all events). Events dated today or later get an amber **Upcoming** badge automatically; no extra field needed.
 
 ### Event Structure
 
@@ -197,6 +198,27 @@ The easy way is the [Add speaking event](https://github.com/nomadicmehul/nomadic
 2. Add the entry to `data/speaking.json`, newest first
 3. Push. Dates are stamped, `MANAGE.md` is refreshed and the site redeploys automatically
 
+## Projects Data
+
+`data/projects.json` holds the open-source projects:
+
+```json
+{
+  "title": "Dispatch",
+  "description": "AI-powered CLI tool that solves GitHub issues in batch...",
+  "icon": "fas fa-bolt",
+  "iconColor": "#f59e0b",
+  "repo": "https://github.com/nomadicmehul/dispatch",
+  "tech": ["Node.js", "AI", "Claude"],
+  "featured": true
+}
+```
+
+- `featured: true` projects appear on the home page; the Projects page shows all of them.
+- The **Featured** badge and count only appear when some projects aren't featured (if all are, they'd say nothing).
+- With 2 or 4 cards the grid becomes 2×2, so no card sits alone on a row.
+- `repo` must be a `https://github.com/...` URL (deploy checks it).
+
 ## Project Structure
 
 ```
@@ -243,7 +265,11 @@ The nav displays a colorized Linux root prompt:
 - `█` — green, blinking cursor
 
 ### Matrix Rain
-The homepage features an animated canvas background with falling characters (`01{}[]<>/\|;:=+-*`). It automatically pauses for users who prefer reduced motion.
+The homepage features an animated canvas background with falling characters (`01{}[]<>/\|;:=+-*`). It's off for users who prefer reduced motion, and pauses while the tab is in the background.
+
+### Link Preview & Search
+- **Link-preview image:** `assets/og-image.png` (1200×630) is what LinkedIn, X, Slack and WhatsApp show when the site is shared. It's rendered from `.github/og-card/card.html`; after editing it, run `.github/og-card/render.sh`. LinkedIn caches previews, so refresh with its [Post Inspector](https://www.linkedin.com/post-inspector/).
+- **Structured data:** the home page has schema.org `ProfilePage` data (name, title, location, skills, recognitions, social profiles) for search engines. Check it with Google's [Rich Results Test](https://search.google.com/test/rich-results).
 
 ### Data-Driven Pages
 Speaking events, projects, testimonials and blog posts load from JSON files in `data/` via `fetch()`, so serve the site over HTTP (see Local Development) rather than opening the files directly. Entries are usually managed through GitHub issue forms and [MANAGE.md](MANAGE.md); see [Updating Content](#updating-content-no-code-needed).
@@ -289,7 +315,8 @@ This is pure HTML/CSS/JS — it works everywhere. Just upload the files.
 | Purple | `#c084fc` | Decorative accents |
 | Blue | `#60a5fa` | Path, info elements |
 | BG Primary | `#0a0e17` | Main background |
-| BG Secondary | `#0f1623` | Cards, sections |
+| BG Secondary | `#0f1623` | Alternate sections |
+| BG Card | `#111827` | Cards |
 | Text Primary | `#e2e8f0` | Headings, body text |
 | Text Secondary | `#94a3b8` | Descriptions, labels |
 
