@@ -51,7 +51,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "$FILE"
+          # keep the "Update or remove" form dropdowns in sync with the data
+          python3 .github/scripts/build_edit_forms.py
+          git add "$FILE" .github/ISSUE_TEMPLATE
           git commit -m "$MESSAGE (closes #$ISSUE)"
           git push origin main
 

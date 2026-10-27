@@ -19,12 +19,11 @@ A Linux terminal-inspired portfolio theme for developers, DevOps engineers, and 
 
 Add, update or remove speaking events, projects and testimonials by filling in a GitHub issue form. A workflow validates the change, commits it to `data/*.json`, redeploys the site and closes the issue.
 
-| What | Open the form |
-|------|---------------|
-| 🎤 Speaking event | [Add speaking event](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-speaking-event.yml) |
-| 🚀 Project | [Add project](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-project.yml) |
-| 💬 Testimonial | [Add testimonial](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-testimonial.yml) |
-| ✏️ Change or delete any of the above | [Update or remove entry](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=update-or-remove-entry.yml) |
+| What | Add new | Update or remove existing |
+|------|---------|---------------------------|
+| 🎤 Speaking event | [Add speaking event](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-speaking-event.yml) | [Update or remove speaking event](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=update-speaking-event.yml) |
+| 🚀 Project | [Add project](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-project.yml) | [Update or remove project](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=update-project.yml) |
+| 💬 Testimonial | [Add testimonial](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-testimonial.yml) | [Update or remove testimonial](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=update-testimonial.yml) |
 | 📝 Blog posts | Nothing to do: synced from Medium daily. To sync now: **Actions → Sync Medium posts → Run workflow** |
 
 All forms: [Issues → New issue](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new/choose)
@@ -42,8 +41,8 @@ All forms: [Issues → New issue](https://github.com/nomadicmehul/nomadicmehul.g
 - **Slides:** paste a full URL, drag a PDF into the field (GitHub uploads it and inserts a link), or use the filename of a deck already in `assets/slides/`.
 - **Topics / Tech:** comma-separated, e.g. `Kubernetes, GKE, AI Agents`.
 - **Date:** `YYYY-MM-DD`. Events are placed in date order automatically.
-- **Update or remove:** find the entry by title (testimonials: by name); part of the title is fine if it's unique. Change fields as `field: value` lines, e.g. `location: Berlin, Germany`.
-- **Add a recording after a talk:** Update or remove entry → Entry = event title → Add resources = `video | https://youtube.com/...`
+- **Update or remove:** pick the entry from the dropdown (it always lists what's currently on the site), then fill in **only the fields that should change**; blank fields keep their current value. Each type has its own fields, e.g. *New location* and *New topics* for events, *Featured* for projects, *Stars* for testimonials.
+- **Add a recording after a talk:** Update or remove speaking event → pick the event → Add resources = `video | https://youtube.com/...`
 - **Broken links:** every Monday a workflow checks all links in `data/*.json` and keeps a **Broken links report** issue up to date (closed automatically once everything is fixed). Run it any time from **Actions → Check links**.
 
 **One-time setup** (required before the forms work)
