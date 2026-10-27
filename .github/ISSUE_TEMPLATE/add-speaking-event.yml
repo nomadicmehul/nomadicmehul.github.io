@@ -34,7 +34,7 @@ body:
     id: role
     attributes:
       label: Role
-      # roles:start — generated from data/roles.json by build_edit_forms.py
+      # roles:start — generated from data/roles.json by build_manage.py
       options:
         - label: "Speaker"
         - label: "Event Organizer"

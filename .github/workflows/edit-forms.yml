@@ -1,8 +1,9 @@
-name: Refresh edit forms
+name: Refresh MANAGE.md, forms & entry dates
 
-# The "Update or remove …" issue forms list every entry in a dropdown. Issue
-# forms are static YAML, so regenerate them when data/*.json is edited directly.
-# (issue-to-data.yml regenerates them itself; its GITHUB_TOKEN pushes don't trigger this.)
+# After a direct push to data/*.json:
+#  - stamp added/updated dates on new or changed entries (stamp_dates.py)
+#  - regenerate MANAGE.md (entries by year/month with update/remove links) and the issue forms
+# (issue-to-data.yml does both itself; its GITHUB_TOKEN pushes don't trigger this.)
 
 on:
   push:
@@ -12,27 +13,43 @@ on:
       - 'data/projects.json'
       - 'data/testimonials.json'
       - 'data/roles.json'
-      - '.github/scripts/build_edit_forms.py'
+      - '.github/scripts/build_manage.py'
+      - '.github/scripts/stamp_dates.py'
       - '.github/scripts/issue_to_data.py'
   workflow_dispatch:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Regenerate forms
-        run: python3 .github/scripts/build_edit_forms.py
+      - name: Stamp entry dates
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          # manual runs and brand-new branches have no usable "before"; compare with the previous commit
+          if [ -z "$BEFORE" ] || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then BEFORE=HEAD~1; fi
+          python3 .github/scripts/stamp_dates.py --base "$BEFORE"
+
+      - name: Regenerate MANAGE.md and forms
+        run: python3 .github/scripts/build_manage.py
 
       - name: Commit if changed
         run: |
-          git diff --quiet .github/ISSUE_TEMPLATE && { echo "Forms already up to date"; exit 0; }
+          [ -z "$(git status --porcelain)" ] && { echo "Already up to date"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .github/ISSUE_TEMPLATE
-          git commit -m "chore: refresh edit form dropdowns"
+          git add data .github/ISSUE_TEMPLATE MANAGE.md
+          git commit -m "chore: stamp entry dates, refresh MANAGE.md and forms"
           git push
+          # data files changed, and pushes made with GITHUB_TOKEN don't trigger deploy.yml
+          git diff --quiet HEAD~1 -- data || gh workflow run deploy.yml --ref main --repo "$GITHUB_REPOSITORY"

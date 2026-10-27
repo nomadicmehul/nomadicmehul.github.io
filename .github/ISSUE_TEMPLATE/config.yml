@@ -1,1 +1,5 @@
 blank_issues_enabled: true
+contact_links:
+  - name: "🛠️ Manage site content"
+    url: https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md
+    about: Find any speaking event, project or testimonial by year and month, and update or remove it in one click.

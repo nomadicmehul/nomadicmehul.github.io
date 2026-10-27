@@ -12,7 +12,9 @@
       "GitHub API",
       "CLI"
     ],
-    "featured": true
+    "featured": true,
+    "added": "2026-02-26",
+    "updated": "2026-02-26"
   },
   {
     "title": "Azure MCP Server",
@@ -26,7 +28,9 @@
       "AI Agents",
       "Python"
     ],
-    "featured": true
+    "featured": true,
+    "added": "2026-02-18",
+    "updated": "2026-02-18"
   },
   {
     "title": "Hello GenAI",
@@ -40,7 +44,9 @@
       "Python",
       "Tutorials"
     ],
-    "featured": true
+    "featured": true,
+    "added": "2026-02-18",
+    "updated": "2026-02-18"
   },
   {
     "title": "CloudCaptain",
@@ -54,6 +60,8 @@
       "Learning",
       "Open Source"
     ],
-    "featured": true
+    "featured": true,
+    "added": "2026-02-18",
+    "updated": "2026-02-18"
   }
 ]
