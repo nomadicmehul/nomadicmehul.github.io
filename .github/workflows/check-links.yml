@@ -19,7 +19,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       TITLE: Broken links report
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check links
         id: check

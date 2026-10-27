@@ -15,6 +15,7 @@ on:
       - 'data/roles.json'
       - '.github/scripts/build_manage.py'
       - '.github/scripts/stamp_dates.py'
+      - '.github/workflows/edit-forms.yml'
       - '.github/scripts/issue_to_data.py'
   workflow_dispatch:
 
@@ -27,8 +28,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
+      PYTHONDONTWRITEBYTECODE: "1"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -45,7 +47,8 @@ jobs:
 
       - name: Commit if changed
         run: |
-          [ -z "$(git status --porcelain)" ] && { echo "Already up to date"; exit 0; }
+          # only look at what this job commits (not e.g. __pycache__ left by the scripts)
+          [ -z "$(git status --porcelain -- data .github/ISSUE_TEMPLATE MANAGE.md)" ] && { echo "Already up to date"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data .github/ISSUE_TEMPLATE MANAGE.md
