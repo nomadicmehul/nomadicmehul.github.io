@@ -52,11 +52,25 @@ All forms: [Issues → New issue](https://github.com/nomadicmehul/nomadicmehul.g
 - **Add a recording after a talk:** MANAGE.md → find the event → ✏️ Update → Add resources = `video | https://youtube.com/...`
 - **Broken links:** every Monday a workflow checks all links in `data/*.json` and keeps a **Broken links report** issue up to date (closed automatically once everything is fixed). Run it any time from **Actions → Check links**.
 
-**One-time setup** (required before the forms work)
+**Setup** (already done for this repo; needed once on a fork)
 
-1. Labels `data:speaking`, `data:project`, `data:testimonial` and `data:edit` are created automatically by `.github/workflows/labels.yml` on merge to `main` (or run **Actions → Sync labels** manually). The forms apply them, and the workflow only runs on labelled issues.
-2. **Settings → Pages → Source:** GitHub Actions.
+1. **Settings → Pages → Source:** GitHub Actions.
+2. Labels `data:speaking`, `data:project`, `data:testimonial` and `data:edit` are created automatically by **Sync labels** on the first push to `main`. If one ever goes missing, run **Actions → Sync labels**.
 3. If `main` has branch protection, allow GitHub Actions to push to it.
+
+## Automation
+
+Everything runs on GitHub Actions; nothing to install.
+
+| Workflow | When | What it does |
+|---|---|---|
+| **Deploy to GitHub Pages** | Push to `main` (site files or `data/`) | Validates all `data/*.json`, then publishes the site |
+| **Issue form → site data** | Owner opens or edits a form issue | Validates the entry, stamps `added`/`updated`, commits, regenerates `MANAGE.md`, redeploys, closes the issue |
+| **Refresh MANAGE.md, forms & entry dates** | Direct push to `data/*.json` | Stamps dates on changed entries, regenerates `MANAGE.md` and the forms |
+| **Sync Medium posts** | Daily 06:00 UTC, or manually | Adds new Medium posts to `data/blog.json` and redeploys |
+| **Check links** | Mondays 07:00 UTC, or manually | Checks every link in `data/`; keeps one **Broken links report** issue up to date |
+| **Sync labels** | Push to `main` touching the forms | Creates the labels the forms need |
+| **Auto-assign PRs** | PR opened | Assigns the PR to the repo owner |
 
 ## What You Get
 
@@ -107,6 +121,7 @@ Open `http://localhost:8000` and start customizing.
 | `data/speaking.json` | Your speaking engagements |
 | `data/projects.json` | Your open-source projects |
 | `data/testimonials.json` | Testimonials from colleagues/mentees |
+| `data/roles.json` | Speaking roles and their badge icon/color |
 | `data/blog.json` | Auto-synced from Medium by `.github/workflows/sync-medium.yml` (set your feed URL in `.github/scripts/sync_medium.py`) |
 | `assets/img/profile.jpg` | Your profile photo |
 | `assets/slides/` | Slide decks (PDF/PPTX) for speaking events |
@@ -114,6 +129,8 @@ Open `http://localhost:8000` and start customizing.
 | `index.html` | Name, hero, about, skills, recognition, social links |
 | `speaking.html` | Page title and description |
 | `projects.html` | Page title and description |
+| `CNAME` | Your custom domain (delete it to use `yourusername.github.io`) |
+| `.github/ISSUE_TEMPLATE/config.yml`, this README | Links that point at `nomadicmehul/nomadicmehul.github.io`; replace with your repo |
 
 ## Speaking Events Data
 
@@ -133,9 +150,13 @@ All speaking events are managed in `data/speaking.json`. Each event entry render
     { "type": "event", "label": "Event Page", "url": "https://cloud.google.com/..." },
     { "type": "slides", "label": "Slide Deck", "url": "my-talk.pdf" },
     { "type": "code", "label": "GitHub Repo", "url": "https://github.com/user/repo" }
-  ]
+  ],
+  "added": "2026-03-28",
+  "updated": "2026-03-30"
 }
 ```
+
+`added` / `updated` are stamped automatically (see [Automation](#automation)); don't edit them by hand. Projects and testimonials have them too.
 
 ### Resource Types
 
@@ -169,9 +190,11 @@ Current roles: Speaker (green), Event Organizer (amber), Mentor (purple), Paneli
 
 ### Adding a New Event
 
-1. (Optional) Drop slide deck into `assets/slides/`
-2. Add entry at the **top** of `data/speaking.json`
-3. Push — both home page and speaking page update automatically
+The easy way is the [Add speaking event](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-speaking-event.yml) form (see [Updating Content](#updating-content-no-code-needed)). To edit the JSON directly instead:
+
+1. (Optional) Drop the slide deck into `assets/slides/`
+2. Add the entry to `data/speaking.json`, newest first
+3. Push. Dates are stamped, `MANAGE.md` is refreshed and the site redeploys automatically
 
 ## Project Structure
 
@@ -181,6 +204,8 @@ Current roles: Speaker (green), Event Organizer (amber), Mentor (purple), Paneli
 ├── projects.html           # Open-source projects grid
 ├── blog.html               # Medium articles
 ├── 404.html                # Custom 404 error page
+├── MANAGE.md               # Generated: every entry by year/month with update/remove links
+├── CNAME                   # Custom domain (nomadicmehul.dev)
 ├── robots.txt              # SEO crawling rules
 ├── sitemap.xml             # SEO sitemap
 ├── assets/
@@ -192,7 +217,12 @@ Current roles: Speaker (green), Event Organizer (amber), Mentor (purple), Paneli
     ├── projects.json       # Projects data
     ├── speaking.json       # Speaking events data
     ├── testimonials.json   # Testimonials data
+    ├── roles.json          # Speaking roles (badge icon + color)
     └── blog.json           # Medium posts (auto-synced)
+.github/
+├── ISSUE_TEMPLATE/         # Add / update-or-remove forms (update forms are generated)
+├── scripts/                # Python behind the workflows (no dependencies)
+└── workflows/              # See Automation
 ```
 
 Each HTML page is self-contained: its CSS and JS are inline, so there is no shared stylesheet or script to keep in sync.
@@ -213,14 +243,14 @@ The nav displays a colorized Linux root prompt:
 The homepage features an animated canvas background with falling characters (`01{}[]<>/\|;:=+-*`). It automatically pauses for users who prefer reduced motion.
 
 ### Data-Driven Pages
-Speaking events, projects, testimonials and blog posts load from JSON files in `data/` via `fetch()`, so serve the site over HTTP (see Local Development) rather than opening the files directly. On this repo, entries can also be added through GitHub issue forms (`.github/ISSUE_TEMPLATE/`), which commit to `data/` and redeploy.
+Speaking events, projects, testimonials and blog posts load from JSON files in `data/` via `fetch()`, so serve the site over HTTP (see Local Development) rather than opening the files directly. Entries are usually managed through GitHub issue forms and [MANAGE.md](MANAGE.md); see [Updating Content](#updating-content-no-code-needed).
 
 ### Accessibility
 - Skip-to-content link on every page
 - ARIA labels on navigation and landmarks
 - `role="navigation"` and `role="contentinfo"` semantic roles
 - Visible focus states (green outline) for keyboard navigation
-- `prefers-reduced-motion` support — disables all animations
+- `prefers-reduced-motion` support on every page: animations and transitions are switched off
 - Semantic `<main>`, `<nav>`, `<footer>` structure
 
 ## Deployment
@@ -271,7 +301,7 @@ Contributions are welcome! Whether it's a bug fix, new feature, or improvement:
 5. Open a Pull Request
 
 ### Ideas for Contributions
-- Additional page templates (blog, resume, contact form)
+- Additional page templates (resume, contact form)
 - Color scheme variants (amber/gold theme, blue/cyan theme)
 - Animation options (typing effect variants, glitch effects)
 - Integration with headless CMS

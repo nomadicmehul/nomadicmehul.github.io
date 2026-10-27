@@ -185,12 +185,6 @@
             padding: 4px 10px; border-radius: 4px; font-weight: 500; font-family: var(--font-mono);
         }
         .event-footer { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
-        .event-link {
-            display: inline-flex; align-items: center; gap: 6px;
-            color: var(--term-green); font-size: 0.85rem; font-weight: 600;
-            transition: gap 0.2s;
-        }
-        .event-link:hover { gap: 10px; }
 
         /* Resource links */
         .event-resources { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -333,6 +327,16 @@
         }
         .skip-link:focus { top: 0; }
         *:focus-visible { outline: 2px solid var(--term-green); outline-offset: 2px; }
+
+        /* Respect the OS "reduce motion" setting */
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
