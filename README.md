@@ -9,7 +9,7 @@ A Linux terminal-inspired portfolio theme for developers, DevOps engineers, and 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=flat&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/nomadicmehul)
 
-[Live Demo](https://nomadicmehul.github.io) · [Report Bug](https://github.com/nomadicmehul/nomadicmehul.github.io/issues) · [Request Feature](https://github.com/nomadicmehul/nomadicmehul.github.io/issues)
+[Live Demo](https://nomadicmehul.dev) · [Report Bug](https://github.com/nomadicmehul/nomadicmehul.github.io/issues) · [Request Feature](https://github.com/nomadicmehul/nomadicmehul.github.io/issues)
 
 </div>
 
@@ -17,13 +17,14 @@ A Linux terminal-inspired portfolio theme for developers, DevOps engineers, and 
 
 ## Updating Content (no code needed)
 
-Add speaking events, projects and testimonials by filling in a GitHub issue form. A workflow validates the entry, commits it to `data/*.json`, redeploys the site and closes the issue.
+Add, update or remove speaking events, projects and testimonials by filling in a GitHub issue form. A workflow validates the change, commits it to `data/*.json`, redeploys the site and closes the issue.
 
 | What | Open the form |
 |------|---------------|
 | 🎤 Speaking event | [Add speaking event](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-speaking-event.yml) |
 | 🚀 Project | [Add project](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-project.yml) |
 | 💬 Testimonial | [Add testimonial](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-testimonial.yml) |
+| ✏️ Change or delete any of the above | [Update or remove entry](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=update-or-remove-entry.yml) |
 | 📝 Blog posts | Nothing to do: synced from Medium daily. To sync now: **Actions → Sync Medium posts → Run workflow** |
 
 All forms: [Issues → New issue](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new/choose)
@@ -41,11 +42,13 @@ All forms: [Issues → New issue](https://github.com/nomadicmehul/nomadicmehul.g
 - **Slides:** paste a full URL, drag a PDF into the field (GitHub uploads it and inserts a link), or use the filename of a deck already in `assets/slides/`.
 - **Topics / Tech:** comma-separated, e.g. `Kubernetes, GKE, AI Agents`.
 - **Date:** `YYYY-MM-DD`. Events are placed in date order automatically.
-- To edit or remove an existing entry, change the JSON in `data/` directly (on github.com: open the file → ✏️ edit → commit).
+- **Update or remove:** find the entry by title (testimonials: by name); part of the title is fine if it's unique. Change fields as `field: value` lines, e.g. `location: Berlin, Germany`.
+- **Add a recording after a talk:** Update or remove entry → Entry = event title → Add resources = `video | https://youtube.com/...`
+- **Broken links:** every Monday a workflow checks all links in `data/*.json` and keeps a **Broken links report** issue up to date (closed automatically once everything is fixed). Run it any time from **Actions → Check links**.
 
 **One-time setup** (required before the forms work)
 
-1. Create the labels `data:speaking`, `data:project` and `data:testimonial` (**Issues → Labels → New label**). The forms apply them, and the workflow only runs on labelled issues.
+1. Create the labels `data:speaking`, `data:project`, `data:testimonial` and `data:edit` (**Issues → Labels → New label**). The forms apply them, and the workflow only runs on labelled issues.
 2. **Settings → Pages → Source:** GitHub Actions.
 3. If `main` has branch protection, allow GitHub Actions to push to it.
 

@@ -1,0 +1,60 @@
+name: "✏️ Update or remove entry"
+description: Change or delete an existing speaking event, project or testimonial — the site updates automatically.
+title: "[edit] "
+labels: ["data:edit"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Find the entry by its title (testimonials: by name). Only issues opened by the repo owner are processed.
+        Common case — add a recording after a talk: **Entry** = the event title, **Add resources** = `video | https://youtube.com/...`
+  - type: dropdown
+    id: data_type
+    attributes:
+      label: Data type
+      options:
+        - Speaking event
+        - Project
+        - Testimonial
+    validations:
+      required: true
+  - type: input
+    id: entry
+    attributes:
+      label: Entry
+      description: Title (or testimonial name). Part of the title is fine if it's unique. Same title in several years? Add the date, e.g. `Cloud Study Jams (2019-05-26)`
+    validations:
+      required: true
+  - type: dropdown
+    id: action
+    attributes:
+      label: Action
+      options:
+        - Update
+        - Remove
+      default: 0
+    validations:
+      required: true
+  - type: textarea
+    id: changes
+    attributes:
+      label: Change fields
+      description: |
+        One `field: value` per line. Lists are comma-separated.
+        Speaking: title, date, location, role, topics · Project: title, description, icon, iconColor, repo, tech, featured (true/false) · Testimonial: quote, name, role, stars, link
+      placeholder: |
+        location: Berlin, Germany
+        topics: Kubernetes, GKE, AI Agents
+  - type: textarea
+    id: add_resources
+    attributes:
+      label: Add resources
+      description: "Speaking events only. One per line: `type | url` or `type | label | url`. Types: event, slides, code, demo, video, blog. You can drag a PDF in for slides."
+      placeholder: |
+        video | https://youtube.com/watch?v=...
+        blog | My write-up | https://medium.com/@nomadicmehul/...
+  - type: input
+    id: remove_resources
+    attributes:
+      label: Remove resources
+      description: "Speaking events only. Comma-separated types to remove, e.g. `slides, demo`"

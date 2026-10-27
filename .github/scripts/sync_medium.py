@@ -54,7 +54,7 @@ def parse_feed(xml_bytes):
 
 
 def main():
-    req = urllib.request.Request(FEED_URL, headers={"User-Agent": "Mozilla/5.0 (blog-sync; +https://nomadicmehul.github.io)"})
+    req = urllib.request.Request(FEED_URL, headers={"User-Agent": "Mozilla/5.0 (blog-sync; +https://nomadicmehul.dev)"})
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             fresh = parse_feed(resp.read())
