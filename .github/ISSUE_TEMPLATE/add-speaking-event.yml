@@ -54,11 +54,11 @@ body:
     attributes:
       label: Event page URL
       placeholder: https://...
-  - type: input
+  - type: textarea
     id: slides_url
     attributes:
       label: Slides
-      description: A full URL, or the filename of a deck already in assets/slides/ (e.g. my-talk.pdf)
+      description: Drag a PDF here to upload it, paste a full URL, or give the filename of a deck already in assets/slides/ (e.g. my-talk.pdf)
   - type: input
     id: code_url
     attributes:

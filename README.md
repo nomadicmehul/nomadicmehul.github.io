@@ -15,6 +15,40 @@ A Linux terminal-inspired portfolio theme for developers, DevOps engineers, and 
 
 ---
 
+## Updating Content (no code needed)
+
+Add speaking events, projects and testimonials by filling in a GitHub issue form. A workflow validates the entry, commits it to `data/*.json`, redeploys the site and closes the issue.
+
+| What | Open the form |
+|------|---------------|
+| 🎤 Speaking event | [Add speaking event](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-speaking-event.yml) |
+| 🚀 Project | [Add project](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-project.yml) |
+| 💬 Testimonial | [Add testimonial](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-testimonial.yml) |
+| 📝 Blog posts | Nothing to do: synced from Medium daily. To sync now: **Actions → Sync Medium posts → Run workflow** |
+
+All forms: [Issues → New issue](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new/choose)
+
+**How it works**
+
+1. Open a form, fill it in, click **Submit new issue**
+2. Within about a minute, the **Issue form → site data** workflow runs ([Actions tab](https://github.com/nomadicmehul/nomadicmehul.github.io/actions/workflows/issue-to-data.yml))
+3. On success, it comments the added JSON on the issue, closes it, and the site redeploys (another minute or two)
+4. If something is invalid (bad date, broken URL, duplicate), it comments the errors instead: **edit the issue** to fix them and it re-runs
+
+**Tips**
+
+- Only issues opened by the repo owner are processed; anyone else's submissions are ignored.
+- **Slides:** paste a full URL, drag a PDF into the field (GitHub uploads it and inserts a link), or use the filename of a deck already in `assets/slides/`.
+- **Topics / Tech:** comma-separated, e.g. `Kubernetes, GKE, AI Agents`.
+- **Date:** `YYYY-MM-DD`. Events are placed in date order automatically.
+- To edit or remove an existing entry, change the JSON in `data/` directly (on github.com: open the file → ✏️ edit → commit).
+
+**One-time setup** (required before the forms work)
+
+1. Create the labels `data:speaking`, `data:project` and `data:testimonial` (**Issues → Labels → New label**). The forms apply them, and the workflow only runs on labelled issues.
+2. **Settings → Pages → Source:** GitHub Actions.
+3. If `main` has branch protection, allow GitHub Actions to push to it.
+
 ## What You Get
 
 - **Terminal prompt navigation** — `root@you:~#` with colored segments and blinking cursor

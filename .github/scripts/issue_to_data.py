@@ -74,6 +74,10 @@ def build_speaking(f, errors):
         url = f.get(label, "")
         if not url:
             continue
+        # a file dragged into the form arrives as a markdown link: [talk.pdf](https://github.com/user-attachments/...)
+        link = re.search(r"\]\((https?://[^)\s]+)\)", url)
+        if link:
+            url = link.group(1)
         # slides may be a bare filename in assets/slides/; everything else must be a URL
         if rtype == "slides" and not url.startswith("http"):
             if not (ROOT / "assets" / "slides" / url).exists():
