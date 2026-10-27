@@ -1,0 +1,41 @@
+name: "💬 Add testimonial"
+description: Add a testimonial to data/testimonials.json — the site updates automatically.
+title: "[testimonial] "
+labels: ["data:testimonial"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Submitting this form commits the testimonial to `data/testimonials.json` and redeploys the site.
+        Only issues opened by the repo owner are processed.
+  - type: textarea
+    id: quote
+    attributes:
+      label: Quote
+    validations:
+      required: true
+  - type: input
+    id: name
+    attributes:
+      label: Name
+    validations:
+      required: true
+  - type: input
+    id: role
+    attributes:
+      label: Role
+      placeholder: Workshop Participant
+    validations:
+      required: true
+  - type: dropdown
+    id: stars
+    attributes:
+      label: Stars
+      options: ["5", "4", "3", "2", "1"]
+      default: 0
+  - type: input
+    id: link
+    attributes:
+      label: Link
+      description: Optional source link (LinkedIn post, etc.)
+      placeholder: https://...

@@ -378,32 +378,7 @@
     </footer>
 
     <script>
-        const MEDIUM_RSS_URL = 'https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@nomadicmehul';
-
         let allArticles = [];
-
-        // Extract first image from HTML string
-        function extractImage(html) {
-            if (!html) return null;
-            const match = html.match(/<img[^>]+src="([^"]+)"/);
-            return match ? match[1] : null;
-        }
-
-        // Strip HTML tags and decode entities
-        function stripHtml(html) {
-            if (!html) return '';
-            const tmp = document.createElement('div');
-            tmp.innerHTML = html;
-            return tmp.textContent || tmp.innerText || '';
-        }
-
-        // Estimate read time from content
-        function estimateReadTime(html) {
-            const text = stripHtml(html);
-            const words = text.split(/\s+/).filter(Boolean).length;
-            const minutes = Math.max(1, Math.round(words / 200));
-            return minutes + ' min read';
-        }
 
         // Format date
         function formatDate(dateStr) {
@@ -491,29 +466,17 @@
             });
         }
 
-        // Parse RSS items into our article format
-        function parseItems(items) {
-            return items.map(item => ({
-                title: item.title,
-                link: item.link,
-                pubDate: item.pubDate,
-                excerpt: stripHtml(item.description).substring(0, 160).trim() + '...',
-                thumbnail: item.thumbnail || extractImage(item.description) || extractImage(item.content),
-                categories: item.categories || [],
-                readTime: estimateReadTime(item.content || item.description)
-            }));
-        }
-
+        // Articles are synced from Medium into data/blog.json by .github/workflows/sync-medium.yml
         async function loadBlog() {
             try {
-                const response = await fetch(MEDIUM_RSS_URL);
-                if (!response.ok) throw new Error('RSS fetch failed');
-                const data = await response.json();
-                if (data.status !== 'ok' || !data.items) throw new Error('Invalid RSS response');
-                allArticles = parseItems(data.items);
+                const response = await fetch('data/blog.json');
+                if (!response.ok) throw new Error('blog.json fetch failed');
+                allArticles = await response.json();
             } catch (e) {
-                console.warn('Failed to load Medium RSS, using fallback:', e);
-                allArticles = parseItems(__inlineBlog);
+                console.warn('Failed to load data/blog.json:', e);
+                document.getElementById('showing-count').textContent = '';
+                document.getElementById('blog-grid').innerHTML = '<div class="no-results"><i class="fab fa-medium"></i><p>Couldn\'t load articles &mdash; read them on <a href="https://medium.com/@nomadicmehul" target="_blank" rel="noopener" style="color:var(--term-green)">Medium</a>.</p></div>';
+                return;
             }
 
             // Update stats
@@ -525,37 +488,6 @@
             buildFilters();
             renderArticles(allArticles);
         }
-
-        // Inline fallback data for file:// protocol support
-        const __inlineBlog = [
-            {
-                title: "ServerlessDays Auckland 2018",
-                link: "https://medium.com/@nomadicmehul/serverlessdays-auckland-2018-8e3a78e8793e",
-                pubDate: "2018-09-01 00:00:00",
-                description: "A recap of ServerlessDays Auckland 2018 conference experience and key takeaways from the serverless community.",
-                content: "A recap of ServerlessDays Auckland 2018 conference experience and key takeaways from the serverless community.",
-                thumbnail: "",
-                categories: ["serverless", "cloud", "conference"]
-            },
-            {
-                title: "Getting Started with Docker",
-                link: "https://medium.com/@nomadicmehul",
-                pubDate: "2020-01-15 00:00:00",
-                description: "A beginner-friendly guide to understanding Docker containers, images, and the container ecosystem.",
-                content: "A beginner-friendly guide to understanding Docker containers, images, and the container ecosystem.",
-                thumbnail: "",
-                categories: ["docker", "devops", "containers"]
-            },
-            {
-                title: "Cloud Native Journey",
-                link: "https://medium.com/@nomadicmehul",
-                pubDate: "2021-06-10 00:00:00",
-                description: "Exploring the cloud-native landscape and best practices for modern application deployment.",
-                content: "Exploring the cloud-native landscape and best practices for modern application deployment.",
-                thumbnail: "",
-                categories: ["cloud", "kubernetes", "devops"]
-            }
-        ];
 
         loadBlog();
     </script>

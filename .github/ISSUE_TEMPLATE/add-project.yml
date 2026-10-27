@@ -1,0 +1,55 @@
+name: "🚀 Add project"
+description: Add an open-source project to data/projects.json — the site updates automatically.
+title: "[project] "
+labels: ["data:project"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Submitting this form commits the project to `data/projects.json` and redeploys the site.
+        Only issues opened by the repo owner are processed.
+  - type: input
+    id: title
+    attributes:
+      label: Project title
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+    validations:
+      required: true
+  - type: input
+    id: repo
+    attributes:
+      label: GitHub repo URL
+      placeholder: https://github.com/nomadicmehul/...
+    validations:
+      required: true
+  - type: input
+    id: tech
+    attributes:
+      label: Tech
+      description: Comma-separated
+      placeholder: Python, MCP, Azure
+    validations:
+      required: true
+  - type: input
+    id: icon
+    attributes:
+      label: Icon
+      description: FontAwesome 6 class (https://fontawesome.com/v6/search?ic=free)
+      value: fas fa-code
+  - type: input
+    id: icon_color
+    attributes:
+      label: Icon color
+      description: Hex color
+      value: "#4ade80"
+  - type: checkboxes
+    id: featured
+    attributes:
+      label: Featured
+      options:
+        - label: Show on the home page

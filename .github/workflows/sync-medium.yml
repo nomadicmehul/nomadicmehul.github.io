@@ -1,0 +1,37 @@
+name: Sync Medium posts
+
+# Browsers can't read Medium's RSS directly (no CORS) and the rss2json proxy is
+# behind a Cloudflare challenge, so fetch the feed here and commit data/blog.json.
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # daily, 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Fetch feed into data/blog.json
+        run: python3 .github/scripts/sync_medium.py
+
+      - name: Commit, push and redeploy if changed
+        run: |
+          git diff --quiet data/blog.json && { echo "No new posts"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/blog.json
+          git commit -m "data: sync Medium posts"
+          git push origin main
+          # pushes made with GITHUB_TOKEN don't trigger other workflows, so start the deploy explicitly
+          gh workflow run deploy.yml --ref main --repo "$GITHUB_REPOSITORY"
