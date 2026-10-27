@@ -147,16 +147,18 @@ Resources render as colored action buttons on each event card. Add only what you
 
 ### Role Types
 
-The `role` field shows colored badges indicating your role at the event. Supports a single string or array for multiple roles.
+The `role` field accepts a single string or an array of strings. The list of roles lives in **`data/roles.json`**, the one place to add, rename or recolor a role:
 
-| Role | Color |
-|------|-------|
-| `Speaker` | Green |
-| `Event Organizer` | Amber |
-| `Mentor` | Purple |
-| `Panelist` | Cyan |
-| `Workshop Lead` | Blue |
-| `Workshop Facilitator` | Blue |
+```json
+{ "name": "Keynote Speaker", "icon": "fas fa-star", "color": "red" }
+```
+
+- `icon`: any FontAwesome 6 class
+- `color`: `green`, `amber`, `purple`, `cyan`, `blue`, `red` or `default` (grey)
+
+Both pages render badges from it, and the role checkboxes in the **Add speaking event** and **Update or remove speaking event** issue forms are regenerated from it automatically. Deploy fails if an event uses a role that isn't in `roles.json`.
+
+Current roles: Speaker (green), Event Organizer (amber), Mentor (purple), Panelist (cyan), Workshop Lead and Workshop Facilitator (blue).
 
 ### Adding a New Event
 

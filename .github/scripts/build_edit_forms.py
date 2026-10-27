@@ -5,8 +5,12 @@ Issue-form dropdowns are static YAML, so this rewrites the forms whenever the
 data changes (run by issue-to-data.yml and edit-forms.yml). Each form lists
 every current entry in a dropdown, using the labels issue_to_data.py matches
 on, followed by that type's own edit fields (TYPES[kind]["edit_inputs"]).
+
+Also refreshes the role checkboxes in add-speaking-event.yml (between the
+roles:start / roles:end markers) from data/roles.json.
 """
 import json
+import re
 
 from issue_to_data import EDIT_FIELDS, ROLES, ROOT, TYPES, entry_labels
 
@@ -96,7 +100,17 @@ def render(kind):
     return filename, len(data)
 
 
+def sync_add_form_roles():
+    path = OUT / "add-speaking-event.yml"
+    block = "      options:\n" + "".join(f"        - label: {q(r)}\n" for r in ROLES)
+    s, n = re.subn(r"(# roles:start[^\n]*\n).*?(      # roles:end)", lambda m: m.group(1) + block + m.group(2), path.read_text(), flags=re.S)
+    assert n == 1, "roles:start / roles:end markers missing from add-speaking-event.yml"
+    path.write_text(s)
+    print(f"add-speaking-event.yml: {len(ROLES)} roles")
+
+
 def main():
+    sync_add_form_roles()
     for kind in FORMS:
         filename, n = render(kind)
         print(f"{filename}: {n} entries")

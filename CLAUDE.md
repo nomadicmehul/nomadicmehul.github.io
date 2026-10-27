@@ -34,6 +34,7 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 │   ├── speaking.json       # All speaking events (source of truth)
 │   ├── projects.json       # Featured projects
 │   ├── testimonials.json   # Testimonials
+│   ├── roles.json          # Speaking role list (name, icon, color) — single source for pages + forms
 │   └── blog.json           # Medium posts — auto-synced, don't hand-edit
 │
 ├── assets/
@@ -113,16 +114,18 @@ Each resource is an object with `type`, `label`, and `url`.
 
 ### Role Types
 
-The `role` field accepts a single string or an array of strings.
+The `role` field accepts a single string or an array of strings. The list of roles lives in **`data/roles.json`**, the one place to add, rename or recolor a role:
 
-| Role | Badge Color | Icon |
-|------|-------------|------|
-| `Speaker` | Green | Microphone |
-| `Event Organizer` | Amber | Users-cog |
-| `Mentor` | Purple | Chalkboard |
-| `Panelist` | Cyan | Comments |
-| `Workshop Lead` | Blue | Laptop |
-| `Workshop Facilitator` | Blue | Laptop |
+```json
+{ "name": "Keynote Speaker", "icon": "fas fa-star", "color": "red" }
+```
+
+- `icon`: any FontAwesome 6 class
+- `color`: `green`, `amber`, `purple`, `cyan`, `blue`, `red` or `default` (grey)
+
+Both pages render badges from it, and the role checkboxes in the **Add speaking event** and **Update or remove speaking event** issue forms are regenerated from it automatically. Deploy fails if an event uses a role that isn't in `roles.json`.
+
+Current roles: Speaker (green), Event Organizer (amber), Mentor (purple), Panelist (cyan), Workshop Lead and Workshop Facilitator (blue).
 
 ### projects.json Structure
 

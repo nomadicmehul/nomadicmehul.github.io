@@ -24,7 +24,7 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-ROLES = ["Speaker", "Event Organizer", "Mentor", "Panelist", "Workshop Lead", "Workshop Facilitator"]
+ROLES = [r["name"] for r in json.loads((ROOT / "data" / "roles.json").read_text())]
 # (add-form label, resource type, button label) — order matches the speaking card buttons
 RESOURCE_FIELDS = [
     ("Event page URL", "event", "Event Page"),
