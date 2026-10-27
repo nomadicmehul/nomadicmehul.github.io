@@ -41,6 +41,7 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 │   ├── img/profile.jpg     # Profile photo
 │   ├── favicon.svg         # SVG favicon (terminal prompt)
 │   ├── slides/             # Slide decks for speaking events (PDF/PPTX)
+│   ├── og-image.png        # Link-preview image (generated — see below)
 │   └── Mehul_Patel_Resume.pdf
 │
 └── .github/
@@ -212,6 +213,7 @@ Commits made by workflows with `GITHUB_TOKEN` don't trigger other workflows, so 
 
 - **No build step** — edit HTML/CSS/JS directly, push, and GitHub Pages serves it
 - **Single source of truth** — content lives only in the `data/*.json` files; edit those and the pages pick it up via `fetch()`. There is no inline duplicate to update.
+- **Link-preview image** — `assets/og-image.png` (1200×630) is rendered from `.github/og-card/card.html` by `.github/og-card/render.sh` (headless Chrome). All pages' `og:image`/`twitter:image` point at it. When titles, recognitions or headline stats change, update `card.html` and re-run the script; LinkedIn caches previews, so refresh with its Post Inspector.
 - **Self-contained pages** — each HTML file carries its own inline CSS and JS (matrix rain, nav, etc.); there is no shared stylesheet/script. Personal content (hero, about, skills, Awards & Community Roles, ticker, social links) is hardcoded in `index.html`.
 - **Deploys via GitHub Actions** (Pages source = GitHub Actions), so no Jekyll runs and `.nojekyll` isn't needed. `upload-pages-artifact` v4+ skips dotfiles, so don't rely on any dotfile being served.
 - **Local dev** — Run `python3 -m http.server 8080` from project root and open `http://localhost:8080`

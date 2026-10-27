@@ -126,6 +126,7 @@ Open `http://localhost:8000` and start customizing.
 | `assets/img/profile.jpg` | Your profile photo |
 | `assets/slides/` | Slide decks (PDF/PPTX) for speaking events |
 | `assets/favicon.svg` | Your favicon (edit the SVG) |
+| `.github/og-card/card.html` | Link-preview image shown on LinkedIn, X, Slack, WhatsApp. Edit, then run `.github/og-card/render.sh` to regenerate `assets/og-image.png` (needs Chrome) |
 | `index.html` | Name, hero, about, skills, recognition, social links |
 | `speaking.html` | Page title and description |
 | `projects.html` | Page title and description |
@@ -212,6 +213,7 @@ The easy way is the [Add speaking event](https://github.com/nomadicmehul/nomadic
 │   ├── img/
 │   │   └── profile.jpg     # Profile photo
 │   ├── slides/             # Slide decks for speaking events (PDF/PPTX)
+│   ├── og-image.png        # 1200×630 link-preview image (generated from .github/og-card/)
 │   └── favicon.svg         # Terminal prompt favicon
 └── data/
     ├── projects.json       # Projects data
@@ -221,6 +223,7 @@ The easy way is the [Add speaking event](https://github.com/nomadicmehul/nomadic
     └── blog.json           # Medium posts (auto-synced)
 .github/
 ├── ISSUE_TEMPLATE/         # Add / update-or-remove forms (update forms are generated)
+├── og-card/                # Source + render script for assets/og-image.png
 ├── scripts/                # Python behind the workflows (no dependencies)
 └── workflows/              # See Automation
 ```
