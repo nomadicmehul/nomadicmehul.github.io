@@ -24,27 +24,55 @@
 
     <!-- Canonical & Favicon -->
     <link rel="canonical" href="https://nomadicmehul.dev/">
-    <!-- Structured data for search engines (schema.org Person) -->
+    <!-- Structured data for search engines: a ProfilePage about one Person (Google's supported type for
+         "About me" pages; a bare Person isn't a rich-result type, so the Rich Results Test ignores it) -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Mehul Patel",
+        "@type": "ProfilePage",
         "url": "https://nomadicmehul.dev/",
-        "image": "https://nomadicmehul.dev/assets/img/profile.jpg",
-        "jobTitle": "DevOps & Cloud Expert",
-        "description": "DevOps and Cloud expert, Docker Captain, Google Developer Expert and AWS Community Builder. 500+ sessions across 25+ countries.",
-        "address": { "@type": "PostalAddress", "addressLocality": "Berlin", "addressCountry": "DE" },
-        "knowsAbout": ["DevOps", "Cloud Computing", "Kubernetes", "Docker", "Google Cloud", "AWS", "Azure", "Terraform", "AI Agents", "Model Context Protocol"],
-        "award": ["Docker Captain", "Google Developer Expert", "AWS Community Builder", "Auth0 Ambassador", "Claude Ambassador"],
-        "sameAs": [
-            "https://github.com/nomadicmehul",
-            "https://www.linkedin.com/in/nomadicmehul/",
-            "https://twitter.com/nomadicmehul",
-            "https://www.youtube.com/@nomadicmehul",
-            "https://www.instagram.com/nomadicmehul/",
-            "https://medium.com/@nomadicmehul"
-        ]
+        "name": "Mehul Patel — DevOps & Cloud Expert",
+        "mainEntity": {
+            "@type": "Person",
+            "name": "Mehul Patel",
+            "url": "https://nomadicmehul.dev/",
+            "image": "https://nomadicmehul.dev/assets/img/profile.jpg",
+            "jobTitle": "DevOps & Cloud Expert",
+            "description": "DevOps and Cloud expert, Docker Captain, Google Developer Expert and AWS Community Builder. 500+ sessions across 25+ countries.",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Berlin",
+                "addressCountry": "DE"
+            },
+            "knowsAbout": [
+                "DevOps",
+                "Cloud Computing",
+                "Kubernetes",
+                "Docker",
+                "Google Cloud",
+                "AWS",
+                "Azure",
+                "Terraform",
+                "AI Agents",
+                "Model Context Protocol"
+            ],
+            "award": [
+                "Docker Captain",
+                "Google Developer Expert",
+                "AWS Community Builder",
+                "Auth0 Ambassador",
+                "Claude Ambassador"
+            ],
+            "sameAs": [
+                "https://github.com/nomadicmehul",
+                "https://www.linkedin.com/in/nomadicmehul/",
+                "https://twitter.com/nomadicmehul",
+                "https://www.youtube.com/@nomadicmehul",
+                "https://www.instagram.com/nomadicmehul/",
+                "https://medium.com/@nomadicmehul"
+            ],
+            "@id": "https://nomadicmehul.dev/#person"
+        }
     }
     </script>
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
