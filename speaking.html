@@ -153,7 +153,7 @@
         .year-group { margin-bottom: 48px; }
         .year-header {
             display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
-            position: sticky; top: 130px; z-index: 10;
+            position: sticky; top: calc(72px + var(--filter-h, 58px)); z-index: 10;
             background: var(--bg-primary); padding: 8px 0;
         }
         .year-label {
@@ -336,6 +336,18 @@
             .mobile-toggle { display: block; }
             .stats-bar { gap: 16px; }
             .nav-logo { font-size: 1rem; }
+            .filter-bar { padding: 10px 0; }
+            .filter-inner { flex-wrap: nowrap; gap: 12px; }
+            .year-filters {
+                flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0;
+                margin-left: -24px; padding: 2px 24px; scroll-padding-inline: 24px;
+                -webkit-mask-image: linear-gradient(90deg, transparent, #000 20px, #000 calc(100% - 28px), transparent);
+                mask-image: linear-gradient(90deg, transparent, #000 20px, #000 calc(100% - 28px), transparent);
+            }
+            .year-filters::-webkit-scrollbar { display: none; }
+            .year-btn { flex-shrink: 0; }
+            .event-count { font-size: 0.75rem; white-space: nowrap; }
+            .count-verb { display: none; }
         }
         @media (max-width: 480px) { .nav-logo { font-size: 0.85rem; } .footer p { font-size: 0.75rem; } }
 
@@ -526,10 +538,15 @@
                 if (!e.target.classList.contains('year-btn')) return;
                 filtersContainer.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
+                e.target.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
                 renderTimeline(e.target.dataset.year);
             });
 
             renderTimeline('all');
+
+            // year headers stick just below the filter bar, whose height changes with screen width
+            const bar = document.querySelector('.filter-bar');
+            new ResizeObserver(() => document.documentElement.style.setProperty('--filter-h', bar.offsetHeight + 'px')).observe(bar);
         }
 
         // Web URLs as-is; event files are paths from the site root (assets/events/...);
@@ -560,7 +577,7 @@
             const container = document.getElementById('timeline-container');
             const filtered = filterYear === 'all' ? allEvents : allEvents.filter(e => e.year == filterYear);
 
-            document.getElementById('event-count').textContent = `Showing ${filtered.length} event${filtered.length !== 1 ? 's' : ''}`;
+            document.getElementById('event-count').innerHTML = `<span class="count-verb">Showing </span>${filtered.length} event${filtered.length !== 1 ? 's' : ''}`;
 
             if (filtered.length === 0) {
                 container.innerHTML = '<div class="no-results"><i class="fas fa-calendar-xmark"></i><p>No events found.</p></div>';
