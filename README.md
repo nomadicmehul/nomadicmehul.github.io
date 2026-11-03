@@ -21,7 +21,7 @@ Add, update or remove speaking events, projects and testimonials by filling in a
 
 ### 📅 Speaking events: [Content Studio](https://nomadicmehul.dev/studio.html)
 
-A page on the site for adding or editing speaking events: **calendar date picker**, role chips, topic and location suggestions from past events, a **live preview** of the card, duplicate checks, and drafts that survive a reload. When it's ready, **Add event on GitHub** opens the issue already filled in. If you're attaching slides, drag the file in there, then submit. **Edit event** lets you search any event, change it, and sends only what changed (or removes it).
+A page on the site for adding or editing speaking events: **calendar date picker**, role chips, topic suggestions from past events, **location autocomplete** (your past places first, then cities worldwide as you type), a **live preview** of the card, duplicate checks, and drafts that survive a reload. When it's ready, **Add event on GitHub** opens the issue already filled in. If you're attaching slides, drag the file in there, then submit. **Edit event** lets you search any event, change it, and sends only what changed (or removes it).
 
 ### 👉 Everything else: [MANAGE.md](https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md)
 

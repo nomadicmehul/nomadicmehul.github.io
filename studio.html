@@ -119,6 +119,23 @@
         .date-wrap .input::-webkit-calendar-picker-indicator { filter: invert(0.8); cursor: pointer; }
         .date-quick { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
 
+        /* Location autocomplete */
+        .combo { position: relative; }
+        .combo > i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--term-green); pointer-events: none; }
+        .combo .input { padding-left: 38px; }
+        .combo-list {
+            position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 60; max-height: 340px; overflow: auto;
+            background: var(--bg-elevated); border: 1px solid var(--border-hover); border-radius: 10px; padding: 6px; box-shadow: var(--shadow-lg);
+        }
+        .combo-head { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); padding: 8px 10px 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .combo-opt { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 7px; cursor: pointer; }
+        .combo-opt[aria-selected="true"] { background: rgba(74, 222, 128, 0.12); }
+        .combo-opt .flag { width: 22px; text-align: center; font-size: 1.05rem; flex-shrink: 0; color: var(--text-muted); }
+        .combo-opt .main { font-size: 0.9rem; }
+        .combo-opt .main mark { background: none; color: var(--term-green); font-weight: 700; }
+        .combo-opt .sub { font-size: 0.75rem; color: var(--text-muted); margin-left: auto; text-align: right; white-space: nowrap; }
+        .combo-note { font-size: 0.8rem; color: var(--text-muted); padding: 8px 10px; }
+
         /* Chips */
         .chips { display: flex; flex-wrap: wrap; gap: 8px; }
         .chip {
@@ -374,8 +391,11 @@
                                 </div>
                                 <div class="field">
                                     <label class="lbl" for="f-location">--location <span class="req">*</span></label>
-                                    <input class="input" id="f-location" list="locations" placeholder="Berlin, Germany">
-                                    <datalist id="locations"></datalist>
+                                    <div class="combo">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <input class="input" id="f-location" placeholder="Start typing a city…" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="loc-list" spellcheck="false">
+                                        <div class="combo-list" id="loc-list" role="listbox" aria-label="Location suggestions" hidden></div>
+                                    </div>
                                     <div class="help" id="h-location"></div>
                                 </div>
                             </div>
@@ -462,6 +482,7 @@
         const todayIso = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
 
         let EVENTS = [], ROLES = [], LABELS = [], TOPICS = [];
+        const PAST_LOCS = {};   // location → number of events there
         let mode = 'new', original = null, originalIndex = -1;
         let state = blank();
 
@@ -510,8 +531,7 @@
             TOPICS = Object.keys(count).sort((a, b) => count[b] - count[a])
                 .map(k => Object.entries(spelling[k]).sort((a, b) => b[1] - a[1])[0][0]);
             $('topic-list').innerHTML = TOPICS.map(t => `<option value="${esc(t)}">`).join('');
-            const locs = [...new Set(EVENTS.map(e => e.location))].sort();
-            $('locations').innerHTML = locs.map(l => `<option value="${esc(l)}">`).join('');
+            EVENTS.forEach(e => { PAST_LOCS[e.location] = (PAST_LOCS[e.location] || 0) + 1; });
             $('picker-count').textContent = `${EVENTS.length} events`;
 
             $('loading').hidden = true; $('studio').hidden = false;
@@ -559,6 +579,7 @@
             $('editing-title').textContent = e.title;
             $('editing-meta').textContent = `${e.date || e.year} · ${e.location}` + (e.updated ? ` · last changed ${e.updated}` : '');
             $('fields').hidden = false; $('side').hidden = false;
+            touched = new Set();
             disarmRemove();
             render();
             $('f-title').focus();
@@ -567,6 +588,7 @@
         // ---------- form → state ----------
         function bindInputs() {
             ['title', 'date', 'location'].forEach(k => $('f-' + k).addEventListener('input', e => { state[k] = e.target.value; update(); }));
+            bindLocation();
             // open the calendar on any click, not just the small icon
             $('f-date').addEventListener('click', e => { try { e.target.showPicker(); } catch (_) {} });
             document.querySelectorAll('.date-quick .chip').forEach(b => b.addEventListener('click', () => {
@@ -616,6 +638,104 @@
                 renderResources(); update();
                 $('res-list').lastElementChild?.querySelector('input')?.focus();
             });
+        }
+
+        // ---------- location autocomplete: places used before, then cities worldwide ----------
+        // City search: Open-Meteo geocoding (free, no key, CORS). Country names follow the spelling already in speaking.json.
+        const GEO_URL = 'https://geocoding-api.open-meteo.com/v1/search?count=8&language=en&format=json&name=';
+        const COUNTRY_NAMES = { 'Czechia': 'Czech Republic', 'United Kingdom': 'UK', 'United States': 'USA', 'Türkiye': 'Turkey' };
+        const ONLINE = ['Virtual', 'Global (Virtual)'];
+        const geoCache = {};
+        let locOpts = [], locActive = -1, locTimer, locAbort;
+
+        const flag = cc => cc ? String.fromCodePoint(...[...cc.toUpperCase()].map(c => 0x1F1A5 + c.charCodeAt(0))) : '';
+        const highlight = (text, q) => {
+            const i = q ? text.toLowerCase().indexOf(q.toLowerCase()) : -1;
+            return i < 0 ? esc(text) : esc(text.slice(0, i)) + '<mark>' + esc(text.slice(i, i + q.length)) + '</mark>' + esc(text.slice(i + q.length));
+        };
+        const people = n => n >= 1e6 ? (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M people' : n >= 1e3 ? Math.round(n / 1e3) + 'k people' : '';
+
+        function bindLocation() {
+            const input = $('f-location');
+            input.addEventListener('input', () => suggestLocations(input.value));
+            input.addEventListener('focus', () => suggestLocations(input.value));
+            input.addEventListener('blur', () => setTimeout(closeLocations, 120));
+            input.addEventListener('keydown', e => {
+                if ($('loc-list').hidden) { if (e.key === 'ArrowDown') { suggestLocations(input.value); e.preventDefault(); } return; }
+                const n = locOpts.length;
+                if (e.key === 'ArrowDown' && n) { locActive = (locActive + 1) % n; paintActive(); e.preventDefault(); }
+                else if (e.key === 'ArrowUp' && n) { locActive = (locActive - 1 + n) % n; paintActive(); e.preventDefault(); }
+                else if (e.key === 'Enter') { e.preventDefault(); if (locActive >= 0) chooseLocation(locOpts[locActive].value); else closeLocations(); }
+                else if (e.key === 'Escape') { closeLocations(); }
+            });
+            $('loc-list').addEventListener('mousedown', e => e.preventDefault());   // keep focus in the input
+            $('loc-list').addEventListener('click', e => { const o = e.target.closest('.combo-opt'); if (o) chooseLocation(locOpts[Number(o.dataset.i)].value); });
+        }
+
+        function suggestLocations(raw) {
+            const q = raw.trim();
+            const past = Object.keys(PAST_LOCS)
+                .filter(l => !q || l.toLowerCase().includes(q.toLowerCase()))
+                .sort((a, b) => PAST_LOCS[b] - PAST_LOCS[a])
+                .slice(0, q ? 5 : 6)
+                .map(l => ({ value: l, icon: /virtual|global/i.test(l) ? '<i class="fas fa-globe"></i>' : '<i class="fas fa-clock-rotate-left"></i>', sub: `${PAST_LOCS[l]} event${PAST_LOCS[l] > 1 ? 's' : ''}` }));
+            const online = q ? ONLINE.filter(l => l.toLowerCase().startsWith(q.toLowerCase()) && !PAST_LOCS[l]).map(l => ({ value: l, icon: '<i class="fas fa-globe"></i>', sub: 'online' })) : [];
+            renderLocations(q, [...past, ...online], q.length >= 2 ? (geoCache[q.toLowerCase()] || 'loading') : null);
+            clearTimeout(locTimer);
+            if (q.length >= 2 && !geoCache[q.toLowerCase()]) locTimer = setTimeout(() => searchCities(q), 220);
+        }
+
+        async function searchCities(q) {
+            locAbort?.abort(); locAbort = new AbortController();
+            let cities = [];
+            try {
+                const res = await fetch(GEO_URL + encodeURIComponent(q), { signal: locAbort.signal });
+                const seen = new Set();
+                cities = ((await res.json()).results || []).map(r => {
+                    const country = COUNTRY_NAMES[r.country] || r.country || '';
+                    return { value: country ? `${r.name}, ${country}` : r.name, icon: flag(r.country_code), sub: [r.admin1 !== r.name && r.admin1, people(r.population || 0)].filter(Boolean).join(' · ') };
+                }).filter(c => !seen.has(c.value) && seen.add(c.value));
+            } catch (e) {
+                if (e.name === 'AbortError') return;
+                cities = 'offline';
+            }
+            geoCache[q.toLowerCase()] = cities;
+            if ($('f-location').value.trim() === q && document.activeElement === $('f-location')) suggestLocations(q);
+        }
+
+        function renderLocations(q, mine, cities) {
+            const cityOpts = Array.isArray(cities) ? cities.filter(c => !mine.some(m => m.value === c.value)) : [];
+            locOpts = [...mine, ...cityOpts];
+            locActive = q && locOpts.length ? 0 : -1;
+            const opt = (o, i) => `<div class="combo-opt" role="option" id="loc-${i}" data-i="${i}" aria-selected="false"><span class="flag">${o.icon}</span><span class="main">${highlight(o.value, q)}</span><span class="sub">${esc(o.sub)}</span></div>`;
+            let html = '';
+            if (mine.length) html += '<div class="combo-head">Used before</div>' + mine.map(opt).join('');
+            if (cities === 'loading') html += '<div class="combo-note"><i class="fas fa-circle-notch fa-spin"></i> Searching cities…</div>';
+            else if (cities === 'offline') html += '<div class="combo-note">City search is unavailable — type it as “City, Country”.</div>';
+            else if (cityOpts.length) html += '<div class="combo-head">Cities</div>' + cityOpts.map((o, i) => opt(o, i + mine.length)).join('');
+            else if (cities && !mine.length) html += `<div class="combo-note">No matches — “${esc(q)}” will be used as typed.</div>`;
+            $('loc-list').innerHTML = html;
+            $('loc-list').hidden = !html;
+            $('f-location').setAttribute('aria-expanded', String(!!html));
+            paintActive();
+        }
+
+        function paintActive() {
+            $('loc-list').querySelectorAll('.combo-opt').forEach(o => o.setAttribute('aria-selected', String(Number(o.dataset.i) === locActive)));
+            const act = $('loc-' + locActive);
+            act?.scrollIntoView({ block: 'nearest' });
+            $('f-location').setAttribute('aria-activedescendant', act ? act.id : '');
+        }
+
+        function chooseLocation(value) {
+            state.location = $('f-location').value = value;
+            closeLocations(); update();
+        }
+
+        function closeLocations() {
+            clearTimeout(locTimer);
+            $('loc-list').hidden = true; locActive = -1;
+            $('f-location').setAttribute('aria-expanded', 'false');
         }
 
         function addTopic(raw) {
@@ -706,7 +826,7 @@
             if (!s.title.trim()) errs.title = 'Required';
             if (!/^\d{4}-\d{2}-\d{2}$/.test(s.date)) errs.date = 'Pick a date';
             if (!s.location.trim()) errs.location = 'Required';
-            else if (!s.location.includes(',')) warns.location = 'Tip: "City, Country"';
+            else if (!s.location.includes(',') && !PAST_LOCS[s.location.trim()] && !/virtual|online/i.test(s.location)) warns.location = 'Tip: "City, Country" — pick from the list';
             if (!s.topics.length) errs.topics = 'Add at least one topic';
             if (!s.roles.length) warns.roles = 'No role picked — it will be saved as Speaker';
             s.resources.forEach((r, i) => {
@@ -722,11 +842,13 @@
             return { errs, warns };
         }
 
+        // a field's error shows once you've left it, or after trying to continue
+        const shown = id => touched.has('*') || touched.has(id);
         function setHelp(id, errs, warns, ok = '') {
-            const el = $('h-' + id), input = $('f-' + id);
-            el.className = 'help' + (errs[id] ? ' err' : warns[id] ? ' warn' : ok ? ' ok' : '');
-            el.textContent = errs[id] || warns[id] || ok;
-            input?.classList.toggle('invalid', !!errs[id] && touched);
+            const el = $('h-' + id), input = $('f-' + id), err = shown(id) && errs[id];
+            el.className = 'help' + (err ? ' err' : warns[id] ? ' warn' : ok ? ' ok' : '');
+            el.textContent = err || warns[id] || ok;
+            input?.classList.toggle('invalid', !!err);
         }
 
         function dateHelp() {
@@ -791,7 +913,7 @@
             `https://github.com/${REPO}/issues/new?` + new URLSearchParams({ title, labels, body }).toString();
 
         // ---------- update everything that depends on state ----------
-        let touched = false;
+        let touched = new Set();   // ids of fields the user has left; '*' = tried to continue
         function update() {
             if (mode === 'edit' && !original) return;   // nothing picked yet
             renderPreview();
@@ -801,7 +923,7 @@
             setHelp('location', errs, warns);
             setHelp('topics', errs, warns);
             setHelp('roles', errs, warns);
-            $('topic-box').classList.toggle('invalid', !!errs.topics && touched);
+            $('topic-box').classList.toggle('invalid', !!errs.topics && shown('topics'));
 
             const ch = mode === 'edit' ? diff() : null;
             const nChanges = ch ? Object.keys(ch.fields).length + ch.remove.length + ch.add.length : 0;
@@ -848,7 +970,7 @@
         }
 
         function submit(e) {
-            if ($('submit').getAttribute('aria-disabled') === 'true') { e?.preventDefault(); touched = true; update(); toast('Fix the items marked in red first'); return; }
+            if ($('submit').getAttribute('aria-disabled') === 'true') { e?.preventDefault(); touched.add('*'); update(); toast('Fix the items marked in red first'); return; }
             showNext($('submit').href);
             if (mode === 'new') pendingClear = true;
         }
@@ -856,7 +978,7 @@
         let pendingClear = false;
         $('next-done').addEventListener('click', () => {
             $('next').close();
-            if (pendingClear) { pendingClear = false; clearDraft(); state = blank(); touched = false; render(); }
+            if (pendingClear) { pendingClear = false; clearDraft(); state = blank(); touched = new Set(); render(); }
             else if (mode === 'edit') setMode('edit');
         });
 
@@ -903,7 +1025,7 @@
             try { await navigator.clipboard.writeText($('body-preview').textContent); toast('Issue text copied'); } catch (_) { toast('Copy failed — open “What gets sent” and copy by hand'); }
         });
         $('reset').addEventListener('click', () => {
-            if (mode === 'new') { if (!confirm('Clear the form?')) return; clearDraft(); state = blank(); touched = false; render(); }
+            if (mode === 'new') { if (!confirm('Clear the form?')) return; clearDraft(); state = blank(); touched = new Set(); render(); }
             else if (original) pick(originalIndex);
         });
         document.addEventListener('keydown', e => {
@@ -913,7 +1035,10 @@
                 window.open($('submit').href, '_blank', 'noopener'); submit();
             }
         });
-        document.addEventListener('focusout', e => { if (e.target.closest?.('#fields')) touched = true; });
+        document.addEventListener('focusout', e => {
+            const id = { 'f-title': 'title', 'f-date': 'date', 'f-location': 'location', 'f-topic': 'topics' }[e.target.id];
+            if (id) { touched.add(id); update(); }
+        });
 
         bindInputs();
         load();
