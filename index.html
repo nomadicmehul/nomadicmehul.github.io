@@ -2394,8 +2394,12 @@
         };
         function resolveUrl(url) {
             if (!url) return '';
-            if (/^https?:\/\//.test(url)) return url;
-            return 'assets/slides/' + url;
+            let href = /^https?:\/\//.test(url) ? url : url.startsWith('assets/') ? url : 'assets/slides/' + url;
+            // browsers can only download PowerPoint files, so open them in Office's online viewer
+            if (/\.(pptx?|ppsx?)$/i.test(href)) {
+                href = 'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent(new URL(href, location.href).href);
+            }
+            return href;
         }
         function renderResources(resources) {
             if (!resources || resources.length === 0) return '';

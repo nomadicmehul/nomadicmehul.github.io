@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Studio — Mehul Patel</title>
+    <meta name="description" content="Add or update speaking events on nomadicmehul.dev.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --term-green: #4ade80; --term-green-dim: #22c55e; --term-green-bright: #86efac;
+            --term-amber: #fbbf24; --term-cyan: #22d3ee; --term-red: #f87171;
+            --term-purple: #c084fc; --term-blue: #60a5fa;
+            --bg-primary: #0a0e17; --bg-secondary: #0f1623; --bg-tertiary: #151d2e;
+            --bg-card: #111827; --bg-elevated: #1e293b;
+            --text-primary: #e2e8f0; --text-secondary: #94a3b8; --text-muted: #64748b;
+            --border-default: #1e293b; --border-hover: #334155;
+            --border-accent: rgba(74, 222, 128, 0.3);
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+            --shadow-glow: 0 0 20px rgba(74, 222, 128, 0.15);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-sans); color: var(--text-primary); background: var(--bg-primary); line-height: 1.6; -webkit-font-smoothing: antialiased; color-scheme: dark; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        button, input, textarea { font: inherit; color: inherit; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* Nav */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(10, 14, 23, 0.9); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-default);
+        }
+        .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+        .nav-logo { font-weight: 700; font-size: 1.25rem; display: flex; align-items: center; font-family: var(--font-mono); color: var(--term-green); }
+        .nav-logo .prompt-user { color: var(--term-green-bright); }
+        .nav-logo .prompt-at { color: var(--term-amber); }
+        .nav-logo .prompt-host { color: var(--term-cyan); }
+        .nav-logo .prompt-colon { color: var(--text-secondary); }
+        .nav-logo .prompt-path { color: var(--term-blue); }
+        .nav-logo .prompt-hash { color: var(--term-red); font-weight: 800; }
+        .nav-logo .cursor-block { display: inline-block; width: 10px; height: 18px; background: var(--term-green); margin-left: 2px; animation: cursor-blink 1s step-end infinite; vertical-align: text-bottom; }
+        @keyframes cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .nav-links { display: flex; align-items: center; gap: 24px; }
+        .nav-links a { font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); transition: color 0.2s; font-family: var(--font-mono); }
+        .nav-links a:hover { color: var(--term-green); }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px;
+            border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; border: 1px solid transparent; cursor: pointer; background: none;
+        }
+        .btn-primary { background: rgba(74, 222, 128, 0.15); color: var(--term-green); border-color: rgba(74, 222, 128, 0.35); }
+        .btn-primary:hover { background: rgba(74, 222, 128, 0.25); box-shadow: var(--shadow-glow); }
+        .btn-ghost { color: var(--text-secondary); border-color: var(--border-hover); }
+        .btn-ghost:hover { border-color: var(--term-green); color: var(--term-green); }
+        .btn-danger { color: var(--term-red); border-color: rgba(248, 113, 113, 0.35); }
+        .btn-danger:hover, .btn-danger.armed { background: rgba(248, 113, 113, 0.15); }
+        .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+        .btn-lg { padding: 14px 22px; font-size: 1rem; width: 100%; }
+        .btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+
+        /* Hero */
+        .studio-hero { padding: 112px 0 28px; }
+        .hero-prompt { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; }
+        .hero-prompt .u { color: var(--term-green-bright); } .hero-prompt .h { color: var(--term-cyan); } .hero-prompt .p { color: var(--term-blue); }
+        .studio-hero h1 { font-size: 2.4rem; font-weight: 800; line-height: 1.15; margin-bottom: 10px; }
+        .studio-hero h1 .hl { background: linear-gradient(135deg, var(--term-green), var(--term-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .studio-hero p { color: var(--text-secondary); max-width: 720px; }
+        .hero-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 24px; }
+        .segmented { display: inline-flex; background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: 10px; padding: 4px; gap: 4px; }
+        .segmented button {
+            border: none; background: none; cursor: pointer; padding: 8px 16px; border-radius: 7px;
+            font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: inline-flex; align-items: center; gap: 8px;
+        }
+        .segmented button[aria-selected="true"] { background: rgba(74, 222, 128, 0.15); color: var(--term-green); box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.3); }
+        .quick-links { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        /* Layout */
+        .studio { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 28px; padding-bottom: 96px; align-items: start; }
+        .side { position: sticky; top: 96px; display: flex; flex-direction: column; gap: 20px; }
+
+        .panel { background: var(--bg-card); border: 1px solid var(--border-default); border-radius: 14px; padding: 22px; }
+        .panel + .panel, #picker-panel + #fields { margin-top: 20px; }
+        .panel-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+        .panel-num { font-family: var(--font-mono); font-size: 0.8rem; color: var(--term-green); }
+        .panel-head h2 { font-size: 1.05rem; font-weight: 700; }
+        .panel-head .hint { margin-left: auto; font-size: 0.8rem; color: var(--text-muted); }
+
+        /* Fields */
+        .field { margin-bottom: 16px; }
+        .field:last-child { margin-bottom: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        label.lbl { display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 6px; }
+        label.lbl .req { color: var(--term-red); }
+        .input {
+            width: 100%; background: var(--bg-secondary); border: 1px solid var(--border-hover); border-radius: 8px;
+            padding: 10px 12px; font-size: 0.95rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input::placeholder { color: var(--text-muted); }
+        .input:focus { border-color: var(--term-green); box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.15); }
+        .input.invalid { border-color: rgba(248, 113, 113, 0.6); }
+        .help { font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; min-height: 1.2em; }
+        .help.ok { color: var(--term-green); } .help.warn { color: var(--term-amber); } .help.err { color: var(--term-red); }
+
+        /* Date */
+        .date-wrap { position: relative; }
+        .date-wrap .input { padding-left: 40px; cursor: pointer; font-family: var(--font-mono); }
+        .date-wrap > i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--term-amber); pointer-events: none; }
+        .date-wrap .input::-webkit-calendar-picker-indicator { filter: invert(0.8); cursor: pointer; }
+        .date-quick { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+
+        /* Chips */
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip {
+            display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+            font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600;
+            padding: 6px 12px; border-radius: 100px; border: 1px solid var(--border-hover);
+            background: var(--bg-secondary); color: var(--text-secondary); transition: all 0.15s;
+        }
+        .chip:hover { border-color: var(--text-muted); color: var(--text-primary); }
+        .chip.on.c-green { background: rgba(74,222,128,.14); color: var(--term-green); border-color: rgba(74,222,128,.4); }
+        .chip.on.c-amber { background: rgba(251,191,36,.14); color: var(--term-amber); border-color: rgba(251,191,36,.4); }
+        .chip.on.c-purple { background: rgba(192,132,252,.14); color: var(--term-purple); border-color: rgba(192,132,252,.4); }
+        .chip.on.c-cyan { background: rgba(34,211,238,.14); color: var(--term-cyan); border-color: rgba(34,211,238,.4); }
+        .chip.on.c-blue { background: rgba(96,165,250,.14); color: var(--term-blue); border-color: rgba(96,165,250,.4); }
+        .chip.on.c-red { background: rgba(248,113,113,.14); color: var(--term-red); border-color: rgba(248,113,113,.4); }
+        .chip.on.c-default { background: rgba(148,163,184,.14); color: var(--text-primary); border-color: rgba(148,163,184,.4); }
+        .chip.sugg { font-weight: 500; border-style: dashed; }
+        .chip.sugg::before { content: '+'; color: var(--term-green); }
+
+        .tag-box {
+            display: flex; flex-wrap: wrap; gap: 6px; align-items: center; cursor: text;
+            background: var(--bg-secondary); border: 1px solid var(--border-hover); border-radius: 8px; padding: 6px 8px; min-height: 46px;
+        }
+        .tag-box:focus-within { border-color: var(--term-green); box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.15); }
+        .tag-box.invalid { border-color: rgba(248, 113, 113, 0.6); }
+        .tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.78rem; background: var(--bg-elevated); border-radius: 5px; padding: 4px 4px 4px 9px; }
+        .tag button { border: none; background: none; cursor: pointer; color: var(--text-muted); padding: 0 4px; border-radius: 4px; }
+        .tag button:hover { color: var(--term-red); }
+        .tag-box input { flex: 1; min-width: 140px; border: none; outline: none; background: none; padding: 4px; font-size: 0.95rem; }
+        .sugg-label { font-size: 0.75rem; color: var(--text-muted); margin: 12px 0 8px; font-family: var(--font-mono); }
+
+        /* Resources */
+        .res-list { display: flex; flex-direction: column; gap: 10px; }
+        .res {
+            display: grid; grid-template-columns: 132px minmax(0, 1fr) auto; gap: 8px; align-items: start;
+            background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: 10px; padding: 10px;
+        }
+        .res-type { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; padding: 9px 4px; }
+        .res-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+        .res-body .input { padding: 8px 10px; font-size: 0.88rem; }
+        .res-label { font-size: 0.8rem !important; }
+        .res-actions { display: flex; gap: 4px; }
+        .icon-btn { border: 1px solid transparent; background: none; cursor: pointer; color: var(--text-muted); width: 34px; height: 34px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; }
+        .icon-btn:hover { color: var(--text-primary); border-color: var(--border-hover); }
+        .icon-btn.on { color: var(--term-purple); border-color: rgba(192,132,252,.4); background: rgba(192,132,252,.1); }
+        .icon-btn.del:hover { color: var(--term-red); }
+        .upload-note {
+            display: flex; gap: 10px; align-items: flex-start; font-size: 0.82rem; color: var(--text-secondary);
+            border: 1px dashed rgba(192,132,252,.45); background: rgba(192,132,252,.06); border-radius: 8px; padding: 9px 11px;
+        }
+        .upload-note i { color: var(--term-purple); margin-top: 3px; }
+        .upload-note code, .help code, .steps code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--term-purple); }
+        .local-file { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); word-break: break-all; }
+        .t-event { color: var(--term-green); } .t-slides { color: var(--term-purple); } .t-code { color: var(--term-blue); }
+        .t-demo { color: var(--term-cyan); } .t-video { color: var(--term-red); } .t-blog { color: var(--term-amber); }
+        .add-res { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        .add-res span { font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); margin-right: 4px; }
+
+        /* Picker (edit mode) */
+        .picker-results { margin-top: 10px; max-height: 340px; overflow: auto; display: flex; flex-direction: column; gap: 6px; }
+        .pick {
+            text-align: left; border: 1px solid var(--border-default); background: var(--bg-secondary); border-radius: 9px;
+            padding: 10px 12px; cursor: pointer; display: grid; grid-template-columns: 96px 1fr; gap: 10px; align-items: baseline;
+        }
+        .pick:hover, .pick:focus-visible { border-color: var(--border-accent); }
+        .pick .d { font-family: var(--font-mono); font-size: 0.78rem; color: var(--term-amber); }
+        .pick .t { font-size: 0.9rem; font-weight: 600; }
+        .pick .l { font-size: 0.78rem; color: var(--text-muted); display: block; font-weight: 400; }
+        .editing { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .editing .what { flex: 1; min-width: 200px; }
+        .editing .what b { display: block; }
+        .editing .what span { font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+        /* Preview card (same look as speaking.html) */
+        .side-label { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; display: flex; justify-content: space-between; gap: 8px; }
+        .event-card { background: var(--bg-card); border: 1px solid var(--border-default); border-radius: 14px; padding: 24px; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        .event-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--term-green), var(--term-cyan)); }
+        .event-card.upcoming { border-color: rgba(251, 191, 36, 0.45); }
+        .upcoming-badge {
+            display: inline-flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono);
+            text-transform: uppercase; letter-spacing: 0.5px; padding: 3px 10px; border-radius: 100px;
+            background: rgba(251, 191, 36, 0.12); color: var(--term-amber); border: 1px solid rgba(251, 191, 36, 0.3); width: fit-content; margin-bottom: 8px;
+        }
+        .upcoming-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--term-amber); box-shadow: 0 0 6px var(--term-amber); }
+        .event-card h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
+        .event-card h4.placeholder { color: var(--text-muted); font-style: italic; font-weight: 500; }
+        .event-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; font-size: 0.85rem; color: var(--text-muted); }
+        .event-meta span { display: flex; align-items: center; gap: 5px; }
+        .event-date { color: var(--term-amber); }
+        .event-topics { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+        .event-topic { font-size: 0.75rem; background: var(--bg-tertiary); color: var(--text-secondary); padding: 4px 10px; border-radius: 4px; font-weight: 500; font-family: var(--font-mono); }
+        .event-resources { display: flex; flex-wrap: wrap; gap: 8px; }
+        .resource-link { display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; font-family: var(--font-mono); padding: 4px 10px; border-radius: 6px; }
+        .resource-link.pending { border-style: dashed !important; }
+        .resource-link.type-slides { background: rgba(192,132,252,.12); color: var(--term-purple); border: 1px solid rgba(192,132,252,.25); }
+        .resource-link.type-code { background: rgba(96,165,250,.12); color: var(--term-blue); border: 1px solid rgba(96,165,250,.25); }
+        .resource-link.type-demo { background: rgba(34,211,238,.12); color: var(--term-cyan); border: 1px solid rgba(34,211,238,.25); }
+        .resource-link.type-video { background: rgba(248,113,113,.12); color: var(--term-red); border: 1px solid rgba(248,113,113,.25); }
+        .resource-link.type-blog { background: rgba(251,191,36,.12); color: var(--term-amber); border: 1px solid rgba(251,191,36,.25); }
+        .resource-link.type-event { background: rgba(74,222,128,.12); color: var(--term-green); border: 1px solid rgba(74,222,128,.25); }
+        .event-roles { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+        .event-role { display: inline-flex; align-items: center; gap: 5px; font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono); padding: 3px 10px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .role-green { background: rgba(74,222,128,.12); color: var(--term-green); border: 1px solid rgba(74,222,128,.25); }
+        .role-amber { background: rgba(251,191,36,.12); color: var(--term-amber); border: 1px solid rgba(251,191,36,.25); }
+        .role-purple { background: rgba(192,132,252,.12); color: var(--term-purple); border: 1px solid rgba(192,132,252,.25); }
+        .role-cyan { background: rgba(34,211,238,.12); color: var(--term-cyan); border: 1px solid rgba(34,211,238,.25); }
+        .role-blue { background: rgba(96,165,250,.12); color: var(--term-blue); border: 1px solid rgba(96,165,250,.25); }
+        .role-red { background: rgba(248,113,113,.12); color: var(--term-red); border: 1px solid rgba(248,113,113,.25); }
+        .role-default { background: rgba(148,163,184,.12); color: var(--text-secondary); border: 1px solid rgba(148,163,184,.25); }
+
+        .folder { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-secondary); background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: 8px; padding: 10px 12px; margin-top: 12px; word-break: break-all; }
+        .folder i { color: var(--term-amber); margin-right: 6px; }
+
+        /* Checklist + submit */
+        .checks { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; font-size: 0.85rem; }
+        .checks li { display: flex; gap: 8px; align-items: baseline; color: var(--text-secondary); }
+        .checks li i { width: 14px; text-align: center; }
+        .checks li.ok i { color: var(--term-green); }
+        .checks li.err { color: var(--text-primary); } .checks li.err i { color: var(--term-red); }
+        .checks li.warn i { color: var(--term-amber); }
+        .changes { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+        .changes span { font-family: var(--font-mono); font-size: 0.75rem; padding: 3px 8px; border-radius: 5px; background: rgba(74,222,128,.1); color: var(--term-green); }
+        .changes span.minus { background: rgba(248,113,113,.1); color: var(--term-red); }
+        .submit-row { display: flex; gap: 8px; margin-top: 10px; }
+        .submit-row .btn { flex: 1; }
+        .kbd { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); text-align: center; margin-top: 8px; }
+        details.issue { margin-top: 14px; }
+        details.issue summary { cursor: pointer; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); }
+        details.issue pre { margin-top: 10px; background: var(--bg-primary); border: 1px solid var(--border-default); border-radius: 8px; padding: 12px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-secondary); white-space: pre-wrap; word-break: break-word; max-height: 280px; overflow: auto; }
+
+        /* Next-steps dialog */
+        dialog {
+            margin: auto; border: 1px solid var(--border-accent); border-radius: 16px; background: var(--bg-card); color: var(--text-primary);
+            max-width: 520px; width: calc(100% - 32px); padding: 26px; box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+        dialog::backdrop { background: rgba(5, 8, 14, 0.75); backdrop-filter: blur(3px); }
+        dialog h3 { font-size: 1.2rem; margin-bottom: 4px; }
+        dialog > p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 18px; }
+        .steps { counter-reset: s; display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px; }
+        .steps li { counter-increment: s; display: grid; grid-template-columns: 28px 1fr; gap: 12px; font-size: 0.9rem; color: var(--text-secondary); }
+        .steps li::before { content: counter(s); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; background: rgba(74,222,128,.12); color: var(--term-green); border: 1px solid rgba(74,222,128,.3); }
+        .steps li.hl::before { background: rgba(192,132,252,.15); color: var(--term-purple); border-color: rgba(192,132,252,.4); }
+        .steps b { color: var(--text-primary); }
+        .dialog-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+
+        .toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px); opacity: 0; transition: all 0.25s;
+            background: var(--bg-elevated); border: 1px solid var(--border-accent); color: var(--text-primary); padding: 10px 16px; border-radius: 8px; font-size: 0.85rem; z-index: 2000; pointer-events: none;
+        }
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+        .loading { padding: 64px 0; text-align: center; color: var(--text-muted); font-family: var(--font-mono); }
+        [hidden] { display: none !important; }
+
+        .footer { color: var(--text-muted); padding: 32px 0; text-align: center; font-size: 0.85rem; border-top: 1px solid var(--border-default); font-family: var(--font-mono); }
+        .footer a { color: var(--term-green); }
+
+        @media (max-width: 960px) {
+            .studio { grid-template-columns: 1fr; }
+            .side { position: static; }
+        }
+        @media (max-width: 640px) {
+            .container { padding: 0 16px; }
+            .nav-links a:not(.btn) { display: none; }
+            .nav-logo { font-size: 0.95rem; }
+            .studio-hero h1 { font-size: 1.9rem; }
+            .row { grid-template-columns: 1fr; }
+            .res { grid-template-columns: 1fr auto; }
+            .res-type { grid-column: 1; padding: 2px; }
+            .res-actions { grid-column: 2; grid-row: 1; }
+            .res-body { grid-column: 1 / -1; }
+            .panel { padding: 18px; }
+            .pick { grid-template-columns: 1fr; gap: 2px; }
+        }
+        *:focus-visible { outline: 2px solid var(--term-green); outline-offset: 2px; }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+    </style>
+</head>
+<body>
+    <nav class="nav" aria-label="Main navigation">
+        <div class="container">
+            <div class="nav-inner">
+                <a href="index.html" class="nav-logo">
+                    <span class="prompt-user">root</span><span class="prompt-at">@</span><span class="prompt-host">mehul</span><span class="prompt-colon">:</span><span class="prompt-path">~/studio</span><span class="prompt-hash">#</span><span class="cursor-block"></span>
+                </a>
+                <div class="nav-links">
+                    <a href="speaking.html">Speaking</a>
+                    <a href="https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md" target="_blank" rel="noopener">MANAGE.md</a>
+                    <a href="https://github.com/nomadicmehul/nomadicmehul.github.io/issues" target="_blank" rel="noopener" class="btn btn-primary btn-sm"><i class="fab fa-github"></i> Issues</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main-content">
+        <section class="studio-hero">
+            <div class="container">
+                <div class="hero-prompt"><span class="u">mehul</span>@<span class="h">berlin</span>:<span class="p">~/studio</span>$ <span id="hero-cmd">new-event</span></div>
+                <h1>Content <span class="hl">Studio</span></h1>
+                <p>Add or update a speaking event. You'll finish on GitHub, where the site updates itself. Files you drag in are saved in the event's own folder and open in the browser.</p>
+                <div class="hero-bar">
+                    <div class="segmented" role="tablist" aria-label="Mode">
+                        <button role="tab" id="tab-new" aria-selected="true"><i class="fas fa-plus"></i> New event</button>
+                        <button role="tab" id="tab-edit" aria-selected="false"><i class="fas fa-pen"></i> Edit event</button>
+                    </div>
+                    <div class="quick-links">
+                        <a class="btn btn-ghost btn-sm" target="_blank" rel="noopener" href="https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-project.yml"><i class="fas fa-rocket"></i> Add project</a>
+                        <a class="btn btn-ghost btn-sm" target="_blank" rel="noopener" href="https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-testimonial.yml"><i class="fas fa-comment"></i> Add testimonial</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="container">
+            <div class="loading" id="loading"><i class="fas fa-circle-notch fa-spin"></i> loading events…</div>
+
+            <div class="studio" id="studio" hidden>
+                <form id="form" autocomplete="off" novalidate>
+                    <!-- Edit mode: choose the event -->
+                    <section class="panel" id="picker-panel" hidden>
+                        <div class="panel-head"><span class="panel-num">00</span><h2>Which event?</h2><span class="hint" id="picker-count"></span></div>
+                        <div id="picker">
+                            <input class="input" id="picker-q" type="search" placeholder="Search by title, place, topic or year…" aria-label="Search events">
+                            <div class="picker-results" id="picker-results" role="listbox"></div>
+                        </div>
+                        <div class="editing" id="editing" hidden>
+                            <div class="what"><b id="editing-title"></b><span id="editing-meta"></span></div>
+                            <button type="button" class="btn btn-ghost btn-sm" id="change-event"><i class="fas fa-arrow-right-arrow-left"></i> Change</button>
+                            <button type="button" class="btn btn-danger btn-sm" id="remove-event"><i class="fas fa-trash"></i> Remove event</button>
+                        </div>
+                    </section>
+
+                    <div id="fields">
+                        <section class="panel">
+                            <div class="panel-head"><span class="panel-num">01</span><h2>Basics</h2></div>
+                            <div class="field">
+                                <label class="lbl" for="f-title">--title <span class="req">*</span></label>
+                                <input class="input" id="f-title" placeholder="Google Cloud Summit Czech Republic 2026" maxlength="160">
+                                <div class="help" id="h-title"></div>
+                            </div>
+                            <div class="row">
+                                <div class="field">
+                                    <label class="lbl" for="f-date">--date <span class="req">*</span></label>
+                                    <div class="date-wrap">
+                                        <i class="fas fa-calendar-day"></i>
+                                        <input class="input" id="f-date" type="date" min="2010-01-01" max="2100-12-31">
+                                    </div>
+                                    <div class="date-quick">
+                                        <button type="button" class="chip" data-days="0">Today</button>
+                                        <button type="button" class="chip" data-days="-1">Yesterday</button>
+                                        <button type="button" class="chip" data-days="7">In a week</button>
+                                    </div>
+                                    <div class="help" id="h-date"></div>
+                                </div>
+                                <div class="field">
+                                    <label class="lbl" for="f-location">--location <span class="req">*</span></label>
+                                    <input class="input" id="f-location" list="locations" placeholder="Berlin, Germany">
+                                    <datalist id="locations"></datalist>
+                                    <div class="help" id="h-location"></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="panel">
+                            <div class="panel-head"><span class="panel-num">02</span><h2>Your role</h2><span class="hint">pick one or more</span></div>
+                            <div class="chips" id="roles" role="group" aria-label="Roles"></div>
+                            <div class="help" id="h-roles"></div>
+                        </section>
+
+                        <section class="panel">
+                            <div class="panel-head"><span class="panel-num">03</span><h2>Topics</h2><span class="hint">Enter or comma to add</span></div>
+                            <div class="tag-box" id="topic-box">
+                                <input id="f-topic" list="topic-list" placeholder="Kubernetes, AI Agents…" aria-label="Add topic">
+                                <datalist id="topic-list"></datalist>
+                            </div>
+                            <div class="help" id="h-topics"></div>
+                            <div class="sugg-label">// your most used</div>
+                            <div class="chips" id="topic-sugg"></div>
+                        </section>
+
+                        <section class="panel">
+                            <div class="panel-head"><span class="panel-num">04</span><h2>Links &amp; files</h2><span class="hint">all optional</span></div>
+                            <div class="res-list" id="res-list"></div>
+                            <div class="add-res" id="add-res"><span>+ add</span></div>
+                        </section>
+                    </div>
+                </form>
+
+                <aside class="side" id="side">
+                    <div>
+                        <div class="side-label"><span>// live preview, as on speaking.html</span></div>
+                        <div id="preview"></div>
+                        <div class="folder" id="folder" hidden></div>
+                    </div>
+                    <section class="panel">
+                        <div class="changes" id="changes" hidden></div>
+                        <ul class="checks" id="checks"></ul>
+                        <a class="btn btn-primary btn-lg" id="submit" target="_blank" rel="noopener" href="#"><i class="fab fa-github"></i> <span id="submit-text">Continue on GitHub</span></a>
+                        <div class="submit-row">
+                            <button type="button" class="btn btn-ghost btn-sm" id="copy"><i class="fas fa-copy"></i> Copy issue text</button>
+                            <button type="button" class="btn btn-ghost btn-sm" id="reset"><i class="fas fa-rotate-left"></i> <span id="reset-text">Start over</span></button>
+                        </div>
+                        <div class="kbd">⌘/Ctrl + Enter to continue</div>
+                        <details class="issue"><summary>What gets sent</summary><pre id="body-preview"></pre></details>
+                    </section>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <dialog id="next">
+        <h3><i class="fab fa-github" style="color:var(--term-green)"></i> Finish on GitHub</h3>
+        <p id="next-intro">The issue opened in a new tab with everything filled in.</p>
+        <ol class="steps" id="next-steps"></ol>
+        <div class="dialog-actions">
+            <a class="btn btn-ghost btn-sm" id="next-reopen" target="_blank" rel="noopener" href="#"><i class="fas fa-up-right-from-square"></i> Open again</a>
+            <button type="button" class="btn btn-primary btn-sm" id="next-done"><i class="fas fa-check"></i> Done</button>
+        </div>
+    </dialog>
+    <div class="toast" id="toast" role="status"></div>
+
+    <footer class="footer">
+        <p>Changes are processed only for issues opened by the repo owner &mdash; <a href="speaking.html">View speaking page</a></p>
+    </footer>
+
+    <script>
+        const REPO = 'nomadicmehul/nomadicmehul.github.io';
+        const DRAFT_KEY = 'studio-draft-v1';
+        // order and button labels match RESOURCE_FIELDS in .github/scripts/issue_to_data.py
+        const RES = {
+            event:  { label: 'Event Page',  icon: 'fas fa-external-link-alt', ph: 'https://event-page.com', name: 'Event page' },
+            slides: { label: 'Slide Deck',  icon: 'fas fa-file-powerpoint',   ph: 'https://… or upload the file', name: 'Slides', upload: true },
+            code:   { label: 'GitHub Repo', icon: 'fab fa-github',            ph: 'https://github.com/…', name: 'Code' },
+            demo:   { label: 'Live Demo',   icon: 'fas fa-play-circle',       ph: 'https://…', name: 'Demo', upload: true },
+            video:  { label: 'Recording',   icon: 'fas fa-video',             ph: 'https://youtube.com/watch?v=…', name: 'Recording', upload: true },
+            blog:   { label: 'Blog Post',   icon: 'fas fa-blog',              ph: 'https://medium.com/@nomadicmehul/…', name: 'Blog post' },
+        };
+        const $ = id => document.getElementById(id);
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const isUrl = s => /^https?:\/\/\S+$/.test(s);
+        const isLocal = s => /^assets\/\S+$/.test(s) || /^[^:/\s]+\.\w+$/.test(s);   // a file already on the site
+        const todayIso = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
+
+        let EVENTS = [], ROLES = [], LABELS = [], TOPICS = [];
+        let mode = 'new', original = null, originalIndex = -1;
+        let state = blank();
+
+        function blank() {
+            return { title: '', date: '', location: '', roles: ['Speaker'], topics: [], resources: [{ type: 'event', label: '', url: '' }, { type: 'slides', label: '', url: '', upload: false }] };
+        }
+
+        // ---------- helpers shared with the Python side ----------
+        // same as slug() / folder() in .github/scripts/event_files.py
+        function slug(text, limit = 60) {
+            let s = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+            if (s.length > limit) { s = s.slice(0, limit); if (s.includes('-')) s = s.slice(0, s.lastIndexOf('-')); }
+            return s || 'event';
+        }
+        const folderOf = (title, date) => `assets/events/${date.slice(0, 4)}/${date}-${slug(title)}/`;
+        // same as entry_labels() in issue_to_data.py: what the update form uses to find an entry
+        function entryLabels(events) {
+            const seen = {};
+            return events.map(e => {
+                const l = `${e.title} (${e.date || e.year})`;
+                seen[l] = (seen[l] || 0) + 1;
+                return seen[l] > 1 ? `${l} #${seen[l]}` : l;
+            });
+        }
+        function resolveUrl(url) {
+            if (/^https?:\/\//.test(url)) return url;
+            return url.startsWith('assets/') ? url : 'assets/slides/' + url;
+        }
+
+        // ---------- load ----------
+        async function load() {
+            try {
+                const [ev, ro] = await Promise.all([fetch('data/speaking.json'), fetch('data/roles.json')]);
+                EVENTS = await ev.json(); ROLES = await ro.json();
+            } catch (e) {
+                $('loading').innerHTML = '<i class="fas fa-triangle-exclamation"></i> Couldn\'t load data/speaking.json — serve the site over HTTP (python3 -m http.server).';
+                return;
+            }
+            LABELS = entryLabels(EVENTS);
+            // topics by how often they're used; keep the most common spelling of each
+            const count = {}, spelling = {};
+            EVENTS.forEach(e => (e.topics || []).forEach(t => {
+                const k = t.toLowerCase(); count[k] = (count[k] || 0) + 1;
+                spelling[k] = spelling[k] || {}; spelling[k][t] = (spelling[k][t] || 0) + 1;
+            }));
+            TOPICS = Object.keys(count).sort((a, b) => count[b] - count[a])
+                .map(k => Object.entries(spelling[k]).sort((a, b) => b[1] - a[1])[0][0]);
+            $('topic-list').innerHTML = TOPICS.map(t => `<option value="${esc(t)}">`).join('');
+            const locs = [...new Set(EVENTS.map(e => e.location))].sort();
+            $('locations').innerHTML = locs.map(l => `<option value="${esc(l)}">`).join('');
+            $('picker-count').textContent = `${EVENTS.length} events`;
+
+            $('loading').hidden = true; $('studio').hidden = false;
+            restoreDraft();
+            const params = new URLSearchParams(location.search);
+            if (params.get('edit') !== null) setMode('edit', params.get('edit')); else render();
+        }
+
+        // ---------- mode ----------
+        function setMode(m, query = '') {
+            mode = m;
+            $('tab-new').setAttribute('aria-selected', m === 'new');
+            $('tab-edit').setAttribute('aria-selected', m === 'edit');
+            $('hero-cmd').textContent = m === 'new' ? 'new-event' : 'edit-event';
+            $('picker-panel').hidden = m !== 'edit';
+            $('reset-text').textContent = m === 'new' ? 'Start over' : 'Undo changes';
+            original = null; originalIndex = -1;
+            if (m === 'new') { restoreDraft(true); $('fields').hidden = false; $('side').hidden = false; }
+            else { $('fields').hidden = true; $('side').hidden = true; $('picker').hidden = false; $('editing').hidden = true; $('picker-q').value = query; renderPicker(); $('picker-q').focus(); }
+            render();
+        }
+
+        function renderPicker() {
+            const q = $('picker-q').value.trim().toLowerCase();
+            const hits = EVENTS.map((e, i) => ({ e, i }))
+                .filter(({ e }) => !q || [e.title, e.location, e.date, String(e.year), ...(e.topics || [])].join(' ').toLowerCase().includes(q))
+                .slice(0, 40);
+            $('picker-results').innerHTML = hits.length ? hits.map(({ e, i }) => `
+                <button type="button" class="pick" role="option" data-i="${i}">
+                    <span class="d">${esc(e.date || e.year)}</span>
+                    <span class="t">${esc(e.title)}<span class="l">${esc(e.location)}</span></span>
+                </button>`).join('') : '<div class="help">No events match.</div>';
+        }
+
+        function pick(i) {
+            const e = EVENTS[i];
+            original = e; originalIndex = i;
+            state = {
+                title: e.title, date: e.date || '', location: e.location || '',
+                roles: Array.isArray(e.role) ? [...e.role] : e.role ? [e.role] : [],
+                topics: [...(e.topics || [])],
+                resources: (e.resources || []).map(r => ({ type: r.type, label: r.label === RES[r.type]?.label ? '' : r.label, url: r.url, upload: false })),
+            };
+            $('picker').hidden = true; $('editing').hidden = false;
+            $('editing-title').textContent = e.title;
+            $('editing-meta').textContent = `${e.date || e.year} · ${e.location}` + (e.updated ? ` · last changed ${e.updated}` : '');
+            $('fields').hidden = false; $('side').hidden = false;
+            disarmRemove();
+            render();
+            $('f-title').focus();
+        }
+
+        // ---------- form → state ----------
+        function bindInputs() {
+            ['title', 'date', 'location'].forEach(k => $('f-' + k).addEventListener('input', e => { state[k] = e.target.value; update(); }));
+            // open the calendar on any click, not just the small icon
+            $('f-date').addEventListener('click', e => { try { e.target.showPicker(); } catch (_) {} });
+            document.querySelectorAll('.date-quick .chip').forEach(b => b.addEventListener('click', () => {
+                const d = new Date(); d.setDate(d.getDate() + Number(b.dataset.days)); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                state.date = $('f-date').value = d.toISOString().slice(0, 10); update();
+            }));
+
+            $('roles').addEventListener('click', e => {
+                const b = e.target.closest('.chip'); if (!b) return;
+                const r = b.dataset.role;
+                state.roles = state.roles.includes(r) ? state.roles.filter(x => x !== r) : ROLES.map(x => x.name).filter(n => n === r || state.roles.includes(n));
+                renderRoles(); update();
+            });
+
+            const topic = $('f-topic');
+            topic.addEventListener('keydown', e => {
+                if ((e.key === 'Enter' || e.key === ',' || e.key === 'Tab') && topic.value.trim()) { e.preventDefault(); addTopic(topic.value); }
+                else if (e.key === 'Backspace' && !topic.value && state.topics.length) { state.topics.pop(); renderTopics(); update(); }
+            });
+            topic.addEventListener('input', e => {     // pasting "a, b, c", or picking from the suggestion list
+                if (topic.value.includes(',')) { topic.value.split(',').forEach(addTopic); return; }
+                const picked = !e.inputType || e.inputType === 'insertReplacementText';
+                if (picked && TOPICS.includes(topic.value)) addTopic(topic.value);
+            });
+            topic.addEventListener('blur', () => topic.value.trim() && addTopic(topic.value));
+            $('topic-box').addEventListener('click', e => {
+                const x = e.target.closest('[data-del]');
+                if (x) { state.topics.splice(Number(x.dataset.del), 1); renderTopics(); update(); }
+                else topic.focus();
+            });
+            $('topic-sugg').addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) addTopic(b.dataset.topic); });
+
+            $('res-list').addEventListener('input', e => {
+                const row = e.target.closest('.res'); if (!row) return;
+                state.resources[row.dataset.i][e.target.dataset.k] = e.target.value; update();
+            });
+            $('res-list').addEventListener('click', e => {
+                const b = e.target.closest('button'); if (!b) return;
+                const i = Number(b.closest('.res').dataset.i);
+                if (b.dataset.act === 'del') state.resources.splice(i, 1);
+                if (b.dataset.act === 'upload') { const r = state.resources[i]; r.upload = !r.upload; if (r.upload) r.url = ''; }
+                renderResources(); update();
+            });
+            $('add-res').addEventListener('click', e => {
+                const b = e.target.closest('button'); if (!b) return;
+                state.resources.push({ type: b.dataset.type, label: '', url: '', upload: false });
+                renderResources(); update();
+                $('res-list').lastElementChild?.querySelector('input')?.focus();
+            });
+        }
+
+        function addTopic(raw) {
+            const t = raw.trim().replace(/\s+/g, ' ');
+            $('f-topic').value = '';
+            if (!t) return;
+            const known = TOPICS.find(x => x.toLowerCase() === t.toLowerCase());   // reuse existing spelling: "Claude Code", not "claude code"
+            const v = known || t;
+            if (!state.topics.some(x => x.toLowerCase() === v.toLowerCase())) state.topics.push(v);
+            renderTopics(); update();
+        }
+
+        // ---------- render ----------
+        function render() {
+            $('f-title').value = state.title; $('f-date').value = state.date; $('f-location').value = state.location;
+            renderRoles(); renderTopics(); renderResources(); update();
+        }
+
+        function renderRoles() {
+            $('roles').innerHTML = ROLES.map(r => {
+                const on = state.roles.includes(r.name);
+                return `<button type="button" class="chip c-${r.color}${on ? ' on' : ''}" data-role="${esc(r.name)}" aria-pressed="${on}"><i class="${esc(r.icon)}"></i> ${esc(r.name)}</button>`;
+            }).join('');
+        }
+
+        function renderTopics() {
+            const box = $('topic-box');
+            box.querySelectorAll('.tag').forEach(t => t.remove());
+            box.insertAdjacentHTML('afterbegin', state.topics.map((t, i) => `<span class="tag">${esc(t)}<button type="button" data-del="${i}" aria-label="Remove ${esc(t)}"><i class="fas fa-xmark"></i></button></span>`).join(''));
+            const chosen = new Set(state.topics.map(t => t.toLowerCase()));
+            $('topic-sugg').innerHTML = TOPICS.filter(t => !chosen.has(t.toLowerCase())).slice(0, 14)
+                .map(t => `<button type="button" class="chip sugg" data-topic="${esc(t)}">${esc(t)}</button>`).join('');
+        }
+
+        function renderResources() {
+            $('res-list').innerHTML = state.resources.map((r, i) => {
+                const meta = RES[r.type] || { label: r.type, icon: 'fas fa-link', ph: 'https://…' };
+                const local = !r.upload && r.url && !isUrl(r.url) && isLocal(r.url);
+                return `
+                <div class="res" data-i="${i}">
+                    <div class="res-type t-${esc(r.type)}"><i class="${meta.icon}"></i> ${esc(meta.name || r.type)}</div>
+                    <div class="res-body">
+                        ${r.upload ? `<div class="upload-note"><i class="fas fa-paperclip"></i><span>You'll drag the file in on GitHub (PDF or PPTX). It's saved to this event's folder and opens in a new tab.</span></div>`
+                          : local ? `<div class="local-file"><i class="fas fa-file"></i> ${esc(resolveUrl(r.url))}</div>`
+                          : `<input class="input" data-k="url" value="${esc(r.url)}" placeholder="${esc(meta.ph)}" aria-label="${esc(meta.name)} URL">`}
+                        <input class="input res-label" data-k="label" value="${esc(r.label)}" placeholder="Button text: ${esc(meta.label)}" aria-label="Button text">
+                    </div>
+                    <div class="res-actions">
+                        ${meta.upload ? `<button type="button" class="icon-btn${r.upload ? ' on' : ''}" data-act="upload" title="${r.upload ? 'Use a URL instead' : 'Upload a file on GitHub'}" aria-pressed="${!!r.upload}"><i class="fas fa-${r.upload ? 'link' : 'paperclip'}"></i></button>` : ''}
+                        <button type="button" class="icon-btn del" data-act="del" title="Remove"><i class="fas fa-xmark"></i></button>
+                    </div>
+                </div>`;
+            }).join('') || '<div class="help">No links yet — add the event page, slides, a recording…</div>';
+            $('add-res').innerHTML = '<span>+ add</span>' + Object.entries(RES).map(([t, m]) =>
+                `<button type="button" class="chip" data-type="${t}"><i class="${m.icon} t-${t}"></i> ${m.name}</button>`).join('');
+        }
+
+        function renderPreview() {
+            const s = state, upcoming = s.date && s.date >= todayIso();
+            const date = s.date ? new Date(s.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Pick a date';
+            const roles = s.roles.map(r => { const m = ROLES.find(x => x.name === r) || {}; return `<span class="event-role role-${m.color || 'default'}"><i class="${m.icon || 'fas fa-tag'}"></i> ${esc(r)}</span>`; }).join('');
+            const res = s.resources.filter(r => r.url || r.upload).map(r => {
+                const m = RES[r.type] || { icon: 'fas fa-link', label: r.type };
+                const label = esc(r.label || m.label);
+                return r.upload ? `<span class="resource-link type-${esc(r.type)} pending" title="Uploaded on GitHub"><i class="fas fa-paperclip"></i> ${label}</span>`
+                    : `<a class="resource-link type-${esc(r.type)}" href="${esc(resolveUrl(r.url))}" target="_blank" rel="noopener"><i class="${m.icon}"></i> ${label}</a>`;
+            }).join('');
+            $('preview').innerHTML = `
+                <div class="event-card${upcoming ? ' upcoming' : ''}">
+                    ${upcoming ? '<span class="upcoming-badge">Upcoming</span>' : ''}
+                    <h4 class="${s.title.trim() ? '' : 'placeholder'}">${esc(s.title.trim() || 'Event title')}</h4>
+                    ${roles ? `<div class="event-roles">${roles}</div>` : ''}
+                    <div class="event-meta">
+                        <span class="event-date"><i class="fas fa-calendar-day"></i> ${date}</span>
+                        <span><i class="fas fa-map-marker-alt"></i> ${esc(s.location.trim() || 'Location')}</span>
+                    </div>
+                    <div class="event-topics">${s.topics.map(t => `<span class="event-topic">${esc(t)}</span>`).join('')}</div>
+                    ${res ? `<div class="event-resources">${res}</div>` : ''}
+                </div>`;
+            const hasFiles = s.resources.some(r => r.upload || (r.url && !isUrl(r.url)));
+            $('folder').hidden = !(hasFiles && s.title.trim() && s.date);
+            if (!$('folder').hidden) $('folder').innerHTML = `<i class="fas fa-folder-open"></i>Files go to ${esc(folderOf(s.title.trim(), s.date))}`;
+        }
+
+        // ---------- validation ----------
+        function validate() {
+            const s = state, errs = {}, warns = {};
+            if (!s.title.trim()) errs.title = 'Required';
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(s.date)) errs.date = 'Pick a date';
+            if (!s.location.trim()) errs.location = 'Required';
+            else if (!s.location.includes(',')) warns.location = 'Tip: "City, Country"';
+            if (!s.topics.length) errs.topics = 'Add at least one topic';
+            if (!s.roles.length) warns.roles = 'No role picked — it will be saved as Speaker';
+            s.resources.forEach((r, i) => {
+                if (!r.upload && !r.url.trim()) errs['res' + i] = `${RES[r.type]?.name || r.type}: paste a URL, upload a file, or remove the row`;
+                else if (!r.upload && !isUrl(r.url.trim()) && !isLocal(r.url.trim())) errs['res' + i] = `${RES[r.type]?.name || r.type}: link must start with https://`;
+            });
+            const dup = EVENTS.find((e, i) => i !== originalIndex && e.title.trim().toLowerCase() === s.title.trim().toLowerCase() && e.date === s.date);
+            if (dup) errs.title = 'An event with this title and date already exists';
+            else if (mode === 'new' && s.title.trim()) {
+                const near = EVENTS.find(e => e.title.trim().toLowerCase() === s.title.trim().toLowerCase());
+                if (near) warns.title = `Same title as an event on ${near.date} — fine if it's a new edition`;
+            }
+            return { errs, warns };
+        }
+
+        function setHelp(id, errs, warns, ok = '') {
+            const el = $('h-' + id), input = $('f-' + id);
+            el.className = 'help' + (errs[id] ? ' err' : warns[id] ? ' warn' : ok ? ' ok' : '');
+            el.textContent = errs[id] || warns[id] || ok;
+            input?.classList.toggle('invalid', !!errs[id] && touched);
+        }
+
+        function dateHelp() {
+            if (!state.date) return '';
+            const d = new Date(state.date + 'T00:00:00'), days = Math.round((d - new Date(todayIso() + 'T00:00:00')) / 864e5);
+            const when = days === 0 ? 'today' : days > 0 ? `in ${days} day${days > 1 ? 's' : ''}` : `${-days} day${days < -1 ? 's' : ''} ago`;
+            return `${d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · ${when}${days >= 0 ? ' · shows as Upcoming' : ''}`;
+        }
+
+        // ---------- issue body ----------
+        // file uploads go last, so a file dropped at the very end of the text box still lands on its line
+        const resourceLines = list => [...list.filter(r => !r.upload), ...list.filter(r => r.upload)].map(resourceLine).join('\n');
+        const resourceLine = r => {
+            const label = r.label.trim() && r.label.trim() !== RES[r.type]?.label ? ` | ${r.label.trim()}` : '';
+            return r.upload ? `<!-- 📎 Click at the very end of the next line, then drag your file in -->\n${r.type}${label} | ` : `${r.type}${label} | ${r.url.trim()}`;
+        };
+        const sameRes = (a, b) => a.length === b.length && a.every((r, i) => r.url === b[i].url && (r.label || RES[r.type]?.label) === (b[i].label || RES[b[i].type]?.label) && !r.upload && !b[i].upload);
+
+        function diff() {
+            if (!original) return null;
+            const s = state, o = original, ch = { fields: {}, add: [], remove: [] };
+            if (s.title.trim() !== o.title) ch.fields['New title'] = s.title.trim();
+            if (s.date !== (o.date || '')) ch.fields['New date'] = s.date;
+            if (s.location.trim() !== o.location) ch.fields['New location'] = s.location.trim();
+            const oRoles = Array.isArray(o.role) ? o.role : o.role ? [o.role] : [];
+            if (s.roles.length && s.roles.join('|') !== oRoles.join('|')) ch.fields['New roles'] = ROLES.map(r => `- [${s.roles.includes(r.name) ? 'x' : ' '}] ${r.name}`).join('\n');
+            if (s.topics.join('|') !== (o.topics || []).join('|')) ch.fields['New topics'] = s.topics.join(', ');
+            // resources are replaced per type: remove every link of a changed type, then add the new list
+            const types = new Set([...(o.resources || []).map(r => r.type), ...s.resources.map(r => r.type)]);
+            types.forEach(t => {
+                const before = (o.resources || []).filter(r => r.type === t).map(r => ({ ...r, label: r.label === RES[t]?.label ? '' : r.label }));
+                const after = s.resources.filter(r => r.type === t);
+                if (sameRes(before, after)) return;
+                if (before.length) ch.remove.push(t);
+                ch.add.push(...after);
+            });
+            return ch;
+        }
+
+        function issue() {
+            const s = state;
+            if (mode === 'new') {
+                const body = [
+                    '### Event title', s.title.trim(),
+                    '### Date', s.date,
+                    '### Location', s.location.trim(),
+                    '### Role', ROLES.map(r => `- [${s.roles.includes(r.name) ? 'x' : ' '}] ${r.name}`).join('\n'),
+                    '### Topics', s.topics.join(', '),
+                ];
+                if (s.resources.length) body.push('### Add resources', resourceLines(s.resources));
+                return { title: `[speaking] ${s.title.trim()}`, labels: 'data:speaking', body: body.join('\n\n') + '\n' };
+            }
+            const ch = diff(), label = LABELS[originalIndex];
+            const body = ['### Speaking event', label, '### Action', 'Update'];
+            Object.entries(ch.fields).forEach(([k, v]) => body.push('### ' + k, v));
+            if (ch.add.length) body.push('### Add resources', resourceLines(ch.add));
+            if (ch.remove.length) body.push('### Remove resources', ch.remove.join(', '));
+            return { title: `[edit] ${label}`, labels: 'data:edit', body: body.join('\n\n') + '\n' };
+        }
+
+        const issueUrl = ({ title, labels, body }) =>
+            `https://github.com/${REPO}/issues/new?` + new URLSearchParams({ title, labels, body }).toString();
+
+        // ---------- update everything that depends on state ----------
+        let touched = false;
+        function update() {
+            if (mode === 'edit' && !original) return;   // nothing picked yet
+            renderPreview();
+            const { errs, warns } = validate();
+            setHelp('title', errs, warns);
+            setHelp('date', errs, warns, dateHelp());
+            setHelp('location', errs, warns);
+            setHelp('topics', errs, warns);
+            setHelp('roles', errs, warns);
+            $('topic-box').classList.toggle('invalid', !!errs.topics && touched);
+
+            const ch = mode === 'edit' ? diff() : null;
+            const nChanges = ch ? Object.keys(ch.fields).length + ch.remove.length + ch.add.length : 0;
+            const resErrs = Object.keys(errs).filter(k => k.startsWith('res')).map(k => errs[k]);
+            const items = [
+                [!errs.title && !errs.date && !errs.location, errs.title ? `Title: ${errs.title}` : errs.date ? 'Pick the event date' : errs.location ? 'Add the location' : 'Title, date and location'],
+                [!errs.topics, errs.topics || `${state.topics.length} topic${state.topics.length === 1 ? '' : 's'}`],
+                ...resErrs.map(e => [false, e]),
+            ];
+            const uploads = state.resources.filter(r => r.upload).length;
+            if (uploads) items.push(['warn', `${uploads} file${uploads > 1 ? 's' : ''} to drag in on GitHub`]);
+            if (ch) items.unshift([nChanges > 0, nChanges ? `${nChanges} change${nChanges > 1 ? 's' : ''}` : 'No changes yet']);
+            $('checks').innerHTML = items.map(([ok, text]) =>
+                `<li class="${ok === 'warn' ? 'warn' : ok ? 'ok' : 'err'}"><i class="fas fa-${ok === 'warn' ? 'paperclip' : ok ? 'check' : 'circle-exclamation'}"></i><span>${esc(text)}</span></li>`).join('');
+
+            $('changes').hidden = !nChanges;
+            if (ch) $('changes').innerHTML = [
+                ...Object.keys(ch.fields).map(k => `<span>~ ${esc(k.replace('New ', ''))}</span>`),
+                ...ch.remove.filter(t => !ch.add.some(r => r.type === t)).map(t => `<span class="minus">− ${esc(t)}</span>`),
+                ...[...new Set(ch.add.map(r => r.type))].map(t => `<span>${ch.remove.includes(t) ? '~' : '+'} ${esc(t)}</span>`),
+            ].join('');
+
+            const ready = Object.keys(errs).length === 0 && (mode === 'new' || nChanges > 0);
+            const data = issue();
+            $('submit').href = ready ? issueUrl(data) : '#';
+            $('submit').setAttribute('aria-disabled', String(!ready));
+            $('submit-text').textContent = mode === 'new' ? 'Add event on GitHub' : 'Save changes on GitHub';
+            $('body-preview').textContent = data.body;
+            saveDraft();
+        }
+
+        // ---------- submit ----------
+        function showNext(url, removing = false) {
+            const uploads = removing ? [] : state.resources.filter(r => r.upload);
+            $('next-reopen').href = url;
+            $('next-intro').textContent = removing ? 'The removal issue opened in a new tab.' : 'The issue opened in a new tab with everything filled in.';
+            const steps = [];
+            if (uploads.length) steps.push(`<li class="hl"><span><b>Add your file${uploads.length > 1 ? 's' : ''}.</b> In the text box, click at the very end of the <code>${uploads.map(r => esc(r.type) + ' |').join('</code> / <code>')}</code> line, then drag the file in (or use “Paste, drop, or click to add files” below the box). Wait until it says the upload finished.</span></li>`);
+            steps.push(`<li><span>Click <b>Create</b> (Submit new issue).</span></li>`);
+            steps.push(`<li><span>A bot checks it${uploads.length ? ', saves the files to <code>' + esc(folderOf(state.title.trim(), state.date)) + '</code>' : ''}, updates <code>data/speaking.json</code> and comments on the issue. If something needs fixing, edit the issue and it re-runs.</span></li>`);
+            steps.push(`<li><span>The site is live about 2 minutes later on <a href="speaking.html" style="color:var(--term-green)">speaking.html</a>.</span></li>`);
+            $('next-steps').innerHTML = steps.join('');
+            $('next').showModal();
+        }
+
+        function submit(e) {
+            if ($('submit').getAttribute('aria-disabled') === 'true') { e?.preventDefault(); touched = true; update(); toast('Fix the items marked in red first'); return; }
+            showNext($('submit').href);
+            if (mode === 'new') pendingClear = true;
+        }
+
+        let pendingClear = false;
+        $('next-done').addEventListener('click', () => {
+            $('next').close();
+            if (pendingClear) { pendingClear = false; clearDraft(); state = blank(); touched = false; render(); }
+            else if (mode === 'edit') setMode('edit');
+        });
+
+        let armTimer;
+        function disarmRemove() { clearTimeout(armTimer); const b = $('remove-event'); b.classList.remove('armed'); b.innerHTML = '<i class="fas fa-trash"></i> Remove event'; }
+        $('remove-event').addEventListener('click', () => {
+            const b = $('remove-event');
+            if (!b.classList.contains('armed')) {
+                b.classList.add('armed'); b.innerHTML = '<i class="fas fa-triangle-exclamation"></i> Click again to remove';
+                armTimer = setTimeout(disarmRemove, 4000); return;
+            }
+            disarmRemove();
+            const label = LABELS[originalIndex];
+            const url = issueUrl({ title: `[remove] ${label}`, labels: 'data:edit', body: `### Speaking event\n\n${label}\n\n### Action\n\nRemove\n` });
+            window.open(url, '_blank', 'noopener');
+            showNext(url, true);
+        });
+
+        // ---------- drafts (new mode only) ----------
+        function saveDraft() { if (mode !== 'new') return; try { localStorage.setItem(DRAFT_KEY, JSON.stringify(state)); } catch (_) {} }
+        function clearDraft() { try { localStorage.removeItem(DRAFT_KEY); } catch (_) {} }
+        function restoreDraft(reset) {
+            let d = null;
+            try { d = JSON.parse(localStorage.getItem(DRAFT_KEY)); } catch (_) {}
+            state = d && typeof d === 'object' && Array.isArray(d.resources) ? { ...blank(), ...d } : blank();
+            if (reset) render();
+        }
+
+        function toast(msg) {
+            const t = $('toast'); t.textContent = msg; t.classList.add('show');
+            clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2200);
+        }
+
+        // ---------- wire up ----------
+        $('tab-new').addEventListener('click', () => mode !== 'new' && setMode('new'));
+        $('tab-edit').addEventListener('click', () => mode !== 'edit' && setMode('edit'));
+        $('picker-q').addEventListener('input', renderPicker);
+        $('picker-q').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('picker-results').querySelector('.pick')?.click(); } });
+        $('picker-results').addEventListener('click', e => { const b = e.target.closest('.pick'); if (b) pick(Number(b.dataset.i)); });
+        $('change-event').addEventListener('click', () => setMode('edit'));
+        $('submit').addEventListener('click', submit);
+        $('form').addEventListener('submit', e => e.preventDefault());
+        $('copy').addEventListener('click', async () => {
+            try { await navigator.clipboard.writeText($('body-preview').textContent); toast('Issue text copied'); } catch (_) { toast('Copy failed — open “What gets sent” and copy by hand'); }
+        });
+        $('reset').addEventListener('click', () => {
+            if (mode === 'new') { if (!confirm('Clear the form?')) return; clearDraft(); state = blank(); touched = false; render(); }
+            else if (original) pick(originalIndex);
+        });
+        document.addEventListener('keydown', e => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter' && !$('side').hidden) {
+                e.preventDefault();
+                if ($('submit').getAttribute('aria-disabled') === 'true') return submit(e);
+                window.open($('submit').href, '_blank', 'noopener'); submit();
+            }
+        });
+        document.addEventListener('focusout', e => { if (e.target.closest?.('#fields')) touched = true; });
+
+        bindInputs();
+        load();
+    </script>
+</body>
+</html>

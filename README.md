@@ -19,7 +19,11 @@ A Linux terminal-inspired portfolio theme for developers, DevOps engineers, and 
 
 Add, update or remove speaking events, projects and testimonials by filling in a GitHub issue form. A workflow validates the change, commits it to `data/*.json`, redeploys the site and closes the issue.
 
-### 👉 Start here: [MANAGE.md](https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md)
+### 📅 Speaking events: [Content Studio](https://nomadicmehul.dev/studio.html)
+
+A page on the site for adding or editing speaking events: **calendar date picker**, role chips, topic and location suggestions from past events, a **live preview** of the card, duplicate checks, and drafts that survive a reload. When it's ready, **Add event on GitHub** opens the issue already filled in. If you're attaching slides, drag the file in there, then submit. **Edit event** lets you search any event, change it, and sends only what changed (or removes it).
+
+### 👉 Everything else: [MANAGE.md](https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md)
 
 One page listing everything on the site: speaking events grouped by **year → month**, projects, testimonials, and **recent activity by month**. Every row has **✏️ Update** and **🗑️ Remove** links that open the right form with the entry already filled in. It's also linked at the top of **Issues → New issue**.
 
@@ -36,17 +40,17 @@ All forms: [Issues → New issue](https://github.com/nomadicmehul/nomadicmehul.g
 
 **How it works**
 
-1. Open a form, fill it in, click **Submit new issue**
+1. Open a form (or use the Content Studio), fill it in, click **Submit new issue**
 2. Within about a minute, the **Issue form → site data** workflow runs ([Actions tab](https://github.com/nomadicmehul/nomadicmehul.github.io/actions/workflows/issue-to-data.yml))
-3. On success, it comments the added JSON on the issue, closes it, and the site redeploys (another minute or two)
+3. On success, it comments on the issue (links to any saved files, plus the JSON), closes it, and the site redeploys (another minute or two)
 4. If something is invalid (bad date, broken URL, duplicate), it comments the errors instead: **edit the issue** to fix them and it re-runs
 
 **Tips**
 
 - Only issues opened by the repo owner are processed; anyone else's submissions are ignored.
-- **Slides:** paste a full URL, drag a PDF into the field (GitHub uploads it and inserts a link), or use the filename of a deck already in `assets/slides/`.
+- **Files (slides etc.):** drag a PDF or PPTX into the issue. The workflow downloads it into the event's own folder, `assets/events/<year>/<date>-<event-name>/`, so it's served by the site and **opens in a new tab** (GitHub's own attachment links force a download). PowerPoint files open in Office's online viewer. If the event's title or date changes, its files move to the new folder; removing a resource or event deletes its files. Pasting a full URL works too.
 - **Topics / Tech:** comma-separated, e.g. `Kubernetes, GKE, AI Agents`.
-- **Date:** `YYYY-MM-DD`. Events are placed in date order automatically.
+- **Date:** `YYYY-MM-DD`, or written out (`9 Jun 2026`, `Jun 9th, 2026`, `09.06.2026`). The Content Studio has a calendar. Events are placed in date order automatically.
 - **Tracking:** every entry has `added` and `updated` dates (YYYY-MM-DD), set automatically on add, update and direct JSON edits. Don't type them yourself.
 - **Update or remove:** click the entry's link in [MANAGE.md](https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md), then fill in **only the fields that should change**; blank fields keep their current value. Opening the form directly works too: type the title, or a unique part of it. Each type has its own fields, e.g. *New location* and *New topics* for events, *Featured* for projects, *Stars* for testimonials.
 - **Add a recording after a talk:** MANAGE.md → find the event → ✏️ Update → Add resources = `video | https://youtube.com/...`
@@ -125,7 +129,7 @@ Open `http://localhost:8000` and start customizing.
 | `data/roles.json` | Speaking roles and their badge icon/color |
 | `data/blog.json` | Auto-synced from Medium by `.github/workflows/sync-medium.yml` (set your feed URL in `.github/scripts/sync_medium.py`) |
 | `assets/img/profile.jpg` | Your profile photo |
-| `assets/slides/` | Slide decks (PDF/PPTX) for speaking events |
+| `assets/events/` | Files for speaking events, one folder per event: `<year>/<date>-<event-name>/` |
 | `assets/favicon.svg` | Your favicon (edit the SVG) |
 | `.github/og-card/card.html` | Link-preview image shown on LinkedIn, X, Slack, WhatsApp. Edit, then run `.github/og-card/render.sh` to regenerate `assets/og-image.png` (needs Chrome) |
 | `index.html` | Name, hero, about, skills, recognition, social links |
@@ -167,13 +171,13 @@ Resources render as colored action buttons on each event card. Add only what you
 | Type | Color | Icon | URL Format | Use For |
 |------|-------|------|------------|---------|
 | `event` | Green | External link | Full URL (`https://...`) | Event page or registration link |
-| `slides` | Purple | PowerPoint | Filename (`talk.pdf`) or full URL | Slide decks — local files go in `assets/slides/` |
+| `slides` | Purple | PowerPoint | `assets/events/...` path or full URL | Slide decks — uploads are saved per event in `assets/events/` |
 | `code` | Blue | GitHub | Full URL (`https://github.com/...`) | Source code, repos, demo code |
 | `demo` | Cyan | Play | Full URL (`https://...`) | Live demo links, deployed apps |
 | `video` | Red | Video | Full URL (`https://youtube.com/...`) | Talk recordings |
 | `blog` | Amber | Blog | Full URL (`https://...`) | Blog posts, write-ups |
 
-> **Local files:** If a URL does NOT start with `http://` or `https://`, it resolves to `assets/slides/<filename>`. Drop your file in that folder and just use the filename in the JSON.
+> **Local files:** a URL starting with `assets/` is a path from the site root (e.g. `assets/events/2026/2026-06-09-my-talk/deck.pdf`). A bare filename resolves to `assets/slides/<filename>` and gets moved into the event's folder on the next push. `.pptx` files open in Office's online viewer.
 
 ### Role Types
 
@@ -194,9 +198,8 @@ Current roles: Speaker (green), Event Organizer (amber), Mentor (purple), Paneli
 
 The easy way is the [Add speaking event](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-speaking-event.yml) form (see [Updating Content](#updating-content-no-code-needed)). To edit the JSON directly instead:
 
-1. (Optional) Drop the slide deck into `assets/slides/`
-2. Add the entry to `data/speaking.json`, newest first
-3. Push. Dates are stamped, `MANAGE.md` is refreshed and the site redeploys automatically
+1. Add the entry to `data/speaking.json`, newest first. For a file, use a GitHub attachment URL, or drop it in `assets/slides/` and use the bare filename
+2. Push. The file is moved into `assets/events/<year>/<date>-<event-name>/` (and the URL updated), dates are stamped, `MANAGE.md` is refreshed and the site redeploys automatically
 
 ## Projects Data
 
@@ -224,6 +227,7 @@ The easy way is the [Add speaking event](https://github.com/nomadicmehul/nomadic
 ```
 ├── index.html              # Main portfolio page
 ├── speaking.html           # Speaking engagements timeline
+├── studio.html             # Content Studio: add/edit speaking events (calendar, live preview → GitHub issue)
 ├── projects.html           # Open-source projects grid
 ├── blog.html               # Medium articles
 ├── 404.html                # Custom 404 error page
@@ -234,7 +238,7 @@ The easy way is the [Add speaking event](https://github.com/nomadicmehul/nomadic
 ├── assets/
 │   ├── img/
 │   │   └── profile.jpg     # Profile photo
-│   ├── slides/             # Slide decks for speaking events (PDF/PPTX)
+│   ├── events/             # Event files: <year>/<date>-<event-name>/slides.pdf (managed by the workflows)
 │   ├── og-image.png        # 1200×630 link-preview image (generated from .github/og-card/)
 │   └── favicon.svg         # Terminal prompt favicon
 └── data/

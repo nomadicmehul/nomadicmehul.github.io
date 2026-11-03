@@ -6,7 +6,7 @@ labels: ["data:edit"]
 body:
   - type: markdown
     attributes:
-      value: "Fill in **only what should change** — blank fields keep their current value. Find entries by year and month in [MANAGE.md](https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md). Only issues opened by the repo owner are processed."
+      value: "Fill in **only what should change** — blank fields keep their current value. Find entries by year and month in [MANAGE.md](https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md), or pick the event in the [Content Studio](https://nomadicmehul.dev/studio.html) to edit it with a calendar and live preview. Only issues opened by the repo owner are processed."
   - type: input
     id: entry
     attributes:
@@ -33,7 +33,7 @@ body:
     id: new_1
     attributes:
       label: "New date"
-      description: "YYYY-MM-DD"
+      description: "YYYY-MM-DD or e.g. 9 Jun 2026 — files move to the event's new folder"
   - type: input
     id: new_2
     attributes:
@@ -60,7 +60,7 @@ body:
     id: add_resources
     attributes:
       label: Add resources
-      description: "One per line: `type | url` or `type | label | url`. Types: event, slides, code, demo, video, blog. You can drag a PDF in for slides."
+      description: "One per line: `type | url` or `type | label | url`. Types: event, slides, code, demo, video, blog. For a file, type `slides | ` and drag the PDF/PPTX in after it; it is saved in the event folder on the site."
       placeholder: |
         video | https://youtube.com/watch?v=...
         blog | My write-up | https://medium.com/@nomadicmehul/...

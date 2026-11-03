@@ -23,6 +23,7 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 /
 ├── index.html              # Main portfolio page (~2300 lines, self-contained)
 ├── speaking.html           # Speaking engagements timeline page
+├── studio.html             # Content Studio: add/edit speaking events (calendar, live preview) → opens a pre-filled GitHub issue
 ├── projects.html           # Open-source projects grid page
 ├── blog.html               # Medium articles page
 ├── 404.html                # Custom 404 page
@@ -40,13 +41,13 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 ├── assets/
 │   ├── img/profile.jpg     # Profile photo
 │   ├── favicon.svg         # SVG favicon (terminal prompt)
-│   ├── slides/             # Slide decks for speaking events (PDF/PPTX)
+│   ├── events/             # Event files, one folder per event: <year>/<date>-<title-slug>/ (managed by event_files.py)
 │   ├── og-image.png        # Link-preview image (generated — see below)
 │   └── Mehul_Patel_Resume.pdf
 │
 └── .github/
     ├── ISSUE_TEMPLATE/     # Issue forms: add + update/remove (generated) for speaking events, projects, testimonials
-    ├── scripts/            # issue_to_data.py, build_manage.py, stamp_dates.py, sync_medium.py, check_links.py
+    ├── scripts/            # issue_to_data.py, event_files.py, build_manage.py, stamp_dates.py, sync_medium.py, check_links.py
     └── workflows/          # deploy.yml, issue-to-data.yml, sync-medium.yml, check-links.yml, edit-forms.yml, labels.yml, auto-assign.yml (assigns new PRs to the repo owner)
 ```
 
@@ -66,7 +67,7 @@ All dynamic content loads from JSON files via `fetch()` at runtime. The JSON fil
   "topics": ["Topic1", "Topic2"],
   "resources": [
     { "type": "event", "label": "Event Page", "url": "https://event-page.com" },
-    { "type": "slides", "label": "Slide Deck", "url": "my-talk.pdf" },
+    { "type": "slides", "label": "Slide Deck", "url": "assets/events/2026/2026-03-17-event-name/my-talk.pdf" },
     { "type": "code", "label": "GitHub Repo", "url": "https://github.com/..." }
   ]
 }
@@ -92,13 +93,15 @@ Each resource is an object with `type`, `label`, and `url`.
 | Type | Badge Color | Icon | URL Format | Use For |
 |------|-------------|------|------------|---------|
 | `event` | Green | External link | Full URL (`https://...`) | Link to the event page or registration |
-| `slides` | Purple | PowerPoint | Filename (`talk.pdf`) or full URL | Slide decks — local files go in `assets/slides/` |
+| `slides` | Purple | PowerPoint | `assets/events/...` path or full URL | Slide decks — stored per event in `assets/events/` |
 | `code` | Blue | GitHub | Full URL (`https://github.com/...`) | Source code, GitHub repos, demos |
 | `demo` | Cyan | Play circle | Full URL (`https://...`) | Live demo links, deployed apps |
 | `video` | Red | Video | Full URL (`https://youtube.com/...`) | Talk recordings, YouTube links |
 | `blog` | Amber | Blog | Full URL (`https://...`) | Blog posts, write-ups, Medium articles |
 
-**URL resolution:** If a URL does NOT start with `http://` or `https://`, it is treated as a local file in `assets/slides/` (e.g. `"url": "my-talk.pdf"` resolves to `assets/slides/my-talk.pdf`). Full URLs are used as-is.
+**URL resolution** (`resolveUrl()` in `speaking.html` and `index.html`): full URLs are used as-is; a URL starting with `assets/` is a path from the site root; a bare filename resolves to `assets/slides/<name>` (legacy). `.pptx`/`.ppt` links open in Office's online viewer, since browsers can only download them.
+
+**Event files** (`.github/scripts/event_files.py`): every local file belongs in `assets/events/<year>/<date>-<title-slug>/` (slug ≤ 60 chars). `organize()` downloads GitHub issue attachments (`github.com/user-attachments/...`, which GitHub serves with `Content-Disposition: attachment`, i.e. they download instead of opening) and copies local files whose folder no longer matches (title/date changed); `prune()` deletes files no event links to any more. `issue-to-data.yml` runs it per submission and `edit-forms.yml` runs it over all events after a direct push. Deploy fails if a linked local file is missing. The Studio's `slug()` mirrors the Python one to show the folder.
 
 **Example with all resource types:**
 ```json
@@ -147,13 +150,15 @@ Current roles: Speaker (green), Event Organizer (amber), Mentor (purple), Paneli
 
 ## Updating Content via GitHub Issues (recommended)
 
-Open a new issue and pick an **Add …** or **Update or remove …** form for speaking events, projects or testimonials (labels `data:speaking`, `data:project`, `data:testimonial`, `data:edit` are created by `labels.yml`). On submit, `.github/workflows/issue-to-data.yml`:
+**Content Studio** (`studio.html`, noindex, not in the nav) is the friendliest path for speaking events: calendar, role chips, topic/location suggestions, live card preview, edit-with-diff and remove. It opens `/issues/new?labels=…&title=…&body=…` with a body in the same `### Label` format the issue forms produce (issue-form URL pre-fill only covers text fields, so roles couldn't be pre-filled). Resources go in an `Add resources` section as `type | label | url` lines (also accepted by the add form); a file upload is a `slides | ` line, listed last, that the owner drops the file onto. `parse_form()` strips `<!-- -->` hint comments, and a bare link on a line after an empty `type |` line attaches to it.
+
+Or open a new issue and pick an **Add …** or **Update or remove …** form for speaking events, projects or testimonials (labels `data:speaking`, `data:project`, `data:testimonial`, `data:edit` are created by `labels.yml`). On submit, `.github/workflows/issue-to-data.yml`:
 
 1. Parses the form with `.github/scripts/issue_to_data.py` and validates it (dates, URLs, duplicates)
 2. Commits the change to the matching `data/*.json` file on `main` (speaking events are kept sorted newest-first by `date`)
 3. Triggers `deploy.yml`, comments the added JSON on the issue, and closes it
 
-If validation fails, the errors are posted on the issue — edit the issue and it re-runs. Only issues opened by the repo **owner** are processed. Slides referenced by filename must already exist in `assets/slides/` (or paste a full URL / drag the file into the field to get a GitHub attachment URL).
+If validation fails, the errors are posted on the issue — edit the issue and it re-runs. Only issues opened by the repo **owner** are processed. Files dragged into the issue are saved to the event's folder (see Event files above). Dates accept `YYYY-MM-DD` or written-out forms (`9 Jun 2026`, `Jun 9th, 2026`, `09.06.2026`; see `parse_date()`).
 
 **`MANAGE.md`** (repo root, linked from the issue-template chooser) is the admin index: all entries, with speaking events grouped by year → month, recent activity by month, and per-entry **Update / Remove** links. Those links open `update-*.yml` with the `entry` text field pre-filled via URL query params (`?template=…&entry=<label>`); labels come from `entry_labels()` in `issue_to_data.py` (speaking: `Title (YYYY-MM-DD)`). Typed values also match: exact title, or a unique substring.
 
@@ -165,7 +170,7 @@ Both are run in the same commit by `issue-to-data.yml`, and by `edit-forms.yml` 
 
 ## Link Checking
 
-`.github/workflows/check-links.yml` runs `.github/scripts/check_links.py` every Monday (or manually). It checks every URL in `data/*.json` plus local slide files, and keeps one open **Broken links report** issue updated, closing it once all links work. Only 404/410, unresolvable domains and missing slide files count as broken; bot-blocking responses (403/429/timeouts) are listed as "couldn't verify".
+`.github/workflows/check-links.yml` runs `.github/scripts/check_links.py` every Monday (or manually). It checks every URL in `data/*.json` plus local event files, and keeps one open **Broken links report** issue updated, closing it once all links work. Only 404/410, unresolvable domains and missing event files count as broken; bot-blocking responses (403/429/timeouts) are listed as "couldn't verify".
 
 ## Blog (Medium)
 
@@ -175,7 +180,7 @@ Commits made by workflows with `GITHUB_TOKEN` don't trigger other workflows, so 
 
 ## Adding a New Speaking Event (manually)
 
-1. (Optional) Drop any slide deck into `assets/slides/` (e.g. `my-talk.pdf`)
+1. (Optional) Drop any slide deck into `assets/slides/` and use its bare filename; on push, `edit-forms.yml` moves it into `assets/events/<year>/<date>-<title>/` and rewrites the URL
 2. Add the entry to `data/speaking.json`, newest first (don't add `added`/`updated`; they're stamped on push):
    ```json
    {

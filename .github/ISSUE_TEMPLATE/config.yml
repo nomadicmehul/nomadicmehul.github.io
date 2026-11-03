@@ -1,5 +1,8 @@
 blank_issues_enabled: true
 contact_links:
+  - name: "📅 Content Studio"
+    url: https://nomadicmehul.dev/studio.html
+    about: Add or edit speaking events with a calendar date picker, live card preview and topic/location suggestions.
   - name: "🛠️ Manage site content"
     url: https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md
     about: Find any speaking event, project or testimonial by year and month, and update or remove it in one click.

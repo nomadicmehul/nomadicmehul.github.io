@@ -3,7 +3,7 @@
     "year": 2026,
     "date": "2026-10-22",
     "title": "Berlin | Claude Workshop: Build Agents That Debug and Review with Claude Code",
-    "location": "Berlin, Germay",
+    "location": "Berlin, Germany",
     "role": [
       "Speaker",
       "Event Organizer",
@@ -27,7 +27,7 @@
       {
         "type": "slides",
         "label": "Slide Deck",
-        "url": "https://github.com/user-attachments/files/34333021/Claude_Workshop_Berlin_GlassFlow_22_10_26.pptx.pdf"
+        "url": "assets/events/2026/2026-10-22-berlin-claude-workshop-build-agents-that-debug-and-review/Claude_Workshop_Berlin_GlassFlow_22_10_26.pptx.pdf"
       }
     ],
     "added": "2026-11-03",
@@ -57,7 +57,7 @@
       {
         "type": "slides",
         "label": "Slide Deck",
-        "url": "https://github.com/user-attachments/files/34332794/Claude_Code_Berlin_NLND_Session01.pptx.pdf"
+        "url": "assets/events/2026/2026-09-25-berlin-claude-code-meetup/Claude_Code_Berlin_NLND_Session01.pptx.pdf"
       }
     ],
     "added": "2026-11-03",
@@ -87,7 +87,7 @@
       {
         "type": "slides",
         "label": "Slide Deck",
-        "url": "The 3 AM Pager Is Solved - Google Cloud Summit Czech Republic 2026.pptx.pdf"
+        "url": "assets/events/2026/2026-06-09-google-cloud-summit-czech-republic-2026/The-3-AM-Pager-Is-Solved-Google-Cloud-Summit-Czech-Republic-2026.pptx.pdf"
       }
     ],
     "added": "2026-07-07",
@@ -116,7 +116,7 @@
       {
         "type": "slides",
         "label": "Slide Deck",
-        "url": "TheNightOps_GCBuildersDay_Berlin_26.pptx.pdf"
+        "url": "assets/events/2026/2026-03-17-google-cloud-builders-day-in-berlin/TheNightOps_GCBuildersDay_Berlin_26.pptx.pdf"
       }
     ],
     "added": "2026-03-28",
@@ -142,7 +142,7 @@
       {
         "type": "slides",
         "label": "Slide Deck",
-        "url": "Agents for All - Mehul Patel.pdf"
+        "url": "assets/events/2025/2025-12-13-google-cloud-ai-labs/Agents-for-All-Mehul-Patel.pdf"
       }
     ],
     "role": "Speaker",

@@ -6,8 +6,10 @@ body:
   - type: markdown
     attributes:
       value: |
-        Submitting this form commits the event to `data/speaking.json` and redeploys the site.
-        Only issues opened by the repo owner are processed.
+        📅 **Prefer a calendar, live preview and suggestions?** Use the [Content Studio](https://nomadicmehul.dev/studio.html) — it fills this in for you.
+
+        Submitting commits the event to `data/speaking.json` and redeploys the site. Files you drag in are saved to
+        `assets/events/<year>/<date>-<event-name>/` and open in the browser. Only issues opened by the repo owner are processed.
   - type: input
     id: title
     attributes:
@@ -19,7 +21,7 @@ body:
     id: date
     attributes:
       label: Date
-      description: "Format: YYYY-MM-DD"
+      description: "YYYY-MM-DD, or written out like 9 Jun 2026 / 09.06.2026"
       placeholder: "2026-06-09"
     validations:
       required: true
@@ -60,7 +62,7 @@ body:
     id: slides_url
     attributes:
       label: Slides
-      description: Drag a PDF here to upload it, paste a full URL, or give the filename of a deck already in assets/slides/ (e.g. my-talk.pdf)
+      description: "Drag a PDF or PPTX here (or paste a URL). It's saved in this event's folder on the site, so it opens in a new tab instead of downloading."
   - type: input
     id: code_url
     attributes:

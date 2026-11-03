@@ -1,6 +1,7 @@
 name: Refresh MANAGE.md, forms & entry dates
 
 # After a direct push to data/*.json:
+#  - move event files into assets/events/<year>/<date>-<title>/ and download GitHub attachments (event_files.py)
 #  - stamp added/updated dates on new or changed entries (stamp_dates.py)
 #  - regenerate MANAGE.md (entries by year/month with update/remove links) and the issue forms
 # (issue-to-data.yml does both itself; its GITHUB_TOKEN pushes don't trigger this.)
@@ -17,6 +18,7 @@ on:
       - '.github/scripts/stamp_dates.py'
       - '.github/workflows/edit-forms.yml'
       - '.github/scripts/issue_to_data.py'
+      - '.github/scripts/event_files.py'
   workflow_dispatch:
 
 permissions:
@@ -34,6 +36,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Organize event files
+        run: python3 .github/scripts/event_files.py
+
       - name: Stamp entry dates
         env:
           BEFORE: ${{ github.event.before }}
@@ -48,11 +53,11 @@ jobs:
       - name: Commit if changed
         run: |
           # only look at what this job commits (not e.g. __pycache__ left by the scripts)
-          [ -z "$(git status --porcelain -- data .github/ISSUE_TEMPLATE MANAGE.md)" ] && { echo "Already up to date"; exit 0; }
+          [ -z "$(git status --porcelain -- data assets .github/ISSUE_TEMPLATE MANAGE.md)" ] && { echo "Already up to date"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data .github/ISSUE_TEMPLATE MANAGE.md
-          git commit -m "chore: stamp entry dates, refresh MANAGE.md and forms"
+          git add -A data assets .github/ISSUE_TEMPLATE MANAGE.md
+          git commit -m "chore: organize event files, stamp entry dates, refresh MANAGE.md and forms"
           git push
           # data files changed, and pushes made with GITHUB_TOKEN don't trigger deploy.yml
           git diff --quiet HEAD~1 -- data || gh workflow run deploy.yml --ref main --repo "$GITHUB_REPOSITORY"

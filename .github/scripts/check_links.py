@@ -5,7 +5,7 @@ Used by .github/workflows/check-links.yml. Writes:
   - $REPORT_FILE: markdown report (broken links + ones that couldn't be verified)
   - $GITHUB_OUTPUT: broken=<count>
 
-Only clear failures (404/410, DNS errors, missing local slide files) count as
+Only clear failures (404/410, DNS errors, missing local event files) count as
 broken. Sites that block bots (403/429/999, timeouts, 5xx) are listed
 separately as "couldn't verify" so they don't cause false alarms.
 """
@@ -16,13 +16,15 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from event_files import local_path
+
 ROOT = Path(__file__).resolve().parents[2]
 UA = "Mozilla/5.0 (link-check; +https://nomadicmehul.dev)"
 BROKEN_STATUSES = {404, 410}
 
 
 def collect():
-    """(where, url) pairs; local slide filenames are returned as-is."""
+    """(where, url) pairs; local files (assets/... or a bare name in assets/slides/) are returned as-is."""
     links = []
     for e in json.loads((ROOT / "data/speaking.json").read_text()):
         for r in e.get("resources", []):
@@ -38,8 +40,8 @@ def collect():
 def check(url):
     """Return (status, detail): status is 'ok', 'broken' or 'unsure'."""
     if not url.startswith("http"):
-        ok = (ROOT / "assets" / "slides" / url).exists()
-        return ("ok", "") if ok else ("broken", "file missing from assets/slides/")
+        ok = (ROOT / local_path(url)).is_file()
+        return ("ok", "") if ok else ("broken", f"file missing: {local_path(url)}")
     last = ""
     # HEAD is cheap but some servers answer it wrongly (e.g. cloud.google.com 404s HEAD), so only a GET can mark a link broken
     for method in ("HEAD", "GET"):
