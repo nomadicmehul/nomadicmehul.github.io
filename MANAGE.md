@@ -3,11 +3,13 @@
 
 **45** speaking events · **4** projects · **8** testimonials — last change 2026-11-03
 
+**📅 [Content Studio](https://nomadicmehul.dev/studio.html)** — add or edit speaking events with a calendar, live preview and suggestions.
+
 **➕ Add:** [Speaking event](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-speaking-event.yml) · [Project](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-project.yml) · [Testimonial](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-testimonial.yml)
 
 **✏️ Update / 🗑️ Remove:** find the entry below and click its link. The form opens with the entry filled in; change only what's needed and submit. For **Remove**, check that *Action* says Remove before submitting.
 
-Every submission is validated, committed to `data/*.json`, and the site redeploys in a minute or two. Blog posts sync from Medium automatically and aren't listed here.
+Every submission is validated, committed to `data/*.json`, and the site redeploys in a minute or two. Files dragged into an issue are saved to `assets/events/<year>/<date>-<event-name>/`. Blog posts sync from Medium automatically and aren't listed here.
 
 **Jump to:** [Recent activity](#-recent-activity) · [Speaking events](#-speaking-events-45) · [Projects](#-projects-4) · [Testimonials](#-testimonials-8)
 
@@ -123,7 +125,7 @@ Grouped by event date. [➕ Add speaking event](https://github.com/nomadicmehul/
 
 | Date | Event | Location | Resources | Updated | |
 |---|---|---|---|---|---|
-| 2026-10-22 | Berlin \| Claude Workshop: Build Agents That Debug and Review with Claude Code | Berlin, Germay | event, slides | 2026-11-03 | [✏️ Update](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=update-speaking-event.yml&entry=Berlin%20%7C%20Claude%20Workshop%3A%20Build%20Agents%20That%20Debug%20and%20Review%20with%20Claude%20Code%20%282026-10-22%29&title=%5Bedit%5D%20Berlin%20%7C%20Claude%20Workshop%3A%20Build%20Agents%20That%20Debug%20and%20Review%20with%20Claude%20Code%20%282026-10-22%29) · [🗑️ Remove](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=update-speaking-event.yml&entry=Berlin%20%7C%20Claude%20Workshop%3A%20Build%20Agents%20That%20Debug%20and%20Review%20with%20Claude%20Code%20%282026-10-22%29&action=Remove&title=%5Bremove%5D%20Berlin%20%7C%20Claude%20Workshop%3A%20Build%20Agents%20That%20Debug%20and%20Review%20with%20Claude%20Code%20%282026-10-22%29) |
+| 2026-10-22 | Berlin \| Claude Workshop: Build Agents That Debug and Review with Claude Code | Berlin, Germany | event, slides | 2026-11-03 | [✏️ Update](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=update-speaking-event.yml&entry=Berlin%20%7C%20Claude%20Workshop%3A%20Build%20Agents%20That%20Debug%20and%20Review%20with%20Claude%20Code%20%282026-10-22%29&title=%5Bedit%5D%20Berlin%20%7C%20Claude%20Workshop%3A%20Build%20Agents%20That%20Debug%20and%20Review%20with%20Claude%20Code%20%282026-10-22%29) · [🗑️ Remove](https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=update-speaking-event.yml&entry=Berlin%20%7C%20Claude%20Workshop%3A%20Build%20Agents%20That%20Debug%20and%20Review%20with%20Claude%20Code%20%282026-10-22%29&action=Remove&title=%5Bremove%5D%20Berlin%20%7C%20Claude%20Workshop%3A%20Build%20Agents%20That%20Debug%20and%20Review%20with%20Claude%20Code%20%282026-10-22%29) |
 
 #### September 2026
 

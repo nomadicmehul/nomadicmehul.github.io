@@ -1,7 +1,8 @@
 name: Issue form → site data
 
-# Owner opens an issue from one of the .github/ISSUE_TEMPLATE forms (add / update / remove) →
-# change is validated, committed to data/*.json, the site is redeployed and the issue closed.
+# Owner opens an issue from one of the .github/ISSUE_TEMPLATE forms (add / update / remove) or the
+# Content Studio (studio.html) → change is validated, committed to data/*.json (files dragged into the
+# issue are saved under assets/events/), the site is redeployed and the issue closed.
 # If validation fails, the errors are commented on the issue; editing the issue re-runs this.
 
 on:
@@ -54,7 +55,8 @@ jobs:
           # stamp added/updated dates, then regenerate MANAGE.md and the forms
           python3 .github/scripts/stamp_dates.py --base HEAD
           python3 .github/scripts/build_manage.py
-          git add "$FILE" .github/ISSUE_TEMPLATE MANAGE.md
+          # -A on assets picks up saved uploads and files moved or removed with their event
+          git add -A "$FILE" assets .github/ISSUE_TEMPLATE MANAGE.md
           git commit -m "$MESSAGE (closes #$ISSUE)"
           git push origin main
 

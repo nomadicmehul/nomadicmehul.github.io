@@ -163,6 +163,20 @@ jobs:
           print(f'Roles: {sorted(names)}')
           "
 
+      - name: Validate event files
+        run: |
+          echo "=== Checking local files linked from data/speaking.json ==="
+          python3 -c "
+          import json, os, sys
+          sys.path.insert(0, '.github/scripts')
+          from event_files import local_path
+          missing = [f'{e[\"title\"]}: {local_path(r[\"url\"])}' for e in json.load(open('data/speaking.json'))
+                     for r in e.get('resources', []) if local_path(r['url']) and not os.path.isfile(local_path(r['url']))]
+          if missing:
+              print('Validation FAILED — missing files:'); [print(f'  - {m}') for m in missing]; sys.exit(1)
+          print('Event files OK')
+          "
+
       - name: Validate blog.json
         run: |
           echo "=== Validating data/blog.json ==="
