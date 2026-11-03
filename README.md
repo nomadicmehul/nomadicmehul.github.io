@@ -23,6 +23,32 @@ Add, update or remove speaking events, projects and testimonials by filling in a
 
 A page on the site for adding or editing speaking events: **calendar date picker**, role chips, topic suggestions from past events, **location autocomplete** (your past places first, then cities worldwide as you type), a **live preview** of the card, duplicate checks, and drafts that survive a reload. When it's ready, **Add event on GitHub** opens the issue already filled in. If you're attaching slides, drag the file in there, then submit. **Edit event** lets you search any event, change it, and sends only what changed (or removes it).
 
+### 🧪 Workshop & talk demo repos: [Demo Studio](https://nomadicmehul.dev/demo-studio.html)
+
+Creates a separate GitHub repo for a workshop or talk demo, e.g. `github.com/nomadicmehul/2027-kubecon-europe-claude-agents`. Fill in the title, event, type, date (calendar), location, speakers, topics, an About text, links, the event or speaker **poster** and any **files**. Then:
+
+1. **Create on GitHub**: opens GitHub's new-repo page with the name and description filled in, from the `event-demo-template` repo. Click *Create repository*; the page notices when it exists.
+2. **Add details on GitHub**: opens a filled-in issue in the new repo. Drag in the poster and files, submit. The repo's own workflow writes `event.json`, saves files to `event/`, and generates the top of the README (poster, date, location, links, about, files, gallery). Everything under **## Demo** in the README is yours and never overwritten.
+3. *(optional)* **Open in Content Studio**: adds the event to the speaking page with the repo as its code link.
+
+**Update a repo** lists your demo repos (descriptions starting with 🎤), loads the current `event.json`, and sends only what changed. Inside each repo there's also an **Event info** issue form, and editing `event.json` by hand re-renders the README.
+
+<details><summary>One-time setup: the template repo</summary>
+
+The template's files live in this repo at [`.github/event-repo-template/`](.github/event-repo-template). To publish them:
+
+1. Create an empty public repo named `event-demo-template` (Demo Studio shows a link when it's missing).
+2. Push the folder's contents to it, e.g.
+   ```bash
+   tmp=$(mktemp -d) && cp -R .github/event-repo-template/. "$tmp" && cd "$tmp" \
+     && git init -b main && git add -A && git commit -m "Event demo template" \
+     && git remote add origin https://github.com/nomadicmehul/event-demo-template.git && git push -u origin main
+   ```
+3. In that repo: **Settings → General → ✓ Template repository**.
+
+After changing the template, push it again the same way (`git push --force`); repos already created keep their own copy.
+</details>
+
 ### 👉 Everything else: [MANAGE.md](https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md)
 
 One page listing everything on the site: speaking events grouped by **year → month**, projects, testimonials, and **recent activity by month**. Every row has **✏️ Update** and **🗑️ Remove** links that open the right form with the entry already filled in. It's also linked at the top of **Issues → New issue**.
@@ -228,6 +254,7 @@ The easy way is the [Add speaking event](https://github.com/nomadicmehul/nomadic
 ├── index.html              # Main portfolio page
 ├── speaking.html           # Speaking engagements timeline
 ├── studio.html             # Content Studio: add/edit speaking events (calendar, live preview → GitHub issue)
+├── demo-studio.html        # Demo Studio: create/update a separate GitHub repo per workshop or talk demo
 ├── projects.html           # Open-source projects grid
 ├── blog.html               # Medium articles
 ├── 404.html                # Custom 404 error page

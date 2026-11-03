@@ -24,6 +24,7 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 ├── index.html              # Main portfolio page (~2300 lines, self-contained)
 ├── speaking.html           # Speaking engagements timeline page
 ├── studio.html             # Content Studio: add/edit speaking events (calendar, live preview) → opens a pre-filled GitHub issue
+├── demo-studio.html        # Demo Studio: create/update a separate repo per workshop/talk demo (see "Demo repos")
 ├── projects.html           # Open-source projects grid page
 ├── blog.html               # Medium articles page
 ├── 404.html                # Custom 404 page
@@ -167,6 +168,16 @@ If validation fails, the errors are posted on the issue — edit the issue and i
 **Entry dates:** every speaking event, project and testimonial has `added` and `updated` (`YYYY-MM-DD`), maintained by `.github/scripts/stamp_dates.py` (it compares with the previous commit; `--backfill` rebuilds them from git history). Entries are identified by speaking: title + year, project: repo, testimonial: quote.
 
 Both are run in the same commit by `issue-to-data.yml`, and by `edit-forms.yml` when `data/*.json` is pushed directly (which also redeploys).
+
+## Demo repos (Demo Studio)
+
+`demo-studio.html` makes one public repo per workshop/talk demo, from the template repo **`nomadicmehul/event-demo-template`**, whose files live here in `.github/event-repo-template/` (not deployed: Pages skips dotfiles). Changing the template means pushing that folder to the template repo again (see README → Demo Studio → One-time setup); existing demo repos keep their copy.
+
+- **Create:** `github.com/new?template_owner=…&template_name=event-demo-template&name=…&description=…&visibility=…` (documented URL params). The description starts with `🎤 `; that's how "Update a repo" tells demo repos apart (`/users/nomadicmehul/repos`, unauthenticated, 60 req/h). The page polls `/repos/…` until the repo exists, then step 2 opens `/<repo>/issues/new?title=[event] …&body=…`.
+- **In each demo repo:** `.github/workflows/event-info.yml` runs `.github/scripts/event_info.py` on owner-opened issues titled `[event]…` (labels can't be used: the repo has none yet), on pushes to `event.json` (re-render only), and never in the template itself (`repository.is_template`). It writes `event.json`, downloads dropped files to `event/` (poster as `event/poster.*`), rewrites only the README between `<!-- event:start` and `<!-- event:end -->`, comments and closes. Blank field = keep, `-` = clear; `Files` lists `event/` paths to keep plus new drops, and unlisted files are deleted.
+- **Update:** loads `event.json` via the contents API (`Accept: application/vnd.github.raw+json`) and sends only changed fields.
+- **Step 3** links to `studio.html?new=1&title=&date=&location=&topics=&event=&code=`, which `prefill()` in studio.html turns into a new speaking event.
+- `LINK_TYPES` (Python) and `LINKS` (page), and the location autocomplete code in both studios, are kept in sync by hand.
 
 ## Link Checking
 

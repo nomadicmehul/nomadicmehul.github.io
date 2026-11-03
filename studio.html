@@ -341,6 +341,7 @@
                         <button role="tab" id="tab-edit" aria-selected="false"><i class="fas fa-pen"></i> Edit event</button>
                     </div>
                     <div class="quick-links">
+                        <a class="btn btn-ghost btn-sm" href="demo-studio.html"><i class="fas fa-code-branch"></i> Demo repos</a>
                         <a class="btn btn-ghost btn-sm" target="_blank" rel="noopener" href="https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-project.yml"><i class="fas fa-rocket"></i> Add project</a>
                         <a class="btn btn-ghost btn-sm" target="_blank" rel="noopener" href="https://github.com/nomadicmehul/nomadicmehul.github.io/issues/new?template=add-testimonial.yml"><i class="fas fa-comment"></i> Add testimonial</a>
                     </div>
@@ -537,7 +538,24 @@
             $('loading').hidden = true; $('studio').hidden = false;
             restoreDraft();
             const params = new URLSearchParams(location.search);
-            if (params.get('edit') !== null) setMode('edit', params.get('edit')); else render();
+            if (params.get('edit') !== null) setMode('edit', params.get('edit'));
+            else if (params.get('new') !== null) prefill(params);
+            else render();
+        }
+
+        // ?new&title=…&date=…&location=…&topics=a,b&event=<url>&code=<url> — sent by Demo Studio's "Add to speaking page"
+        function prefill(params) {
+            state = blank();
+            ['title', 'date', 'location'].forEach(k => { if (params.get(k)) state[k] = params.get(k); });
+            state.topics = (params.get('topics') || '').split(',').map(t => t.trim()).filter(Boolean)
+                .map(t => TOPICS.find(x => x.toLowerCase() === t.toLowerCase()) || t);
+            state.resources = [
+                { type: 'event', label: '', url: params.get('event') || '' },
+                ...(params.get('code') ? [{ type: 'code', label: '', url: params.get('code') }] : []),
+                { type: 'slides', label: '', url: '', upload: false },
+            ];
+            history.replaceState(null, '', location.pathname);   // a reload shouldn't overwrite later edits
+            render();
         }
 
         // ---------- mode ----------
@@ -643,7 +661,7 @@
         // ---------- location autocomplete: places used before, then cities worldwide ----------
         // City search: Open-Meteo geocoding (free, no key, CORS). Country names follow the spelling already in speaking.json.
         const GEO_URL = 'https://geocoding-api.open-meteo.com/v1/search?count=8&language=en&format=json&name=';
-        const COUNTRY_NAMES = { 'Czechia': 'Czech Republic', 'United Kingdom': 'UK', 'United States': 'USA', 'Türkiye': 'Turkey' };
+        const COUNTRY_NAMES = { 'Czechia': 'Czech Republic', 'United Kingdom': 'UK', 'United States': 'USA', 'Türkiye': 'Turkey', 'The Netherlands': 'Netherlands' };
         const ONLINE = ['Virtual', 'Global (Virtual)'];
         const geoCache = {};
         let locOpts = [], locActive = -1, locTimer, locAbort;
