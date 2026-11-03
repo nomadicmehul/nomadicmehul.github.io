@@ -1,6 +1,40 @@
 [
   {
     "year": 2026,
+    "date": "2026-10-22",
+    "title": "Berlin | Claude Workshop: Build Agents That Debug and Review with Claude Code",
+    "location": "Berlin, Germay",
+    "role": [
+      "Speaker",
+      "Event Organizer",
+      "Workshop Facilitator"
+    ],
+    "topics": [
+      "Claude Code",
+      "AI Agents",
+      "MCP",
+      "Docker",
+      "Anthropic",
+      "SRE",
+      "DevOps"
+    ],
+    "resources": [
+      {
+        "type": "event",
+        "label": "Event Page",
+        "url": "https://luma.com/claude-fxrb"
+      },
+      {
+        "type": "slides",
+        "label": "Slide Deck",
+        "url": "https://github.com/user-attachments/files/34333021/Claude_Workshop_Berlin_GlassFlow_22_10_26.pptx.pdf"
+      }
+    ],
+    "added": "2026-11-03",
+    "updated": "2026-11-03"
+  },
+  {
+    "year": 2026,
     "date": "2026-09-25",
     "title": "Berlin | Claude Code Meetup",
     "location": "Berlin, Germany",
