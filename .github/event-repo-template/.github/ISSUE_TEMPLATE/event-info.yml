@@ -1,0 +1,68 @@
+name: "📝 Event info"
+description: Set or change this repo's event details — README.md is regenerated automatically.
+title: "[event] update"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fill in **only what should change**: blank fields keep their current value, `-` clears one.
+        Easier: [Demo Studio](https://nomadicmehul.dev/demo-studio.html) loads the current values and has a calendar and a live preview.
+        Only issues opened by the repo owner are processed.
+  - type: input
+    id: title
+    attributes:
+      label: Title
+      description: Demo or workshop title
+  - type: input
+    id: event
+    attributes:
+      label: Event
+      placeholder: KubeCon Europe 2027
+  - type: input
+    id: type
+    attributes:
+      label: Type
+      placeholder: Workshop, Talk, Demo, Meetup, Hackathon, Webinar
+  - type: input
+    id: date
+    attributes:
+      label: Date
+      description: "YYYY-MM-DD, or written out like 9 Jun 2026"
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      placeholder: Berlin, Germany
+  - type: input
+    id: speakers
+    attributes:
+      label: Speakers
+      description: Comma-separated
+  - type: textarea
+    id: about
+    attributes:
+      label: About
+      description: What the session covers (Markdown works)
+  - type: input
+    id: topics
+    attributes:
+      label: Topics
+      description: Comma-separated
+  - type: textarea
+    id: links
+    attributes:
+      label: Links
+      description: "One per line: `type | url` or `type | label | url`. Types: event, slides, code, demo, video, blog, other. Replaces the current list."
+      placeholder: |
+        event | https://event-page.com
+        video | https://youtube.com/watch?v=...
+  - type: textarea
+    id: poster
+    attributes:
+      label: Poster
+      description: Drag the event or speaker poster image here. It's saved as event/poster.*
+  - type: textarea
+    id: files
+    attributes:
+      label: Files
+      description: "Drag files here (PDF, images, …). They're saved to event/. Files already in event/ that you want to keep: list their paths, one per line — the rest are deleted."

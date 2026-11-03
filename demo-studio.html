@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Studio — Mehul Patel</title>
+    <meta name="description" content="Create and update a GitHub repo for a workshop or talk demo.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --term-green: #4ade80; --term-green-dim: #22c55e; --term-green-bright: #86efac;
+            --term-amber: #fbbf24; --term-cyan: #22d3ee; --term-red: #f87171;
+            --term-purple: #c084fc; --term-blue: #60a5fa;
+            --bg-primary: #0a0e17; --bg-secondary: #0f1623; --bg-tertiary: #151d2e;
+            --bg-card: #111827; --bg-elevated: #1e293b;
+            --text-primary: #e2e8f0; --text-secondary: #94a3b8; --text-muted: #64748b;
+            --border-default: #1e293b; --border-hover: #334155;
+            --border-accent: rgba(74, 222, 128, 0.3);
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+            --shadow-glow: 0 0 20px rgba(74, 222, 128, 0.15);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-sans); color: var(--text-primary); background: var(--bg-primary); line-height: 1.6; -webkit-font-smoothing: antialiased; color-scheme: dark; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        button, input, textarea { font: inherit; color: inherit; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* Nav */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(10, 14, 23, 0.9); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-default);
+        }
+        .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+        .nav-logo { font-weight: 700; font-size: 1.25rem; display: flex; align-items: center; font-family: var(--font-mono); color: var(--term-green); }
+        .nav-logo .prompt-user { color: var(--term-green-bright); }
+        .nav-logo .prompt-at { color: var(--term-amber); }
+        .nav-logo .prompt-host { color: var(--term-cyan); }
+        .nav-logo .prompt-colon { color: var(--text-secondary); }
+        .nav-logo .prompt-path { color: var(--term-blue); }
+        .nav-logo .prompt-hash { color: var(--term-red); font-weight: 800; }
+        .nav-logo .cursor-block { display: inline-block; width: 10px; height: 18px; background: var(--term-green); margin-left: 2px; animation: cursor-blink 1s step-end infinite; vertical-align: text-bottom; }
+        @keyframes cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .nav-links { display: flex; align-items: center; gap: 24px; }
+        .nav-links a { font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); transition: color 0.2s; font-family: var(--font-mono); }
+        .nav-links a:hover { color: var(--term-green); }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px;
+            border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; border: 1px solid transparent; cursor: pointer; background: none;
+        }
+        .btn-primary { background: rgba(74, 222, 128, 0.15); color: var(--term-green); border-color: rgba(74, 222, 128, 0.35); }
+        .btn-primary:hover { background: rgba(74, 222, 128, 0.25); box-shadow: var(--shadow-glow); }
+        .btn-ghost { color: var(--text-secondary); border-color: var(--border-hover); }
+        .btn-ghost:hover { border-color: var(--term-green); color: var(--term-green); }
+        .btn-danger { color: var(--term-red); border-color: rgba(248, 113, 113, 0.35); }
+        .btn-danger:hover, .btn-danger.armed { background: rgba(248, 113, 113, 0.15); }
+        .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+        .btn-lg { padding: 14px 22px; font-size: 1rem; width: 100%; }
+        .btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+
+        /* Hero */
+        .studio-hero { padding: 112px 0 28px; }
+        .hero-prompt { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; }
+        .hero-prompt .u { color: var(--term-green-bright); } .hero-prompt .h { color: var(--term-cyan); } .hero-prompt .p { color: var(--term-blue); }
+        .studio-hero h1 { font-size: 2.4rem; font-weight: 800; line-height: 1.15; margin-bottom: 10px; }
+        .studio-hero h1 .hl { background: linear-gradient(135deg, var(--term-green), var(--term-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .studio-hero p { color: var(--text-secondary); max-width: 720px; }
+        .hero-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 24px; }
+        .segmented { display: inline-flex; background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: 10px; padding: 4px; gap: 4px; }
+        .segmented button {
+            border: none; background: none; cursor: pointer; padding: 8px 16px; border-radius: 7px;
+            font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: inline-flex; align-items: center; gap: 8px;
+        }
+        .segmented button[aria-selected="true"] { background: rgba(74, 222, 128, 0.15); color: var(--term-green); box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.3); }
+        .quick-links { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        /* Layout */
+        .studio { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 28px; padding-bottom: 96px; align-items: start; }
+        .side { position: sticky; top: 96px; display: flex; flex-direction: column; gap: 20px; }
+
+        .panel { background: var(--bg-card); border: 1px solid var(--border-default); border-radius: 14px; padding: 22px; }
+        .panel + .panel, #picker-panel + #fields { margin-top: 20px; }
+        .panel-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+        .panel-num { font-family: var(--font-mono); font-size: 0.8rem; color: var(--term-green); }
+        .panel-head h2 { font-size: 1.05rem; font-weight: 700; }
+        .panel-head .hint { margin-left: auto; font-size: 0.8rem; color: var(--text-muted); }
+
+        /* Fields */
+        .field { margin-bottom: 16px; }
+        .field:last-child { margin-bottom: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        label.lbl { display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 6px; }
+        label.lbl .req { color: var(--term-red); }
+        .input {
+            width: 100%; background: var(--bg-secondary); border: 1px solid var(--border-hover); border-radius: 8px;
+            padding: 10px 12px; font-size: 0.95rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input::placeholder { color: var(--text-muted); }
+        .input:focus { border-color: var(--term-green); box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.15); }
+        .input.invalid { border-color: rgba(248, 113, 113, 0.6); }
+        .help { font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; min-height: 1.2em; }
+        .help.ok { color: var(--term-green); } .help.warn { color: var(--term-amber); } .help.err { color: var(--term-red); }
+
+        /* Date */
+        .date-wrap { position: relative; }
+        .date-wrap .input { padding-left: 40px; cursor: pointer; font-family: var(--font-mono); }
+        .date-wrap > i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--term-amber); pointer-events: none; }
+        .date-wrap .input::-webkit-calendar-picker-indicator { filter: invert(0.8); cursor: pointer; }
+        .date-quick { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+
+        /* Location autocomplete */
+        .combo { position: relative; }
+        .combo > i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--term-green); pointer-events: none; }
+        .combo .input { padding-left: 38px; }
+        .combo-list {
+            position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 60; max-height: 340px; overflow: auto;
+            background: var(--bg-elevated); border: 1px solid var(--border-hover); border-radius: 10px; padding: 6px; box-shadow: var(--shadow-lg);
+        }
+        .combo-head { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); padding: 8px 10px 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .combo-opt { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 7px; cursor: pointer; }
+        .combo-opt[aria-selected="true"] { background: rgba(74, 222, 128, 0.12); }
+        .combo-opt .flag { width: 22px; text-align: center; font-size: 1.05rem; flex-shrink: 0; color: var(--text-muted); }
+        .combo-opt .main { font-size: 0.9rem; }
+        .combo-opt .main mark { background: none; color: var(--term-green); font-weight: 700; }
+        .combo-opt .sub { font-size: 0.75rem; color: var(--text-muted); margin-left: auto; text-align: right; white-space: nowrap; }
+        .combo-note { font-size: 0.8rem; color: var(--text-muted); padding: 8px 10px; }
+
+        /* Chips */
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip {
+            display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+            font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600;
+            padding: 6px 12px; border-radius: 100px; border: 1px solid var(--border-hover);
+            background: var(--bg-secondary); color: var(--text-secondary); transition: all 0.15s;
+        }
+        .chip:hover { border-color: var(--text-muted); color: var(--text-primary); }
+        .chip.on.c-green { background: rgba(74,222,128,.14); color: var(--term-green); border-color: rgba(74,222,128,.4); }
+        .chip.on.c-amber { background: rgba(251,191,36,.14); color: var(--term-amber); border-color: rgba(251,191,36,.4); }
+        .chip.on.c-purple { background: rgba(192,132,252,.14); color: var(--term-purple); border-color: rgba(192,132,252,.4); }
+        .chip.on.c-cyan { background: rgba(34,211,238,.14); color: var(--term-cyan); border-color: rgba(34,211,238,.4); }
+        .chip.on.c-blue { background: rgba(96,165,250,.14); color: var(--term-blue); border-color: rgba(96,165,250,.4); }
+        .chip.on.c-red { background: rgba(248,113,113,.14); color: var(--term-red); border-color: rgba(248,113,113,.4); }
+        .chip.on.c-default { background: rgba(148,163,184,.14); color: var(--text-primary); border-color: rgba(148,163,184,.4); }
+        .chip.sugg { font-weight: 500; border-style: dashed; }
+        .chip.sugg::before { content: '+'; color: var(--term-green); }
+
+        .tag-box {
+            display: flex; flex-wrap: wrap; gap: 6px; align-items: center; cursor: text;
+            background: var(--bg-secondary); border: 1px solid var(--border-hover); border-radius: 8px; padding: 6px 8px; min-height: 46px;
+        }
+        .tag-box:focus-within { border-color: var(--term-green); box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.15); }
+        .tag-box.invalid { border-color: rgba(248, 113, 113, 0.6); }
+        .tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.78rem; background: var(--bg-elevated); border-radius: 5px; padding: 4px 4px 4px 9px; }
+        .tag button { border: none; background: none; cursor: pointer; color: var(--text-muted); padding: 0 4px; border-radius: 4px; }
+        .tag button:hover { color: var(--term-red); }
+        .tag-box input { flex: 1; min-width: 140px; border: none; outline: none; background: none; padding: 4px; font-size: 0.95rem; }
+        .sugg-label { font-size: 0.75rem; color: var(--text-muted); margin: 12px 0 8px; font-family: var(--font-mono); }
+
+        /* Resources */
+        .res-list { display: flex; flex-direction: column; gap: 10px; }
+        .res {
+            display: grid; grid-template-columns: 132px minmax(0, 1fr) auto; gap: 8px; align-items: start;
+            background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: 10px; padding: 10px;
+        }
+        .res-type { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; padding: 9px 4px; }
+        .res-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+        .res-body .input { padding: 8px 10px; font-size: 0.88rem; }
+        .res-label { font-size: 0.8rem !important; }
+        .res-actions { display: flex; gap: 4px; }
+        .icon-btn { border: 1px solid transparent; background: none; cursor: pointer; color: var(--text-muted); width: 34px; height: 34px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; }
+        .icon-btn:hover { color: var(--text-primary); border-color: var(--border-hover); }
+        .icon-btn.on { color: var(--term-purple); border-color: rgba(192,132,252,.4); background: rgba(192,132,252,.1); }
+        .icon-btn.del:hover { color: var(--term-red); }
+        .upload-note {
+            display: flex; gap: 10px; align-items: flex-start; font-size: 0.82rem; color: var(--text-secondary);
+            border: 1px dashed rgba(192,132,252,.45); background: rgba(192,132,252,.06); border-radius: 8px; padding: 9px 11px;
+        }
+        .upload-note i { color: var(--term-purple); margin-top: 3px; }
+        .upload-note code, .help code, .steps code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--term-purple); }
+        .local-file { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); word-break: break-all; }
+        .t-event { color: var(--term-green); } .t-slides { color: var(--term-purple); } .t-code { color: var(--term-blue); }
+        .t-demo { color: var(--term-cyan); } .t-video { color: var(--term-red); } .t-blog { color: var(--term-amber); } .t-other { color: var(--text-secondary); }
+        .add-res { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        .add-res span { font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); margin-right: 4px; }
+
+        /* Picker (edit mode) */
+        .picker-results { margin-top: 10px; max-height: 340px; overflow: auto; display: flex; flex-direction: column; gap: 6px; }
+        .pick {
+            text-align: left; border: 1px solid var(--border-default); background: var(--bg-secondary); border-radius: 9px;
+            padding: 10px 12px; cursor: pointer; display: grid; grid-template-columns: 96px 1fr; gap: 10px; align-items: baseline;
+        }
+        .pick:hover, .pick:focus-visible { border-color: var(--border-accent); }
+        .pick .d { font-family: var(--font-mono); font-size: 0.78rem; color: var(--term-amber); }
+        .pick .t { font-size: 0.9rem; font-weight: 600; }
+        .pick .l { font-size: 0.78rem; color: var(--text-muted); display: block; font-weight: 400; }
+        .editing { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .editing .what { flex: 1; min-width: 200px; }
+        .editing .what b { display: block; }
+        .editing .what span { font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+        /* Preview card (same look as speaking.html) */
+        .side-label { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; display: flex; justify-content: space-between; gap: 8px; }
+        .event-card { background: var(--bg-card); border: 1px solid var(--border-default); border-radius: 14px; padding: 24px; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        .event-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--term-green), var(--term-cyan)); }
+        .event-card.upcoming { border-color: rgba(251, 191, 36, 0.45); }
+        .upcoming-badge {
+            display: inline-flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono);
+            text-transform: uppercase; letter-spacing: 0.5px; padding: 3px 10px; border-radius: 100px;
+            background: rgba(251, 191, 36, 0.12); color: var(--term-amber); border: 1px solid rgba(251, 191, 36, 0.3); width: fit-content; margin-bottom: 8px;
+        }
+        .upcoming-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--term-amber); box-shadow: 0 0 6px var(--term-amber); }
+        .event-card h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
+        .event-card h4.placeholder { color: var(--text-muted); font-style: italic; font-weight: 500; }
+        .event-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; font-size: 0.85rem; color: var(--text-muted); }
+        .event-meta span { display: flex; align-items: center; gap: 5px; }
+        .event-date { color: var(--term-amber); }
+        .event-topics { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+        .event-topic { font-size: 0.75rem; background: var(--bg-tertiary); color: var(--text-secondary); padding: 4px 10px; border-radius: 4px; font-weight: 500; font-family: var(--font-mono); }
+        .event-resources { display: flex; flex-wrap: wrap; gap: 8px; }
+        .resource-link { display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; font-family: var(--font-mono); padding: 4px 10px; border-radius: 6px; }
+        .resource-link.pending { border-style: dashed !important; }
+        .resource-link.type-slides { background: rgba(192,132,252,.12); color: var(--term-purple); border: 1px solid rgba(192,132,252,.25); }
+        .resource-link.type-code { background: rgba(96,165,250,.12); color: var(--term-blue); border: 1px solid rgba(96,165,250,.25); }
+        .resource-link.type-demo { background: rgba(34,211,238,.12); color: var(--term-cyan); border: 1px solid rgba(34,211,238,.25); }
+        .resource-link.type-video { background: rgba(248,113,113,.12); color: var(--term-red); border: 1px solid rgba(248,113,113,.25); }
+        .resource-link.type-blog { background: rgba(251,191,36,.12); color: var(--term-amber); border: 1px solid rgba(251,191,36,.25); }
+        .resource-link.type-event { background: rgba(74,222,128,.12); color: var(--term-green); border: 1px solid rgba(74,222,128,.25); }
+        .event-roles { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+        .event-role { display: inline-flex; align-items: center; gap: 5px; font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono); padding: 3px 10px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .role-green { background: rgba(74,222,128,.12); color: var(--term-green); border: 1px solid rgba(74,222,128,.25); }
+        .role-amber { background: rgba(251,191,36,.12); color: var(--term-amber); border: 1px solid rgba(251,191,36,.25); }
+        .role-purple { background: rgba(192,132,252,.12); color: var(--term-purple); border: 1px solid rgba(192,132,252,.25); }
+        .role-cyan { background: rgba(34,211,238,.12); color: var(--term-cyan); border: 1px solid rgba(34,211,238,.25); }
+        .role-blue { background: rgba(96,165,250,.12); color: var(--term-blue); border: 1px solid rgba(96,165,250,.25); }
+        .role-red { background: rgba(248,113,113,.12); color: var(--term-red); border: 1px solid rgba(248,113,113,.25); }
+        .role-default { background: rgba(148,163,184,.12); color: var(--text-secondary); border: 1px solid rgba(148,163,184,.25); }
+
+        .folder { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-secondary); background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: 8px; padding: 10px 12px; margin-top: 12px; word-break: break-all; }
+        .folder i { color: var(--term-amber); margin-right: 6px; }
+
+        /* Checklist + submit */
+        .checks { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; font-size: 0.85rem; }
+        .checks li { display: flex; gap: 8px; align-items: baseline; color: var(--text-secondary); }
+        .checks li i { width: 14px; text-align: center; }
+        .checks li.ok i { color: var(--term-green); }
+        .checks li.err { color: var(--text-primary); } .checks li.err i { color: var(--term-red); }
+        .checks li.warn i { color: var(--term-amber); }
+        .changes { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+        .changes span { font-family: var(--font-mono); font-size: 0.75rem; padding: 3px 8px; border-radius: 5px; background: rgba(74,222,128,.1); color: var(--term-green); }
+        .changes span.minus { background: rgba(248,113,113,.1); color: var(--term-red); }
+        .submit-row { display: flex; gap: 8px; margin-top: 10px; }
+        .submit-row .btn { flex: 1; }
+        .kbd { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); text-align: center; margin-top: 8px; }
+        details.issue { margin-top: 14px; }
+        details.issue summary { cursor: pointer; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); }
+        details.issue pre { margin-top: 10px; background: var(--bg-primary); border: 1px solid var(--border-default); border-radius: 8px; padding: 12px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-secondary); white-space: pre-wrap; word-break: break-word; max-height: 280px; overflow: auto; }
+
+        /* Next-steps dialog */
+        dialog {
+            margin: auto; border: 1px solid var(--border-accent); border-radius: 16px; background: var(--bg-card); color: var(--text-primary);
+            max-width: 520px; width: calc(100% - 32px); padding: 26px; box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+        dialog::backdrop { background: rgba(5, 8, 14, 0.75); backdrop-filter: blur(3px); }
+        dialog h3 { font-size: 1.2rem; margin-bottom: 4px; }
+        dialog > p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 18px; }
+        .steps { counter-reset: s; display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px; }
+        .steps li { counter-increment: s; display: grid; grid-template-columns: 28px 1fr; gap: 12px; font-size: 0.9rem; color: var(--text-secondary); }
+        .steps li::before { content: counter(s); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; background: rgba(74,222,128,.12); color: var(--term-green); border: 1px solid rgba(74,222,128,.3); }
+        .steps li.hl::before { background: rgba(192,132,252,.15); color: var(--term-purple); border-color: rgba(192,132,252,.4); }
+        .steps b { color: var(--text-primary); }
+        .dialog-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+
+        .toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px); opacity: 0; transition: all 0.25s;
+            background: var(--bg-elevated); border: 1px solid var(--border-accent); color: var(--text-primary); padding: 10px 16px; border-radius: 8px; font-size: 0.85rem; z-index: 2000; pointer-events: none;
+        }
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+        .loading { padding: 64px 0; text-align: center; color: var(--text-muted); font-family: var(--font-mono); }
+        [hidden] { display: none !important; }
+
+        .footer { color: var(--text-muted); padding: 32px 0; text-align: center; font-size: 0.85rem; border-top: 1px solid var(--border-default); font-family: var(--font-mono); }
+        .footer a { color: var(--term-green); }
+
+        @media (max-width: 960px) {
+            .studio { grid-template-columns: 1fr; }
+            .side { position: static; }
+        }
+        @media (max-width: 640px) {
+            .container { padding: 0 16px; }
+            .nav-links a:not(.btn) { display: none; }
+            .nav-logo { font-size: 0.95rem; }
+            .studio-hero h1 { font-size: 1.9rem; }
+            .row { grid-template-columns: 1fr; }
+            .res { grid-template-columns: 1fr auto; }
+            .res-type { grid-column: 1; padding: 2px; }
+            .res-actions { grid-column: 2; grid-row: 1; }
+            .res-body { grid-column: 1 / -1; }
+            .panel { padding: 18px; }
+            .pick { grid-template-columns: 1fr; gap: 2px; }
+        }
+        *:focus-visible { outline: 2px solid var(--term-green); outline-offset: 2px; }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+
+        /* ---------- Demo Studio additions ---------- */
+        textarea.input { resize: vertical; min-height: 110px; line-height: 1.5; font-size: 0.9rem; }
+        .count { float: right; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); }
+        .chips.single .chip.on { background: rgba(74,222,128,.14); color: var(--term-green); border-color: rgba(74,222,128,.4); }
+
+        .banner {
+            display: flex; gap: 14px; align-items: flex-start; border: 1px solid rgba(251,191,36,.4); background: rgba(251,191,36,.07);
+            border-radius: 12px; padding: 16px 18px; margin-bottom: 24px; font-size: 0.9rem; color: var(--text-secondary);
+        }
+        .banner > i { color: var(--term-amber); margin-top: 3px; }
+        .banner b { color: var(--text-primary); }
+        .banner ol { margin: 8px 0 0 18px; display: flex; flex-direction: column; gap: 6px; }
+        .banner a { color: var(--term-amber); text-decoration: underline; }
+
+        .repo-name { display: flex; align-items: stretch; }
+        .repo-name .prefix {
+            display: flex; align-items: center; padding: 0 10px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);
+            background: var(--bg-tertiary); border: 1px solid var(--border-hover); border-right: none; border-radius: 8px 0 0 8px; white-space: nowrap;
+        }
+        .repo-name .input { border-radius: 0 8px 8px 0; font-family: var(--font-mono); font-size: 0.88rem; }
+        .seg { display: inline-flex; border: 1px solid var(--border-hover); border-radius: 8px; overflow: hidden; }
+        .seg button { border: none; background: var(--bg-secondary); padding: 8px 14px; cursor: pointer; font-size: 0.85rem; color: var(--text-secondary); display: inline-flex; gap: 6px; align-items: center; }
+        .seg button[aria-pressed="true"] { background: rgba(74,222,128,.14); color: var(--term-green); }
+
+        .media { display: flex; gap: 14px; align-items: flex-start; }
+        .thumb {
+            width: 120px; aspect-ratio: 4 / 3; flex-shrink: 0; border-radius: 8px; border: 1px dashed var(--border-hover);
+            background: var(--bg-secondary) center / cover no-repeat; display: flex; align-items: center; justify-content: center; color: var(--text-muted);
+        }
+        .thumb.has { border-style: solid; }
+        .media-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+        .media-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+        .file-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+        .file-row { display: flex; align-items: center; gap: 10px; background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: 8px; padding: 6px 6px 6px 12px; font-family: var(--font-mono); font-size: 0.8rem; }
+        .file-row.removed { opacity: 0.45; text-decoration: line-through; }
+        .file-row span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .toggle-row { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.88rem; color: var(--text-secondary); }
+        .toggle-row input { accent-color: var(--term-green); width: 16px; height: 16px; }
+
+        /* GitHub-style README preview */
+        .readme {
+            background: #0d1117; border: 1px solid #30363d; border-radius: 12px; overflow: hidden; color: #e6edf3;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif; font-size: 0.86rem; line-height: 1.5;
+        }
+        .readme-bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #30363d; background: #161b22; font-size: 0.78rem; color: #8d96a0; }
+        .readme-bar b { color: #e6edf3; font-weight: 600; }
+        .readme-body { padding: 18px 20px; max-height: 560px; overflow: auto; }
+        .readme-body h1 { font-size: 1.45rem; font-weight: 600; padding-bottom: 6px; border-bottom: 1px solid #30363d; margin-bottom: 12px; line-height: 1.25; }
+        .readme-body h2 { font-size: 1.1rem; font-weight: 600; padding-bottom: 4px; border-bottom: 1px solid #30363d; margin: 18px 0 10px; }
+        .readme-body p { margin-bottom: 10px; }
+        .readme-body a { color: #4493f8; }
+        .readme-body code { font-family: var(--font-mono); font-size: 0.78rem; background: rgba(110,118,129,.4); padding: 2px 6px; border-radius: 6px; margin-right: 2px; }
+        .readme-body ul { list-style: disc; margin: 0 0 10px 20px; }
+        .readme-body .poster { display: block; max-width: 100%; margin: 0 auto 14px; border-radius: 6px; }
+        .readme-body .poster-pending, .readme-body .img-pending {
+            border: 1px dashed #30363d; border-radius: 6px; color: #8d96a0; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem;
+        }
+        .readme-body .poster-pending { aspect-ratio: 16 / 7; margin-bottom: 14px; }
+        .readme-body .gallery { display: flex; flex-wrap: wrap; gap: 8px; }
+        .readme-body .gallery img, .readme-body .img-pending { width: 120px; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 4px; }
+        .readme-body .yours { color: #8d96a0; font-style: italic; border-top: 1px dashed #30363d; margin-top: 18px; padding-top: 12px; }
+        .readme-body .muted { color: #8d96a0; }
+
+        .steps-panel { display: flex; flex-direction: column; gap: 10px; }
+        .step { display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start; padding: 12px; border: 1px solid var(--border-default); border-radius: 10px; background: var(--bg-secondary); }
+        .step-n { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; background: rgba(74,222,128,.12); color: var(--term-green); border: 1px solid rgba(74,222,128,.3); }
+        .step.done .step-n { background: var(--term-green); color: var(--bg-primary); }
+        .step.off { opacity: 0.55; }
+        .step-t { font-weight: 600; font-size: 0.92rem; margin-bottom: 2px; }
+        .step-d { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; }
+        .step .btn { width: 100%; }
+        .status { font-family: var(--font-mono); font-size: 0.75rem; margin-top: 6px; color: var(--text-muted); display: flex; gap: 6px; align-items: center; }
+        .status.ok { color: var(--term-green); } .status.err { color: var(--term-red); } .status.warn { color: var(--term-amber); }
+        .status button { background: none; border: none; color: var(--term-green); cursor: pointer; text-decoration: underline; font-size: inherit; font-family: inherit; }
+        .pick .t small { display: block; color: var(--text-muted); font-weight: 400; font-size: 0.75rem; }
+        @media (max-width: 640px) { .media { flex-direction: column; } .thumb { width: 100%; } .repo-name .prefix { display: none; } .repo-name .input { border-radius: 8px; } }
+    </style>
+</head>
+<body>
+    <nav class="nav" aria-label="Main navigation">
+        <div class="container">
+            <div class="nav-inner">
+                <a href="index.html" class="nav-logo">
+                    <span class="prompt-user">root</span><span class="prompt-at">@</span><span class="prompt-host">mehul</span><span class="prompt-colon">:</span><span class="prompt-path">~/demos</span><span class="prompt-hash">#</span><span class="cursor-block"></span>
+                </a>
+                <div class="nav-links">
+                    <a href="studio.html">Content Studio</a>
+                    <a href="speaking.html">Speaking</a>
+                    <a href="https://github.com/nomadicmehul?tab=repositories" target="_blank" rel="noopener" class="btn btn-primary btn-sm"><i class="fab fa-github"></i> Repos</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main-content">
+        <section class="studio-hero">
+            <div class="container">
+                <div class="hero-prompt"><span class="u">mehul</span>@<span class="h">berlin</span>:<span class="p">~/demos</span>$ <span id="hero-cmd">new-repo</span></div>
+                <h1>Demo <span class="hl">Studio</span></h1>
+                <p>Make a GitHub repo for a workshop or talk: event details, poster and files go in, and the README builds itself. Write your demo steps below it and push your code as usual.</p>
+                <div class="hero-bar">
+                    <div class="segmented" role="tablist" aria-label="Mode">
+                        <button role="tab" id="tab-new" aria-selected="true"><i class="fas fa-plus"></i> New demo repo</button>
+                        <button role="tab" id="tab-edit" aria-selected="false"><i class="fas fa-pen"></i> Update a repo</button>
+                    </div>
+                    <div class="quick-links">
+                        <a class="btn btn-ghost btn-sm" href="studio.html"><i class="fas fa-microphone"></i> Speaking events</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="container">
+            <div class="banner" id="setup" hidden>
+                <i class="fas fa-wrench"></i>
+                <div>
+                    <b>One-time setup: the template repo isn't on GitHub yet.</b> Every demo repo is created from <code>nomadicmehul/event-demo-template</code>.
+                    <ol>
+                        <li><a id="setup-create" target="_blank" rel="noopener" href="#">Create the empty repo</a> (name and description are filled in).</li>
+                        <li>Push the template files from this site's repo: <code>.github/event-repo-template/</code> (see the README's “Demo Studio” section).</li>
+                        <li>In the new repo: <b>Settings → General → Template repository</b> ✓.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="loading" id="loading"><i class="fas fa-circle-notch fa-spin"></i> loading…</div>
+
+            <div class="studio" id="studio" hidden>
+                <form id="form" autocomplete="off" novalidate>
+                    <!-- Update mode: choose the repo -->
+                    <section class="panel" id="picker-panel" hidden>
+                        <div class="panel-head"><span class="panel-num">00</span><h2>Which repo?</h2><span class="hint" id="picker-count"></span></div>
+                        <div id="picker">
+                            <input class="input" id="picker-q" type="search" placeholder="Search your demo repos, or type a repo name…" aria-label="Search repos">
+                            <label class="toggle-row" style="margin-top:10px"><input type="checkbox" id="show-all"> Show all my repos, not only demo repos</label>
+                            <div class="picker-results" id="picker-results" role="listbox"></div>
+                        </div>
+                        <div class="editing" id="editing" hidden>
+                            <div class="what"><b id="editing-title"></b><span id="editing-meta"></span></div>
+                            <a class="btn btn-ghost btn-sm" id="open-repo" target="_blank" rel="noopener" href="#"><i class="fab fa-github"></i> Open</a>
+                            <button type="button" class="btn btn-ghost btn-sm" id="change-repo"><i class="fas fa-arrow-right-arrow-left"></i> Change</button>
+                        </div>
+                        <div class="help warn" id="picker-note"></div>
+                    </section>
+
+                    <div id="fields">
+                        <section class="panel">
+                            <div class="panel-head"><span class="panel-num">01</span><h2>Event</h2></div>
+                            <div class="field">
+                                <label class="lbl" for="f-title">--title <span class="req">*</span></label>
+                                <input class="input" id="f-title" placeholder="Build Agents That Debug with Claude Code" maxlength="160">
+                                <div class="help" id="h-title">The demo or workshop name</div>
+                            </div>
+                            <div class="field">
+                                <label class="lbl" for="f-event">--event</label>
+                                <input class="input" id="f-event" list="event-names" placeholder="KubeCon Europe 2027" maxlength="160">
+                                <datalist id="event-names"></datalist>
+                                <div class="help" id="h-event"></div>
+                            </div>
+                            <div class="field">
+                                <label class="lbl">--type</label>
+                                <div class="chips single" id="types" role="radiogroup" aria-label="Session type"></div>
+                            </div>
+                            <div class="row">
+                                <div class="field">
+                                    <label class="lbl" for="f-date">--date</label>
+                                    <div class="date-wrap">
+                                        <i class="fas fa-calendar-day"></i>
+                                        <input class="input" id="f-date" type="date" min="2010-01-01" max="2100-12-31">
+                                    </div>
+                                    <div class="date-quick">
+                                        <button type="button" class="chip" data-days="0">Today</button>
+                                        <button type="button" class="chip" data-days="7">In a week</button>
+                                        <button type="button" class="chip" data-days="30">In a month</button>
+                                    </div>
+                                    <div class="help" id="h-date"></div>
+                                </div>
+                                <div class="field">
+                                    <label class="lbl" for="f-location">--location</label>
+                                    <div class="combo">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <input class="input" id="f-location" placeholder="Start typing a city…" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="loc-list" spellcheck="false">
+                                        <div class="combo-list" id="loc-list" role="listbox" aria-label="Location suggestions" hidden></div>
+                                    </div>
+                                    <div class="help" id="h-location"></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="panel">
+                            <div class="panel-head"><span class="panel-num">02</span><h2>People &amp; topics</h2></div>
+                            <div class="field">
+                                <label class="lbl" for="f-speaker">--speakers</label>
+                                <div class="tag-box" id="speaker-box" data-list="speakers">
+                                    <input id="f-speaker" placeholder="Add a co-speaker…" aria-label="Add speaker">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label class="lbl" for="f-topic">--topics</label>
+                                <div class="tag-box" id="topic-box" data-list="topics">
+                                    <input id="f-topic" list="topic-list" placeholder="Kubernetes, AI Agents…" aria-label="Add topic">
+                                    <datalist id="topic-list"></datalist>
+                                </div>
+                                <div class="sugg-label">// your most used</div>
+                                <div class="chips" id="topic-sugg"></div>
+                            </div>
+                        </section>
+
+                        <section class="panel">
+                            <div class="panel-head"><span class="panel-num">03</span><h2>About</h2><span class="hint">Markdown works</span></div>
+                            <textarea class="input" id="f-about" maxlength="4000" placeholder="What attendees build, what they need beforehand, what they'll take away…"></textarea>
+                            <div class="help"><span class="count" id="about-count"></span></div>
+                        </section>
+
+                        <section class="panel">
+                            <div class="panel-head"><span class="panel-num">04</span><h2>Links</h2><span class="hint">all optional</span></div>
+                            <div class="res-list" id="res-list"></div>
+                            <div class="add-res" id="add-res"></div>
+                        </section>
+
+                        <section class="panel">
+                            <div class="panel-head"><span class="panel-num">05</span><h2>Poster &amp; files</h2><span class="hint">saved in the repo's event/ folder</span></div>
+                            <div class="field">
+                                <label class="lbl">--poster</label>
+                                <div class="media">
+                                    <div class="thumb" id="poster-thumb"><i class="fas fa-image"></i></div>
+                                    <div class="media-body">
+                                        <div class="media-actions" id="poster-actions"></div>
+                                        <input class="input" id="f-poster-url" placeholder="…or paste an image URL" hidden>
+                                        <div class="help" id="h-poster"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label class="lbl">--files</label>
+                                <div class="file-list" id="file-list"></div>
+                                <label class="toggle-row"><input type="checkbox" id="f-add-files"> I'll attach files on GitHub (handouts, speaker card, photos, PDFs…)</label>
+                            </div>
+                        </section>
+
+                        <section class="panel" id="repo-panel">
+                            <div class="panel-head"><span class="panel-num">06</span><h2>Repository</h2></div>
+                            <div class="field">
+                                <label class="lbl" for="f-repo">--name <span class="req">*</span></label>
+                                <div class="repo-name"><span class="prefix">github.com/nomadicmehul/</span><input class="input" id="f-repo" maxlength="100" spellcheck="false" placeholder="kubecon-europe-2027-claude-agents"></div>
+                                <div class="help" id="h-repo">Filled in from the event and title; edit it if you like</div>
+                            </div>
+                            <div class="field">
+                                <label class="lbl">--visibility</label>
+                                <div class="seg" id="visibility">
+                                    <button type="button" data-v="public" aria-pressed="true"><i class="fas fa-globe"></i> Public</button>
+                                    <button type="button" data-v="private" aria-pressed="false"><i class="fas fa-lock"></i> Private</button>
+                                </div>
+                                <div class="help" id="h-visibility"></div>
+                            </div>
+                        </section>
+                    </div>
+                </form>
+
+                <aside class="side" id="side">
+                    <div>
+                        <div class="side-label"><span>// README preview</span><span id="preview-note"></span></div>
+                        <div class="readme">
+                            <div class="readme-bar"><i class="fas fa-book-open"></i> <b>README.md</b> <span id="preview-repo"></span></div>
+                            <div class="readme-body" id="preview"></div>
+                        </div>
+                    </div>
+                    <section class="panel">
+                        <div class="changes" id="changes" hidden></div>
+                        <ul class="checks" id="checks"></ul>
+                        <div class="steps-panel" id="steps-new">
+                            <div class="step" id="step1">
+                                <div class="step-n">1</div>
+                                <div>
+                                    <div class="step-t">Create the repo</div>
+                                    <div class="step-d">Opens GitHub with the name filled in — click <b>Create repository</b>.</div>
+                                    <a class="btn btn-primary" id="create" target="_blank" rel="noopener" href="#"><i class="fab fa-github"></i> Create on GitHub</a>
+                                    <div class="status" id="repo-status"></div>
+                                </div>
+                            </div>
+                            <div class="step off" id="step2">
+                                <div class="step-n">2</div>
+                                <div>
+                                    <div class="step-t">Add the event details</div>
+                                    <div class="step-d">Opens an issue in the new repo; drop in the poster and files, then submit.</div>
+                                    <a class="btn btn-primary" id="fill" target="_blank" rel="noopener" href="#"><i class="fas fa-file-pen"></i> Add details on GitHub</a>
+                                </div>
+                            </div>
+                            <div class="step off" id="step3">
+                                <div class="step-n">3</div>
+                                <div>
+                                    <div class="step-t">Add to speaking page <span class="muted" style="font-weight:400;color:var(--text-muted)">· optional</span></div>
+                                    <div class="step-d">Opens the Content Studio with this event and the repo as its code link.</div>
+                                    <a class="btn btn-ghost" id="to-speaking" target="_blank" rel="noopener" href="#"><i class="fas fa-microphone"></i> Open in Content Studio</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="steps-edit" hidden>
+                            <a class="btn btn-primary btn-lg" id="save" target="_blank" rel="noopener" href="#"><i class="fab fa-github"></i> Save changes on GitHub</a>
+                        </div>
+                        <div class="submit-row">
+                            <button type="button" class="btn btn-ghost btn-sm" id="copy"><i class="fas fa-copy"></i> Copy issue text</button>
+                            <button type="button" class="btn btn-ghost btn-sm" id="reset"><i class="fas fa-rotate-left"></i> <span id="reset-text">Start over</span></button>
+                        </div>
+                        <details class="issue"><summary>What gets sent</summary><pre id="body-preview"></pre></details>
+                    </section>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <dialog id="next">
+        <h3><i class="fab fa-github" style="color:var(--term-green)"></i> <span id="next-title">Finish on GitHub</span></h3>
+        <p id="next-intro"></p>
+        <ol class="steps" id="next-steps"></ol>
+        <div class="dialog-actions">
+            <a class="btn btn-ghost btn-sm" id="next-reopen" target="_blank" rel="noopener" href="#"><i class="fas fa-up-right-from-square"></i> Open again</a>
+            <button type="button" class="btn btn-primary btn-sm" id="next-done"><i class="fas fa-check"></i> Done</button>
+        </div>
+    </dialog>
+    <div class="toast" id="toast" role="status"></div>
+
+    <footer class="footer">
+        <p>Issues are processed only when opened by the repo owner &mdash; <a href="studio.html">Content Studio</a></p>
+    </footer>
+
+    <script>
+        const OWNER = 'nomadicmehul';
+        const TEMPLATE = 'event-demo-template';
+        const API = 'https://api.github.com';
+        const DRAFT_KEY = 'demo-studio-draft-v1';
+        const MARK = '🎤 ';   // repo descriptions start with this, so "Update a repo" can list demo repos
+        const TYPES = ['Workshop', 'Talk', 'Demo', 'Meetup', 'Hackathon', 'Webinar'];
+        // same types and labels as LINK_TYPES in .github/event-repo-template/.github/scripts/event_info.py
+        const LINKS = {
+            event:  { label: 'Event Page', icon: 'fas fa-external-link-alt', ph: 'https://event-page.com', name: 'Event page', cls: 'event' },
+            slides: { label: 'Slides',     icon: 'fas fa-file-powerpoint',   ph: 'https://… or upload the file', name: 'Slides', cls: 'slides', upload: true },
+            code:   { label: 'Code',       icon: 'fab fa-github',            ph: 'https://github.com/…', name: 'Code', cls: 'code' },
+            demo:   { label: 'Live Demo',  icon: 'fas fa-play-circle',       ph: 'https://…', name: 'Live demo', cls: 'demo' },
+            video:  { label: 'Recording',  icon: 'fas fa-video',             ph: 'https://youtube.com/watch?v=…', name: 'Recording', cls: 'video', upload: true },
+            blog:   { label: 'Blog Post',  icon: 'fas fa-blog',              ph: 'https://medium.com/@nomadicmehul/…', name: 'Blog post', cls: 'blog' },
+            other:  { label: 'Link',       icon: 'fas fa-link',              ph: 'https://…', name: 'Other', cls: 'other', upload: true },
+        };
+        const EMOJI = { event: '🌐', slides: '📑', code: '💻', demo: '▶️', video: '🎥', blog: '✍️', other: '🔗' };
+        const $ = id => document.getElementById(id);
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const isUrl = s => /^https?:\/\/\S+$/.test(s);
+        const todayIso = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
+        const raw = (repo, path) => `https://raw.githubusercontent.com/${OWNER}/${repo}/HEAD/${path.split('/').map(encodeURIComponent).join('/')}`;
+
+        let TOPICS = [], EVENT_NAMES = [], REPOS = null;
+        const PAST_LOCS = {};
+        let mode = 'new', original = null, repoName = '', repoNameEdited = false, visibility = 'public';
+        let state = blank();
+
+        function blank() {
+            return {
+                title: '', event: '', type: 'Workshop', date: '', location: '', speakers: ['Mehul Patel'], topics: [], about: '',
+                links: [{ type: 'event', label: '', url: '' }, { type: 'slides', label: '', url: '', upload: false }, { type: 'code', label: '', url: '' }],
+                poster: { mode: 'none', url: '', current: '' },   // mode: none | upload | url | keep
+                files: [], addFiles: false,                        // files: [{ path, removed }]
+            };
+        }
+
+        // ---------- helpers ----------
+        function slug(text, limit = 60) {
+            let s = text.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+            if (s.length > limit) { s = s.slice(0, limit); if (s.includes('-')) s = s.slice(0, s.lastIndexOf('-')); }
+            return s;
+        }
+        function suggestedRepo() {
+            const base = slug([state.event, state.title].filter(Boolean).join(' '));
+            const year = state.date.slice(0, 4);
+            return base && year && !base.includes(year) ? slug(`${year} ${base}`) : base;
+        }
+        function description() {
+            const d = `${MARK}${state.type || 'Demo'}: ${state.title.trim()}` + (state.event.trim() ? ` — ${state.event.trim()}` : '') + (state.date ? ` (${state.date})` : '');
+            return d.slice(0, 340);
+        }
+        async function gh(path) {
+            const res = await fetch(API + path, { headers: { Accept: 'application/vnd.github+json' } });
+            if (res.status === 403 && res.headers.get('x-ratelimit-remaining') === '0') throw Object.assign(new Error('rate'), { rate: true });
+            return res;
+        }
+        function toast(msg) {
+            const t = $('toast'); t.textContent = msg; t.classList.add('show');
+            clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2400);
+        }
+
+        // ---------- load ----------
+        async function load() {
+            try {
+                const events = await (await fetch('data/speaking.json')).json();
+                const count = {}, spelling = {};
+                events.forEach(e => {
+                    PAST_LOCS[e.location] = (PAST_LOCS[e.location] || 0) + 1;
+                    (e.topics || []).forEach(t => {
+                        const k = t.toLowerCase(); count[k] = (count[k] || 0) + 1;
+                        spelling[k] = spelling[k] || {}; spelling[k][t] = (spelling[k][t] || 0) + 1;
+                    });
+                });
+                TOPICS = Object.keys(count).sort((a, b) => count[b] - count[a]).map(k => Object.entries(spelling[k]).sort((a, b) => b[1] - a[1])[0][0]);
+                EVENT_NAMES = events.map(e => e.title);
+                $('topic-list').innerHTML = TOPICS.map(t => `<option value="${esc(t)}">`).join('');
+                $('event-names').innerHTML = EVENT_NAMES.map(t => `<option value="${esc(t)}">`).join('');
+            } catch (_) { /* suggestions are optional */ }
+            $('loading').hidden = true; $('studio').hidden = false;
+            checkTemplate();
+            restoreDraft();
+            const repo = new URLSearchParams(location.search).get('repo');
+            if (repo) setMode('edit', repo); else render();
+        }
+
+        async function checkTemplate() {
+            try {
+                const res = await gh(`/repos/${OWNER}/${TEMPLATE}`);
+                const info = res.ok ? await res.json() : null;
+                $('setup').hidden = !!(info && info.is_template);
+                $('setup-create').href = `https://github.com/new?` + new URLSearchParams({ owner: OWNER, name: TEMPLATE, description: 'Template for workshop and talk demo repos — created from Demo Studio on nomadicmehul.dev', visibility: 'public' });
+            } catch (_) { /* rate limited: assume it's set up */ }
+        }
+
+        // ---------- mode ----------
+        function setMode(m, query = '') {
+            mode = m;
+            $('tab-new').setAttribute('aria-selected', m === 'new');
+            $('tab-edit').setAttribute('aria-selected', m === 'edit');
+            $('hero-cmd').textContent = m === 'new' ? 'new-repo' : 'update-repo';
+            $('picker-panel').hidden = m !== 'edit';
+            $('repo-panel').hidden = m !== 'new';
+            $('steps-new').hidden = m !== 'new';
+            $('steps-edit').hidden = m !== 'edit';
+            $('reset-text').textContent = m === 'new' ? 'Start over' : 'Undo changes';
+            original = null; stopPolling();
+            if (m === 'new') { restoreDraft(); $('fields').hidden = false; $('side').hidden = false; render(); return; }
+            $('fields').hidden = true; $('side').hidden = true; $('picker').hidden = false; $('editing').hidden = true; $('picker-note').textContent = '';
+            $('picker-q').value = query;
+            loadRepos().then(() => {
+                if (query && REPOS?.some(r => r.name === query)) pickRepo(query); else renderPicker();
+            });
+            $('picker-q').focus();
+        }
+
+        async function loadRepos() {
+            if (REPOS) return;
+            $('picker-results').innerHTML = '<div class="help"><i class="fas fa-circle-notch fa-spin"></i> Loading your repos…</div>';
+            try {
+                const res = await gh(`/users/${OWNER}/repos?per_page=100&sort=created`);
+                REPOS = (await res.json()).filter(r => r.name !== TEMPLATE);
+            } catch (e) {
+                REPOS = [];
+                $('picker-note').textContent = e.rate ? "GitHub's API limit is reached (60 requests an hour without login). Type the repo name and press Enter." : "Couldn't list repos — type the repo name and press Enter.";
+            }
+        }
+
+        function renderPicker() {
+            const q = $('picker-q').value.trim().toLowerCase(), all = $('show-all').checked;
+            const demos = (REPOS || []).filter(r => all || (r.description || '').startsWith(MARK.trim()));
+            $('picker-count').textContent = REPOS ? `${demos.length} ${all ? 'repo' : 'demo repo'}${demos.length === 1 ? '' : 's'}` : '';
+            const hits = demos.filter(r => !q || (r.name + ' ' + (r.description || '')).toLowerCase().includes(q)).slice(0, 40);
+            $('picker-results').innerHTML = hits.length ? hits.map(r => `
+                <button type="button" class="pick" role="option" data-repo="${esc(r.name)}">
+                    <span class="d">${esc(r.created_at.slice(0, 10))}</span>
+                    <span class="t">${esc(r.name)}${r.private ? ' 🔒' : ''}<small>${esc((r.description || '').replace(MARK, ''))}</small></span>
+                </button>`).join('')
+                : `<div class="help">${q ? `No match — press Enter to open <b>${esc(q)}</b>.` : 'No demo repos yet — create one in “New demo repo”.'}</div>`;
+        }
+
+        async function pickRepo(name) {
+            $('picker-note').textContent = '';
+            let ev = null;
+            try {
+                const res = await fetch(`${API}/repos/${OWNER}/${name}/contents/event.json`, { headers: { Accept: 'application/vnd.github.raw+json' } });
+                if (res.status === 404) {
+                    const repo = await gh(`/repos/${OWNER}/${name}`);
+                    if (repo.status === 404) { $('picker-note').textContent = `github.com/${OWNER}/${name} doesn't exist (or it's private).`; return; }
+                    $('picker-note').textContent = 'This repo has no event.json yet — fill in the details and save. (It needs the event-info workflow from the template.)';
+                    ev = {};
+                } else if (res.ok) ev = await res.json();
+                else throw Object.assign(new Error('x'), { rate: res.status === 403 });
+            } catch (e) {
+                $('picker-note').textContent = e.rate ? "GitHub's API limit is reached (60 requests an hour without login) — try again later." : "Couldn't load event.json from that repo.";
+                return;
+            }
+            repoName = name;
+            original = ev;
+            state = {
+                title: ev.title || '', event: ev.event || '', type: ev.type || '', date: ev.date || '', location: ev.location || '',
+                speakers: [...(ev.speakers || [])], topics: [...(ev.topics || [])], about: ev.about || '',
+                links: (ev.links || []).map(l => ({ type: l.type, label: l.label === LINKS[l.type]?.label ? '' : l.label, url: l.url, upload: false })),
+                poster: ev.poster ? { mode: 'keep', url: '', current: ev.poster } : { mode: 'none', url: '', current: '' },
+                files: (ev.files || []).map(path => ({ path, removed: false })), addFiles: false,
+            };
+            $('picker').hidden = true; $('editing').hidden = false;
+            $('editing-title').textContent = ev.title || name;
+            $('editing-meta').textContent = `${OWNER}/${name}` + (ev.updated ? ` · updated ${ev.updated}` : '');
+            $('open-repo').href = `https://github.com/${OWNER}/${name}`;
+            $('fields').hidden = false; $('side').hidden = false;
+            touched = new Set();
+            render();
+        }
+
+        // ---------- inputs ----------
+        function bind() {
+            ['title', 'event', 'date', 'location', 'about'].forEach(k => $('f-' + k).addEventListener('input', e => { state[k] = e.target.value; update(); }));
+            $('f-date').addEventListener('click', e => { try { e.target.showPicker(); } catch (_) {} });
+            document.querySelectorAll('.date-quick .chip').forEach(b => b.addEventListener('click', () => {
+                const d = new Date(); d.setDate(d.getDate() + Number(b.dataset.days)); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                state.date = $('f-date').value = d.toISOString().slice(0, 10); update();
+            }));
+            $('types').addEventListener('click', e => {
+                const b = e.target.closest('.chip'); if (!b) return;
+                state.type = state.type === b.dataset.type ? '' : b.dataset.type; renderTypes(); update();
+            });
+            bindTags('speaker', 'speakers');
+            bindTags('topic', 'topics');
+            $('topic-sugg').addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) addTag('topics', b.dataset.topic); });
+
+            $('res-list').addEventListener('input', e => {
+                const row = e.target.closest('.res'); if (!row) return;
+                state.links[row.dataset.i][e.target.dataset.k] = e.target.value; update();
+            });
+            $('res-list').addEventListener('click', e => {
+                const b = e.target.closest('button'); if (!b) return;
+                const i = Number(b.closest('.res').dataset.i);
+                if (b.dataset.act === 'del') state.links.splice(i, 1);
+                if (b.dataset.act === 'upload') { const l = state.links[i]; l.upload = !l.upload; if (l.upload) l.url = ''; }
+                renderLinks(); update();
+            });
+            $('add-res').addEventListener('click', e => {
+                const b = e.target.closest('button'); if (!b) return;
+                state.links.push({ type: b.dataset.type, label: '', url: '', upload: false });
+                renderLinks(); update();
+                $('res-list').lastElementChild?.querySelector('input')?.focus();
+            });
+
+            $('poster-actions').addEventListener('click', e => {
+                const b = e.target.closest('button'); if (!b) return;
+                state.poster.mode = b.dataset.mode;
+                renderPoster(); update();
+                if (b.dataset.mode === 'url') $('f-poster-url').focus();
+            });
+            $('f-poster-url').addEventListener('input', e => { state.poster.url = e.target.value.trim(); renderPoster(); update(); });
+            $('file-list').addEventListener('click', e => {
+                const b = e.target.closest('button'); if (!b) return;
+                const f = state.files[Number(b.dataset.i)]; f.removed = !f.removed; renderFiles(); update();
+            });
+            $('f-add-files').addEventListener('change', e => { state.addFiles = e.target.checked; update(); });
+
+            $('f-repo').addEventListener('input', e => { repoName = e.target.value.trim(); repoNameEdited = !!repoName; checkName(); update(); });
+            $('visibility').addEventListener('click', e => {
+                const b = e.target.closest('button'); if (!b) return;
+                visibility = b.dataset.v;
+                $('visibility').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+                $('h-visibility').textContent = visibility === 'private' ? 'Private repos work, but “Update a repo” can only load public ones — update a private repo with its Event info issue form.' : '';
+                update();
+            });
+        }
+
+        function bindTags(inputId, key) {
+            const input = $('f-' + inputId), box = input.closest('.tag-box');
+            input.addEventListener('keydown', e => {
+                if ((e.key === 'Enter' || e.key === ',' || e.key === 'Tab') && input.value.trim()) { e.preventDefault(); addTag(key, input.value); }
+                else if (e.key === 'Backspace' && !input.value && state[key].length) { state[key].pop(); renderTags(key); update(); }
+            });
+            input.addEventListener('input', e => {
+                if (input.value.includes(',')) { input.value.split(',').forEach(v => addTag(key, v)); return; }
+                const picked = !e.inputType || e.inputType === 'insertReplacementText';
+                if (key === 'topics' && picked && TOPICS.includes(input.value)) addTag(key, input.value);
+            });
+            input.addEventListener('blur', () => input.value.trim() && addTag(key, input.value));
+            box.addEventListener('click', e => {
+                const x = e.target.closest('[data-del]');
+                if (x) { state[key].splice(Number(x.dataset.del), 1); renderTags(key); update(); } else input.focus();
+            });
+        }
+
+        function addTag(key, raw) {
+            const input = $(key === 'topics' ? 'f-topic' : 'f-speaker');
+            const v = raw.trim().replace(/\s+/g, ' ');
+            input.value = '';
+            if (!v) return;
+            const known = key === 'topics' ? TOPICS.find(x => x.toLowerCase() === v.toLowerCase()) : null;
+            const val = known || v;
+            if (!state[key].some(x => x.toLowerCase() === val.toLowerCase())) state[key].push(val);
+            renderTags(key); update();
+        }
+
+        // ---------- location autocomplete (same as studio.html) ----------
+        const GEO_URL = 'https://geocoding-api.open-meteo.com/v1/search?count=8&language=en&format=json&name=';
+        const COUNTRY_NAMES = { 'Czechia': 'Czech Republic', 'United Kingdom': 'UK', 'United States': 'USA', 'Türkiye': 'Turkey', 'The Netherlands': 'Netherlands' };
+        const ONLINE = ['Virtual', 'Global (Virtual)'];
+        const geoCache = {};
+        let locOpts = [], locActive = -1, locTimer, locAbort;
+        const flag = cc => cc ? String.fromCodePoint(...[...cc.toUpperCase()].map(c => 0x1F1A5 + c.charCodeAt(0))) : '';
+        const highlight = (text, q) => {
+            const i = q ? text.toLowerCase().indexOf(q.toLowerCase()) : -1;
+            return i < 0 ? esc(text) : esc(text.slice(0, i)) + '<mark>' + esc(text.slice(i, i + q.length)) + '</mark>' + esc(text.slice(i + q.length));
+        };
+        const people = n => n >= 1e6 ? (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M people' : n >= 1e3 ? Math.round(n / 1e3) + 'k people' : '';
+
+        function bindLocation() {
+            const input = $('f-location');
+            input.addEventListener('input', () => suggestLocations(input.value));
+            input.addEventListener('focus', () => suggestLocations(input.value));
+            input.addEventListener('blur', () => setTimeout(closeLocations, 120));
+            input.addEventListener('keydown', e => {
+                if ($('loc-list').hidden) { if (e.key === 'ArrowDown') { suggestLocations(input.value); e.preventDefault(); } return; }
+                const n = locOpts.length;
+                if (e.key === 'ArrowDown' && n) { locActive = (locActive + 1) % n; paintActive(); e.preventDefault(); }
+                else if (e.key === 'ArrowUp' && n) { locActive = (locActive - 1 + n) % n; paintActive(); e.preventDefault(); }
+                else if (e.key === 'Enter') { e.preventDefault(); if (locActive >= 0) chooseLocation(locOpts[locActive].value); else closeLocations(); }
+                else if (e.key === 'Escape') closeLocations();
+            });
+            $('loc-list').addEventListener('mousedown', e => e.preventDefault());
+            $('loc-list').addEventListener('click', e => { const o = e.target.closest('.combo-opt'); if (o) chooseLocation(locOpts[Number(o.dataset.i)].value); });
+        }
+        function suggestLocations(raw) {
+            const q = raw.trim();
+            const past = Object.keys(PAST_LOCS).filter(l => !q || l.toLowerCase().includes(q.toLowerCase()))
+                .sort((a, b) => PAST_LOCS[b] - PAST_LOCS[a]).slice(0, q ? 5 : 6)
+                .map(l => ({ value: l, icon: /virtual|global/i.test(l) ? '<i class="fas fa-globe"></i>' : '<i class="fas fa-clock-rotate-left"></i>', sub: `${PAST_LOCS[l]} event${PAST_LOCS[l] > 1 ? 's' : ''}` }));
+            const online = q ? ONLINE.filter(l => l.toLowerCase().startsWith(q.toLowerCase()) && !PAST_LOCS[l]).map(l => ({ value: l, icon: '<i class="fas fa-globe"></i>', sub: 'online' })) : [];
+            renderLocations(q, [...past, ...online], q.length >= 2 ? (geoCache[q.toLowerCase()] || 'loading') : null);
+            clearTimeout(locTimer);
+            if (q.length >= 2 && !geoCache[q.toLowerCase()]) locTimer = setTimeout(() => searchCities(q), 220);
+        }
+        async function searchCities(q) {
+            locAbort?.abort(); locAbort = new AbortController();
+            let cities = [];
+            try {
+                const res = await fetch(GEO_URL + encodeURIComponent(q), { signal: locAbort.signal });
+                const seen = new Set();
+                cities = ((await res.json()).results || []).map(r => {
+                    const country = COUNTRY_NAMES[r.country] || r.country || '';
+                    return { value: country ? `${r.name}, ${country}` : r.name, icon: flag(r.country_code), sub: [r.admin1 !== r.name && r.admin1, people(r.population || 0)].filter(Boolean).join(' · ') };
+                }).filter(c => !seen.has(c.value) && seen.add(c.value));
+            } catch (e) {
+                if (e.name === 'AbortError') return;
+                cities = 'offline';
+            }
+            geoCache[q.toLowerCase()] = cities;
+            if ($('f-location').value.trim() === q && document.activeElement === $('f-location')) suggestLocations(q);
+        }
+        function renderLocations(q, mine, cities) {
+            const cityOpts = Array.isArray(cities) ? cities.filter(c => !mine.some(m => m.value === c.value)) : [];
+            locOpts = [...mine, ...cityOpts];
+            locActive = q && locOpts.length ? 0 : -1;
+            const opt = (o, i) => `<div class="combo-opt" role="option" id="loc-${i}" data-i="${i}" aria-selected="false"><span class="flag">${o.icon}</span><span class="main">${highlight(o.value, q)}</span><span class="sub">${esc(o.sub)}</span></div>`;
+            let html = '';
+            if (mine.length) html += '<div class="combo-head">Used before</div>' + mine.map(opt).join('');
+            if (cities === 'loading') html += '<div class="combo-note"><i class="fas fa-circle-notch fa-spin"></i> Searching cities…</div>';
+            else if (cities === 'offline') html += '<div class="combo-note">City search is unavailable — type it as “City, Country”.</div>';
+            else if (cityOpts.length) html += '<div class="combo-head">Cities</div>' + cityOpts.map((o, i) => opt(o, i + mine.length)).join('');
+            else if (cities && !mine.length) html += `<div class="combo-note">No matches — “${esc(q)}” will be used as typed.</div>`;
+            $('loc-list').innerHTML = html;
+            $('loc-list').hidden = !html;
+            $('f-location').setAttribute('aria-expanded', String(!!html));
+            paintActive();
+        }
+        function paintActive() {
+            $('loc-list').querySelectorAll('.combo-opt').forEach(o => o.setAttribute('aria-selected', String(Number(o.dataset.i) === locActive)));
+            const act = $('loc-' + locActive);
+            act?.scrollIntoView({ block: 'nearest' });
+            $('f-location').setAttribute('aria-activedescendant', act ? act.id : '');
+        }
+        function chooseLocation(value) { state.location = $('f-location').value = value; closeLocations(); update(); }
+        function closeLocations() {
+            clearTimeout(locTimer);
+            $('loc-list').hidden = true; locActive = -1;
+            $('f-location').setAttribute('aria-expanded', 'false');
+        }
+
+        // ---------- render ----------
+        function render() {
+            ['title', 'event', 'date', 'location', 'about'].forEach(k => { $('f-' + k).value = state[k]; });
+            $('f-add-files').checked = state.addFiles;
+            $('f-poster-url').value = state.poster.url;
+            if (mode === 'new') $('f-repo').value = repoName;
+            renderTypes(); renderTags('speakers'); renderTags('topics'); renderLinks(); renderPoster(); renderFiles(); update();
+        }
+        function renderTypes() {
+            $('types').innerHTML = TYPES.map(t => `<button type="button" class="chip${state.type === t ? ' on' : ''}" data-type="${t}" role="radio" aria-checked="${state.type === t}">${t}</button>`).join('');
+        }
+        function renderTags(key) {
+            const box = $(key === 'topics' ? 'topic-box' : 'speaker-box');
+            box.querySelectorAll('.tag').forEach(t => t.remove());
+            box.insertAdjacentHTML('afterbegin', state[key].map((t, i) => `<span class="tag">${esc(t)}<button type="button" data-del="${i}" aria-label="Remove ${esc(t)}"><i class="fas fa-xmark"></i></button></span>`).join(''));
+            if (key === 'topics') {
+                const chosen = new Set(state.topics.map(t => t.toLowerCase()));
+                $('topic-sugg').innerHTML = TOPICS.filter(t => !chosen.has(t.toLowerCase())).slice(0, 12)
+                    .map(t => `<button type="button" class="chip sugg" data-topic="${esc(t)}">${esc(t)}</button>`).join('');
+            }
+        }
+        function renderLinks() {
+            $('res-list').innerHTML = state.links.map((l, i) => {
+                const m = LINKS[l.type];
+                const local = !l.upload && l.url && !isUrl(l.url);
+                return `
+                <div class="res" data-i="${i}">
+                    <div class="res-type t-${m.cls}"><i class="${m.icon}"></i> ${m.name}</div>
+                    <div class="res-body">
+                        ${l.upload ? `<div class="upload-note"><i class="fas fa-paperclip"></i><span>You'll drag the file in on GitHub. It's saved in the repo's <code>event/</code> folder.</span></div>`
+                          : local ? `<div class="local-file"><i class="fas fa-file"></i> ${esc(l.url)}</div>`
+                          : `<input class="input" data-k="url" value="${esc(l.url)}" placeholder="${esc(m.ph)}" aria-label="${esc(m.name)} URL">`}
+                        <input class="input res-label" data-k="label" value="${esc(l.label)}" placeholder="Button text: ${esc(m.label)}" aria-label="Button text">
+                    </div>
+                    <div class="res-actions">
+                        ${m.upload ? `<button type="button" class="icon-btn${l.upload ? ' on' : ''}" data-act="upload" title="${l.upload ? 'Use a URL instead' : 'Upload a file on GitHub'}" aria-pressed="${!!l.upload}"><i class="fas fa-${l.upload ? 'link' : 'paperclip'}"></i></button>` : ''}
+                        <button type="button" class="icon-btn del" data-act="del" title="Remove"><i class="fas fa-xmark"></i></button>
+                    </div>
+                </div>`;
+            }).join('') || '<div class="help">No links yet.</div>';
+            $('add-res').innerHTML = '<span>+ add</span>' + Object.entries(LINKS).map(([t, m]) =>
+                `<button type="button" class="chip" data-type="${t}"><i class="${m.icon} t-${m.cls}"></i> ${m.name}</button>`).join('');
+        }
+        function posterSrc() {
+            const p = state.poster;
+            if (p.mode === 'url' && isUrl(p.url)) return p.url;
+            if (p.mode === 'keep' && p.current) return raw(repoName, p.current);
+            return '';
+        }
+        function renderPoster() {
+            const p = state.poster, src = posterSrc();
+            const thumb = $('poster-thumb');
+            thumb.classList.toggle('has', !!src);
+            thumb.style.backgroundImage = src ? `url("${src.replace(/"/g, '%22')}")` : '';
+            thumb.innerHTML = src ? '' : p.mode === 'upload' ? '<i class="fas fa-paperclip"></i>' : '<i class="fas fa-image"></i>';
+            const btn = (m, icon, text) => `<button type="button" class="chip${p.mode === m ? ' on c-green' : ''}" data-mode="${m}"><i class="fas fa-${icon}"></i> ${text}</button>`;
+            $('poster-actions').innerHTML = (p.current ? btn('keep', 'check', 'Keep current') : '')
+                + btn('upload', 'paperclip', p.current ? 'Replace (upload on GitHub)' : 'Upload on GitHub')
+                + btn('url', 'link', 'Image URL')
+                + btn('none', 'ban', p.current ? 'Remove' : 'No poster');
+            $('f-poster-url').hidden = p.mode !== 'url';
+            $('h-poster').textContent = p.mode === 'upload' ? "You'll drag the event or speaker poster into the issue; it's saved as event/poster.*" : p.mode === 'keep' ? p.current : '';
+        }
+        function renderFiles() {
+            $('file-list').innerHTML = state.files.map((f, i) => `
+                <div class="file-row${f.removed ? ' removed' : ''}"><i class="fas fa-file"></i><span title="${esc(f.path)}">${esc(f.path)}</span>
+                    <button type="button" class="icon-btn${f.removed ? '' : ' del'}" data-i="${i}" title="${f.removed ? 'Keep' : 'Delete from the repo'}"><i class="fas fa-${f.removed ? 'rotate-left' : 'trash'}"></i></button>
+                </div>`).join('');
+        }
+
+        // ---------- README preview (mirrors render() in event_info.py) ----------
+        function mdInline(s) {
+            return esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+        }
+        function renderPreview() {
+            const s = state, out = [];
+            const src = posterSrc();
+            if (src) out.push(`<img class="poster" src="${esc(src)}" alt="">`);
+            else if (s.poster.mode === 'upload') out.push('<div class="poster-pending"><i class="fas fa-paperclip"></i> poster — you\'ll drop it on GitHub</div>');
+            out.push(`<h1>${esc(s.title.trim() || 'Demo title')}</h1>`);
+            const meta = [];
+            if (s.event.trim()) meta.push((s.type ? `<b>${esc(s.type)}</b> at ` : '') + `<b>${esc(s.event.trim())}</b>`);
+            else if (s.type) meta.push(`<b>${esc(s.type)}</b>`);
+            if (s.date) meta.push('📅 ' + new Date(s.date + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }).replace(',', ''));
+            if (s.location.trim()) meta.push('📍 ' + esc(s.location.trim()));
+            if (meta.length) out.push(`<p>${meta.join(' · ')}</p>`);
+            if (s.speakers.length) out.push(`<p>🎤 ${s.speakers.map(esc).join(', ')}</p>`);
+            const links = s.links.filter(l => l.url || l.upload);
+            if (links.length) out.push('<p>' + links.map(l => `<b><a href="${l.upload ? '#' : esc(isUrl(l.url) ? l.url : raw(repoName, l.url))}" target="_blank" rel="noopener">${EMOJI[l.type]} ${esc(l.label || LINKS[l.type].label)}</a></b>${l.upload ? ' <span class="muted">(upload)</span>' : ''}`).join(' · ') + '</p>');
+            if (s.topics.length) out.push('<p>' + s.topics.map(t => `<code>${esc(t)}</code>`).join(' ') + '</p>');
+            if (s.about.trim()) out.push('<h2>About</h2>' + s.about.trim().split(/\n{2,}/).map(p => `<p>${mdInline(p).replace(/\n/g, '<br>')}</p>`).join(''));
+            const kept = s.files.filter(f => !f.removed).map(f => f.path), img = p => /\.(png|jpe?g|gif|webp|svg)$/i.test(p);
+            const docs = kept.filter(p => !img(p)), imgs = kept.filter(img);
+            if (docs.length || s.addFiles) out.push('<h2>Files</h2><ul>' + docs.map(p => `<li>📎 <a href="${esc(raw(repoName, p))}" target="_blank" rel="noopener">${esc(p.split('/').pop())}</a></li>`).join('') + (s.addFiles ? '<li class="muted">📎 files you attach on GitHub</li>' : '') + '</ul>');
+            if (imgs.length) out.push('<h2>Gallery</h2><div class="gallery">' + imgs.map(p => `<img src="${esc(raw(repoName, p))}" alt="">`).join('') + '</div>');
+            out.push('<div class="yours"><b>## Demo</b> — your own notes, setup and run steps. Never overwritten.</div>');
+            $('preview').innerHTML = out.join('');
+            const name = mode === 'new' ? repoName : repoName;
+            $('preview-repo').textContent = name ? `· ${OWNER}/${name}` : '';
+        }
+
+        // ---------- validation ----------
+        let touched = new Set(), nameStatus = { name: '', state: '' };
+        const shown = id => touched.has('*') || touched.has(id);
+        function validate() {
+            const errs = {};
+            if (!state.title.trim()) errs.title = 'Required';
+            if (state.date && !/^\d{4}-\d{2}-\d{2}$/.test(state.date)) errs.date = 'Pick a date';
+            state.links.forEach((l, i) => {
+                if (!l.upload && !l.url.trim()) errs['l' + i] = `${LINKS[l.type].name}: paste a URL, upload a file, or remove the row`;
+                else if (!l.upload && !isUrl(l.url.trim()) && !l.url.startsWith('event/')) errs['l' + i] = `${LINKS[l.type].name}: link must start with https://`;
+            });
+            if (state.poster.mode === 'url' && !isUrl(state.poster.url)) errs.poster = 'Paste an image URL starting with https://';
+            if (mode === 'new') {
+                if (!repoName) errs.repo = 'Required';
+                else if (!/^[A-Za-z0-9._-]{1,100}$/.test(repoName)) errs.repo = 'Letters, numbers, - _ and . only';
+                // once you've clicked Create, the repo existing is the point
+                else if (nameStatus.name === repoName && nameStatus.state === 'taken' && !step1Clicked) errs.repo = 'You already have a repo with this name';
+            }
+            return errs;
+        }
+        function setHelp(id, errs, fallback = '') {
+            const el = $('h-' + id); if (!el) return;
+            const err = shown(id) && errs[id];
+            el.className = 'help' + (err ? ' err' : '');
+            el.innerHTML = err ? esc(err) : fallback;
+            $('f-' + id)?.classList.toggle('invalid', !!err);
+        }
+
+        // ---------- repo name availability ----------
+        let nameTimer;
+        function checkName() {
+            clearTimeout(nameTimer);
+            const name = repoName;
+            if (!/^[A-Za-z0-9._-]{1,100}$/.test(name)) return;
+            if (nameStatus.name === name) return;
+            nameStatus = { name, state: 'checking' }; update();
+            nameTimer = setTimeout(async () => {
+                try {
+                    const res = await gh(`/repos/${OWNER}/${name}`);
+                    if (repoName !== name) return;
+                    nameStatus = { name, state: res.status === 404 ? 'free' : res.ok ? 'taken' : 'unknown' };
+                } catch (_) { nameStatus = { name, state: 'unknown' }; }
+                update();
+            }, 600);
+        }
+        function nameHelp() {
+            if (!repoName) return 'Filled in from the event and title; edit it if you like';
+            const st = nameStatus.name === repoName ? nameStatus.state : '';
+            return { checking: '<i class="fas fa-circle-notch fa-spin"></i> checking…', free: '<span style="color:var(--term-green)"><i class="fas fa-check"></i> available</span>',
+                     taken: `<span style="color:var(--term-amber)">exists — <a href="?repo=${encodeURIComponent(repoName)}" style="text-decoration:underline">update it instead</a>?</span>`,
+                     unknown: "couldn't check (GitHub API limit) — GitHub will tell you if it's taken" }[st] || '';
+        }
+
+        // ---------- issue body ----------
+        const linkLine = l => {
+            const label = l.label.trim() && l.label.trim() !== LINKS[l.type].label ? ` | ${l.label.trim()}` : '';
+            return l.upload ? `<!-- 📎 Click at the very end of the next line, then drag your file in -->\n${l.type}${label} | ` : `${l.type}${label} | ${l.url.trim()}`;
+        };
+        const linkLines = list => [...list.filter(l => !l.upload), ...list.filter(l => l.upload)].map(linkLine).join('\n');
+        const sameLinks = (a, b) => JSON.stringify(a.map(l => [l.type, l.label || LINKS[l.type]?.label, l.url, !!l.upload])) === JSON.stringify(b.map(l => [l.type, l.label || LINKS[l.type]?.label, l.url, !!l.upload]));
+
+        // [label, value now, value in event.json] for the plain fields
+        function fields() {
+            const o = original || {};
+            return [
+                ['Title', state.title.trim(), o.title || ''], ['Event', state.event.trim(), o.event || ''], ['Type', state.type, o.type || ''],
+                ['Date', state.date, o.date || ''], ['Location', state.location.trim(), o.location || ''],
+                ['Speakers', state.speakers.join(', '), (o.speakers || []).join(', ')], ['About', state.about.trim(), o.about || ''],
+                ['Topics', state.topics.join(', '), (o.topics || []).join(', ')],
+            ];
+        }
+        function body() {
+            const out = [], changes = [], editing = mode === 'edit';
+            for (const [label, now, was] of fields()) {
+                if (editing && now === was) continue;
+                if (!now && !was) continue;
+                out.push(`### ${label}`, now || '-');
+                if (editing) changes.push(label.toLowerCase());
+            }
+            const origLinks = (original?.links || []).map(l => ({ ...l, label: l.label === LINKS[l.type]?.label ? '' : l.label }));
+            const links = state.links.filter(l => l.url.trim() || l.upload);
+            if (!editing ? links.length : !sameLinks(links, origLinks)) {
+                out.push('### Links', links.length ? linkLines(links) : '-');
+                if (editing) changes.push('links');
+            }
+            const p = state.poster;
+            const posterChanged = p.mode === 'upload' || (p.mode === 'url' && p.url) || (p.mode === 'none' && p.current);
+            if (posterChanged) {
+                out.push('### Poster', p.mode === 'upload' ? '<!-- 📎 Click on the empty line below, then drag the poster image in -->\n' : p.mode === 'url' ? p.url : '-');
+                if (editing) changes.push('poster');
+            }
+            const kept = state.files.filter(f => !f.removed).map(f => f.path);
+            if (state.addFiles || kept.length !== state.files.length) {
+                out.push('### Files', [...kept, state.addFiles ? '<!-- 📎 Click on the empty line below, then drag your files in -->\n' : ''].filter(Boolean).join('\n') || '-');
+                if (editing) changes.push('files');
+            }
+            return { text: out.join('\n\n') + '\n', changes };
+        }
+        const issueUrl = (repo, title, text) => `https://github.com/${OWNER}/${repo}/issues/new?` + new URLSearchParams({ title, body: text });
+        const createUrl = () => `https://github.com/new?` + new URLSearchParams({ owner: OWNER, template_owner: OWNER, template_name: TEMPLATE, name: repoName, description: description(), visibility });
+        function speakingUrl() {
+            const p = new URLSearchParams({ new: '1', title: state.event.trim() || state.title.trim(), date: state.date, location: state.location.trim(), topics: state.topics.join(','), code: `https://github.com/${OWNER}/${repoName}` });
+            const ev = state.links.find(l => l.type === 'event' && isUrl(l.url));
+            if (ev) p.set('event', ev.url);
+            return 'studio.html?' + p;
+        }
+
+        // ---------- update ----------
+        function update() {
+            if (mode === 'edit' && !original) return;
+            if (mode === 'new' && !repoNameEdited) {
+                const s = suggestedRepo();
+                if (s !== repoName) { repoName = s; $('f-repo').value = s; checkName(); }
+            }
+            renderPreview();
+            const errs = validate();
+            setHelp('title', errs, 'The demo or workshop name');
+            setHelp('date', errs, dateHelp());
+            setHelp('poster', errs, $('h-poster').innerHTML);
+            if (mode === 'new') setHelp('repo', errs, nameHelp());
+            $('about-count').textContent = state.about.length ? `${state.about.length}/4000` : '';
+
+            const b = body();
+            const linkErrs = Object.keys(errs).filter(k => /^l\d/.test(k)).map(k => errs[k]);
+            const uploads = state.links.filter(l => l.upload).length + (state.poster.mode === 'upload' ? 1 : 0) + (state.addFiles ? 1 : 0);
+            const items = [
+                [!errs.title, errs.title ? 'Add the demo or workshop title' : 'Title'],
+                ...linkErrs.map(e => [false, e]),
+                ...(errs.poster ? [[false, 'Poster: ' + errs.poster]] : []),
+            ];
+            if (mode === 'new') items.push([!errs.repo, errs.repo ? `Repo name: ${errs.repo}` : `Repo: ${repoName}`]);
+            if (uploads) items.push(['warn', `${uploads} upload${uploads > 1 ? 's' : ''} to drag in on GitHub`]);
+            if (mode === 'edit') items.unshift([b.changes.length > 0, b.changes.length ? `${b.changes.length} change${b.changes.length > 1 ? 's' : ''}` : 'No changes yet']);
+            $('checks').innerHTML = items.map(([ok, text]) =>
+                `<li class="${ok === 'warn' ? 'warn' : ok ? 'ok' : 'err'}"><i class="fas fa-${ok === 'warn' ? 'paperclip' : ok ? 'check' : 'circle-exclamation'}"></i><span>${esc(text)}</span></li>`).join('');
+            $('changes').hidden = !(mode === 'edit' && b.changes.length);
+            $('changes').innerHTML = b.changes.map(c => `<span>~ ${esc(c)}</span>`).join('');
+
+            const ready = Object.keys(errs).length === 0;
+            const title = `[event] ${state.title.trim()}`;
+            if (mode === 'new') {
+                setLink('create', ready, createUrl());
+                const exists = nameStatus.name === repoName && (nameStatus.state === 'taken' || repoSeen);
+                setLink('fill', ready && (exists || step1Clicked), issueUrl(repoName, title, b.text));
+                setLink('to-speaking', ready, speakingUrl());
+                $('step1').classList.toggle('done', !!exists && repoSeen);
+                $('step2').classList.toggle('off', !(exists || step1Clicked));
+                $('step3').classList.toggle('off', !(exists || step1Clicked));
+            } else {
+                setLink('save', ready && b.changes.length > 0, issueUrl(repoName, title, b.text));
+            }
+            $('body-preview').textContent = b.text;
+            saveDraft();
+        }
+        function setLink(id, ok, href) { $(id).href = ok ? href : '#'; $(id).setAttribute('aria-disabled', String(!ok)); }
+        function dateHelp() {
+            if (!state.date) return '';
+            const d = new Date(state.date + 'T00:00:00'), days = Math.round((d - new Date(todayIso() + 'T00:00:00')) / 864e5);
+            const when = days === 0 ? 'today' : days > 0 ? `in ${days} day${days > 1 ? 's' : ''}` : `${-days} day${days < -1 ? 's' : ''} ago`;
+            return `${d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · ${when}`;
+        }
+
+        // ---------- steps ----------
+        let polling = null, pollTries = 0, step1Clicked = false, repoSeen = false;
+        function blocked(e, id) {
+            if ($(id).getAttribute('aria-disabled') !== 'true') return false;
+            e.preventDefault(); touched.add('*'); update(); toast('Fix the items marked in red first'); return true;
+        }
+        $('create').addEventListener('click', e => {
+            if (blocked(e, 'create')) return;
+            step1Clicked = true; repoSeen = false; startPolling(); update();
+        });
+        function startPolling() {
+            stopPolling(); pollTries = 0;
+            const name = repoName;
+            const tick = async () => {
+                pollTries++;
+                $('repo-status').className = 'status';
+                $('repo-status').innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> waiting for github.com/${OWNER}/${esc(name)}…`;
+                try {
+                    const res = await gh(`/repos/${OWNER}/${name}`);
+                    if (res.ok) {
+                        stopPolling(); repoSeen = true; nameStatus = { name, state: 'taken' };
+                        $('repo-status').className = 'status ok'; $('repo-status').innerHTML = '<i class="fas fa-check"></i> repo created — next, add the details';
+                        update(); return;
+                    }
+                } catch (_) { stopPolling(); $('repo-status').className = 'status warn'; $('repo-status').textContent = "GitHub's API limit is reached — continue with step 2 once the repo exists."; return; }
+                if (pollTries >= 25) { stopPolling(); $('repo-status').className = 'status warn'; $('repo-status').innerHTML = 'Not seeing it yet. <button type="button" id="recheck">Check again</button>'; $('recheck').onclick = startPolling; }
+            };
+            polling = setInterval(tick, 7000); tick();
+        }
+        function stopPolling() { clearInterval(polling); polling = null; }
+
+        function showNext(url, title, intro, steps) {
+            $('next-title').textContent = title; $('next-intro').textContent = intro; $('next-reopen').href = url;
+            $('next-steps').innerHTML = steps.join(''); $('next').showModal();
+        }
+        function uploadSteps() {
+            const s = [];
+            const lines = state.links.filter(l => l.upload).map(l => `<code>${esc(l.type)} |</code>`);
+            if (lines.length) s.push(`<li class="hl"><span><b>Link files:</b> click at the very end of the ${lines.join(' / ')} line and drag the file in.</span></li>`);
+            if (state.poster.mode === 'upload') s.push('<li class="hl"><span><b>Poster:</b> click the empty line under <code>### Poster</code> and drag the image in.</span></li>');
+            if (state.addFiles) s.push('<li class="hl"><span><b>Files:</b> click the empty line under <code>### Files</code> and drag them in (several at once is fine).</span></li>');
+            return s;
+        }
+        $('fill').addEventListener('click', e => {
+            if (blocked(e, 'fill')) return;
+            showNext($('fill').href, 'Add the details on GitHub', `An issue opened in ${OWNER}/${repoName}.`, [
+                ...uploadSteps(),
+                '<li><span>Wait until uploads finish, then click <b>Create</b>.</span></li>',
+                `<li><span>The repo's workflow saves <code>event.json</code>, puts files in <code>event/</code>, writes the README and closes the issue (about a minute). Errors are commented on the issue — edit it to re-run.</span></li>`,
+                '<li><span>Push your demo code as usual, and write setup steps under <b>## Demo</b> in the README.</span></li>',
+            ]);
+            clearDraftSoon = true;
+        });
+        $('save').addEventListener('click', e => {
+            if (blocked(e, 'save')) return;
+            showNext($('save').href, 'Save on GitHub', `An issue opened in ${OWNER}/${repoName} with only what changed.`, [
+                ...uploadSteps(),
+                '<li><span>Click <b>Create</b>. The README and <code>event.json</code> update in about a minute.</span></li>',
+            ]);
+        });
+        $('to-speaking').addEventListener('click', e => { blocked(e, 'to-speaking'); });
+        let clearDraftSoon = false;
+        $('next-done').addEventListener('click', () => {
+            $('next').close();
+            if (mode === 'edit') setMode('edit', repoName);
+        });
+
+        // ---------- drafts (new mode) ----------
+        function saveDraft() { if (mode !== 'new') return; try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ state, repoName: repoNameEdited ? repoName : '', visibility })); } catch (_) {} }
+        function restoreDraft() {
+            let d = null;
+            try { d = JSON.parse(localStorage.getItem(DRAFT_KEY)); } catch (_) {}
+            state = d?.state && Array.isArray(d.state.links) ? { ...blank(), ...d.state } : blank();
+            repoName = d?.repoName || ''; repoNameEdited = !!repoName;
+            step1Clicked = false; repoSeen = false; nameStatus = { name: '', state: '' };
+            $('repo-status').textContent = '';
+        }
+        function clearDraft() { try { localStorage.removeItem(DRAFT_KEY); } catch (_) {} }
+
+        // ---------- wire up ----------
+        $('tab-new').addEventListener('click', () => mode !== 'new' && setMode('new'));
+        $('tab-edit').addEventListener('click', () => mode !== 'edit' && setMode('edit'));
+        $('picker-q').addEventListener('input', renderPicker);
+        $('show-all').addEventListener('change', renderPicker);
+        $('picker-q').addEventListener('keydown', e => {
+            if (e.key !== 'Enter') return;
+            e.preventDefault();
+            const first = $('picker-results').querySelector('.pick');
+            if (first) first.click(); else if ($('picker-q').value.trim()) pickRepo($('picker-q').value.trim());
+        });
+        $('picker-results').addEventListener('click', e => { const b = e.target.closest('.pick'); if (b) pickRepo(b.dataset.repo); });
+        $('change-repo').addEventListener('click', () => setMode('edit'));
+        $('form').addEventListener('submit', e => e.preventDefault());
+        $('copy').addEventListener('click', async () => {
+            try { await navigator.clipboard.writeText($('body-preview').textContent); toast('Issue text copied'); } catch (_) { toast('Copy failed — open “What gets sent” and copy by hand'); }
+        });
+        $('reset').addEventListener('click', () => {
+            if (mode === 'new') { if (!confirm('Clear the form?')) return; clearDraft(); restoreDraft(); touched = new Set(); stopPolling(); render(); }
+            else if (original) pickRepo(repoName);
+        });
+        document.addEventListener('focusout', e => {
+            const id = { 'f-title': 'title', 'f-date': 'date', 'f-repo': 'repo', 'f-poster-url': 'poster' }[e.target.id];
+            if (id) { touched.add(id); update(); }
+        });
+        window.addEventListener('beforeunload', () => clearDraftSoon && clearDraft());
+
+        bind();
+        bindLocation();
+        load();
+    </script>
+</body>
+</html>

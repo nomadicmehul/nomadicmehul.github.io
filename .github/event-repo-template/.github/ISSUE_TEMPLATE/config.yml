@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: "🎛️ Demo Studio"
+    url: https://nomadicmehul.dev/demo-studio.html
+    about: Edit this repo's event details with a calendar, live preview and file uploads.
