@@ -388,6 +388,38 @@
         .status button { background: none; border: none; color: var(--term-green); cursor: pointer; text-decoration: underline; font-size: inherit; font-family: inherit; }
         .pick .t small { display: block; color: var(--text-muted); font-weight: 400; font-size: 0.75rem; }
         @media (max-width: 640px) { .media { flex-direction: column; } .thumb { width: 100%; } .repo-name .prefix { display: none; } .repo-name .input { border-radius: 8px; } }
+        /* Connect GitHub + direct uploads */
+        .connect {
+            display: flex; align-items: center; gap: 12px; flex-wrap: wrap; border: 1px solid var(--border-default); background: var(--bg-card);
+            border-radius: 12px; padding: 12px 16px; margin-bottom: 24px; font-size: 0.88rem; color: var(--text-secondary);
+        }
+        .connect.on { border-color: rgba(74,222,128,.35); }
+        .connect .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--text-muted); flex-shrink: 0; }
+        .connect.on .dot { background: var(--term-green); box-shadow: 0 0 8px var(--term-green); }
+        .connect .grow { flex: 1; min-width: 220px; }
+        .connect b { color: var(--text-primary); }
+        .drop {
+            display: flex; flex-direction: column; align-items: center; gap: 6px; border: 1.5px dashed var(--border-hover); border-radius: 10px;
+            padding: 18px; text-align: center; color: var(--text-muted); font-size: 0.85rem; cursor: pointer; transition: all .15s;
+        }
+        .drop i { font-size: 1.3rem; }
+        .thumb.over { border-color: var(--term-green); background-color: rgba(74,222,128,.05); }
+        .drop:hover, .drop.over { border-color: var(--term-green); color: var(--term-green); background: rgba(74,222,128,.05); }
+        .drop input, .pick-file input { display: none; }
+        .pick-file { cursor: pointer; }
+        .file-row .size { flex: none; color: var(--text-muted); font-size: 0.72rem; }
+        .file-row.new { border-color: rgba(74,222,128,.3); }
+        .file-row.new > i { color: var(--term-green); }
+        .chosen { font-family: var(--font-mono); font-size: 0.8rem; color: var(--term-green); display: flex; gap: 8px; align-items: center; min-width: 0; }
+        .chosen span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .progress { display: flex; flex-direction: column; gap: 12px; margin-bottom: 22px; }
+        .progress li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: 0.9rem; color: var(--text-muted); align-items: baseline; }
+        .progress li.run { color: var(--text-primary); } .progress li.ok { color: var(--text-secondary); } .progress li.err { color: var(--term-red); }
+        .progress li i { text-align: center; }
+        .progress li.ok i { color: var(--term-green); }
+        .progress small { display: block; font-size: 0.78rem; color: var(--text-muted); word-break: break-word; }
+        .progress small a { color: var(--term-green); text-decoration: underline; }
+        dialog .input + .toggle-row { margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -425,10 +457,16 @@
         </section>
 
         <div class="container">
+            <div class="connect" id="connect">
+                <span class="dot"></span>
+                <span class="grow" id="connect-text"></span>
+                <button type="button" class="btn btn-primary btn-sm" id="connect-btn"></button>
+            </div>
+
             <div class="banner" id="setup" hidden>
                 <i class="fas fa-wrench"></i>
                 <div>
-                    <b>One-time setup: the template repo isn't on GitHub yet.</b> Every demo repo is created from <code>nomadicmehul/event-demo-template</code>.
+                    <b>One-time setup: the template repo isn't ready yet.</b> Every demo repo is created from <code>nomadicmehul/event-demo-template</code>.
                     <ol>
                         <li><a id="setup-create" target="_blank" rel="noopener" href="#">Create the empty repo</a> (name and description are filled in).</li>
                         <li>Push the template files from this site's repo: <code>.github/event-repo-template/</code> (see the README's “Demo Studio” section).</li>
@@ -469,7 +507,6 @@
                                 <label class="lbl" for="f-event">--event</label>
                                 <input class="input" id="f-event" list="event-names" placeholder="KubeCon Europe 2027" maxlength="160">
                                 <datalist id="event-names"></datalist>
-                                <div class="help" id="h-event"></div>
                             </div>
                             <div class="field">
                                 <label class="lbl">--type</label>
@@ -496,7 +533,6 @@
                                         <input class="input" id="f-location" placeholder="Start typing a city…" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="loc-list" spellcheck="false">
                                         <div class="combo-list" id="loc-list" role="listbox" aria-label="Location suggestions" hidden></div>
                                     </div>
-                                    <div class="help" id="h-location"></div>
                                 </div>
                             </div>
                         </section>
@@ -505,13 +541,13 @@
                             <div class="panel-head"><span class="panel-num">02</span><h2>People &amp; topics</h2></div>
                             <div class="field">
                                 <label class="lbl" for="f-speaker">--speakers</label>
-                                <div class="tag-box" id="speaker-box" data-list="speakers">
+                                <div class="tag-box" id="speaker-box">
                                     <input id="f-speaker" placeholder="Add a co-speaker…" aria-label="Add speaker">
                                 </div>
                             </div>
                             <div class="field">
                                 <label class="lbl" for="f-topic">--topics</label>
-                                <div class="tag-box" id="topic-box" data-list="topics">
+                                <div class="tag-box" id="topic-box">
                                     <input id="f-topic" list="topic-list" placeholder="Kubernetes, AI Agents…" aria-label="Add topic">
                                     <datalist id="topic-list"></datalist>
                                 </div>
@@ -521,7 +557,7 @@
                         </section>
 
                         <section class="panel">
-                            <div class="panel-head"><span class="panel-num">03</span><h2>About</h2><span class="hint">Markdown works</span></div>
+                            <div class="panel-head"><span class="panel-num">03</span><h2>About</h2><span class="hint">goes in the README · Markdown works</span></div>
                             <textarea class="input" id="f-about" maxlength="4000" placeholder="What attendees build, what they need beforehand, what they'll take away…"></textarea>
                             <div class="help"><span class="count" id="about-count"></span></div>
                         </section>
@@ -540,7 +576,7 @@
                                     <div class="thumb" id="poster-thumb"><i class="fas fa-image"></i></div>
                                     <div class="media-body">
                                         <div class="media-actions" id="poster-actions"></div>
-                                        <input class="input" id="f-poster-url" placeholder="…or paste an image URL" hidden>
+                                        <input class="input" id="f-poster-url" placeholder="https://… image URL" hidden>
                                         <div class="help" id="h-poster"></div>
                                     </div>
                                 </div>
@@ -548,7 +584,12 @@
                             <div class="field">
                                 <label class="lbl">--files</label>
                                 <div class="file-list" id="file-list"></div>
-                                <label class="toggle-row"><input type="checkbox" id="f-add-files"> I'll attach files on GitHub (handouts, speaker card, photos, PDFs…)</label>
+                                <label class="drop" id="files-drop" hidden>
+                                    <input type="file" id="files-input" multiple>
+                                    <i class="fas fa-cloud-arrow-up"></i>
+                                    <span><b>Drop files here</b> or click to choose — handouts, speaker card, photos, PDFs</span>
+                                </label>
+                                <label class="toggle-row" id="files-later"><input type="checkbox" id="f-add-files"> I'll attach files on GitHub (handouts, speaker card, photos, PDFs…)</label>
                             </div>
                         </section>
 
@@ -557,7 +598,7 @@
                             <div class="field">
                                 <label class="lbl" for="f-repo">--name <span class="req">*</span></label>
                                 <div class="repo-name"><span class="prefix">github.com/nomadicmehul/</span><input class="input" id="f-repo" maxlength="100" spellcheck="false" placeholder="kubecon-europe-2027-claude-agents"></div>
-                                <div class="help" id="h-repo">Filled in from the event and title; edit it if you like</div>
+                                <div class="help" id="h-repo"></div>
                             </div>
                             <div class="field">
                                 <label class="lbl">--visibility</label>
@@ -573,7 +614,7 @@
 
                 <aside class="side" id="side">
                     <div>
-                        <div class="side-label"><span>// README preview</span><span id="preview-note"></span></div>
+                        <div class="side-label"><span>// README preview</span></div>
                         <div class="readme">
                             <div class="readme-bar"><i class="fas fa-book-open"></i> <b>README.md</b> <span id="preview-repo"></span></div>
                             <div class="readme-body" id="preview"></div>
@@ -582,6 +623,14 @@
                     <section class="panel">
                         <div class="changes" id="changes" hidden></div>
                         <ul class="checks" id="checks"></ul>
+
+                        <!-- Connected: one click does everything -->
+                        <div id="direct" hidden>
+                            <button type="button" class="btn btn-primary btn-lg" id="publish"><i class="fas fa-rocket"></i> <span id="publish-text">Create repo &amp; publish</span></button>
+                            <div class="kbd" id="publish-note"></div>
+                        </div>
+
+                        <!-- Not connected: finish on GitHub -->
                         <div class="steps-panel" id="steps-new">
                             <div class="step" id="step1">
                                 <div class="step-n">1</div>
@@ -603,7 +652,7 @@
                             <div class="step off" id="step3">
                                 <div class="step-n">3</div>
                                 <div>
-                                    <div class="step-t">Add to speaking page <span class="muted" style="font-weight:400;color:var(--text-muted)">· optional</span></div>
+                                    <div class="step-t">Add to speaking page <span style="font-weight:400;color:var(--text-muted)">· optional</span></div>
                                     <div class="step-d">Opens the Content Studio with this event and the repo as its code link.</div>
                                     <a class="btn btn-ghost" id="to-speaking" target="_blank" rel="noopener" href="#"><i class="fas fa-microphone"></i> Open in Content Studio</a>
                                 </div>
@@ -616,7 +665,7 @@
                             <button type="button" class="btn btn-ghost btn-sm" id="copy"><i class="fas fa-copy"></i> Copy issue text</button>
                             <button type="button" class="btn btn-ghost btn-sm" id="reset"><i class="fas fa-rotate-left"></i> <span id="reset-text">Start over</span></button>
                         </div>
-                        <details class="issue"><summary>What gets sent</summary><pre id="body-preview"></pre></details>
+                        <details class="issue" id="issue-details"><summary>What gets sent</summary><pre id="body-preview"></pre></details>
                     </section>
                 </aside>
             </div>
@@ -632,6 +681,33 @@
             <button type="button" class="btn btn-primary btn-sm" id="next-done"><i class="fas fa-check"></i> Done</button>
         </div>
     </dialog>
+
+    <dialog id="connect-dialog">
+        <h3><i class="fab fa-github" style="color:var(--term-green)"></i> Connect GitHub</h3>
+        <p>With a token, Demo Studio creates the repo and uploads your poster and files itself — no GitHub issue needed. The token is kept only in this browser and only sent to api.github.com.</p>
+        <ol class="steps">
+            <li><span><a href="https://github.com/settings/tokens/new?scopes=public_repo&amp;description=Demo+Studio+%28nomadicmehul.dev%29" target="_blank" rel="noopener" style="color:var(--term-green);text-decoration:underline">Create a classic token</a> — <b>public_repo</b> is already ticked (it can create and update public repos, not delete them). Pick an expiry such as 90 days, then <b>Generate token</b>.</span></li>
+            <li><span>Copy it and paste it here.</span></li>
+        </ol>
+        <input class="input" id="token-input" type="password" placeholder="ghp_…" autocomplete="off" spellcheck="false">
+        <label class="toggle-row"><input type="checkbox" id="token-remember" checked> Remember on this device</label>
+        <div class="help" id="token-help"></div>
+        <div class="dialog-actions">
+            <button type="button" class="btn btn-ghost btn-sm" id="connect-cancel">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm" id="connect-save"><i class="fas fa-plug"></i> Connect</button>
+        </div>
+    </dialog>
+
+    <dialog id="publish-dialog">
+        <h3><i class="fas fa-rocket" style="color:var(--term-green)"></i> <span id="pub-title">Publishing</span></h3>
+        <p id="pub-intro"></p>
+        <ol class="progress" id="pub-steps"></ol>
+        <div class="dialog-actions">
+            <a class="btn btn-ghost btn-sm" id="pub-speaking" target="_blank" rel="noopener" href="#" hidden><i class="fas fa-microphone"></i> Add to speaking page</a>
+            <a class="btn btn-ghost btn-sm" id="pub-open" target="_blank" rel="noopener" href="#" hidden><i class="fab fa-github"></i> Open repo</a>
+            <button type="button" class="btn btn-primary btn-sm" id="pub-done" disabled><i class="fas fa-check"></i> Done</button>
+        </div>
+    </dialog>
     <div class="toast" id="toast" role="status"></div>
 
     <footer class="footer">
@@ -643,6 +719,8 @@
         const TEMPLATE = 'event-demo-template';
         const API = 'https://api.github.com';
         const DRAFT_KEY = 'demo-studio-draft-v1';
+        const TOKEN_KEY = 'demo-studio-token';
+        const MAX_FILE = 25 * 1024 * 1024;
         const MARK = '🎤 ';   // repo descriptions start with this, so "Update a repo" can list demo repos
         const TYPES = ['Workshop', 'Talk', 'Demo', 'Meetup', 'Hackathon', 'Webinar'];
         // same types and labels as LINK_TYPES in .github/event-repo-template/.github/scripts/event_info.py
@@ -659,10 +737,13 @@
         const $ = id => document.getElementById(id);
         const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         const isUrl = s => /^https?:\/\/\S+$/.test(s);
+        const isImage = p => /\.(png|jpe?g|gif|webp|svg)$/i.test(p);
         const todayIso = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
         const raw = (repo, path) => `https://raw.githubusercontent.com/${OWNER}/${repo}/HEAD/${path.split('/').map(encodeURIComponent).join('/')}`;
+        const kb = n => n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB';
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-        let TOPICS = [], EVENT_NAMES = [], REPOS = null;
+        let TOPICS = [], REPOS = null, TOKEN = null, LOGIN = '';
         const PAST_LOCS = {};
         let mode = 'new', original = null, repoName = '', repoNameEdited = false, visibility = 'public';
         let state = blank();
@@ -671,17 +752,22 @@
             return {
                 title: '', event: '', type: 'Workshop', date: '', location: '', speakers: ['Mehul Patel'], topics: [], about: '',
                 links: [{ type: 'event', label: '', url: '' }, { type: 'slides', label: '', url: '', upload: false }, { type: 'code', label: '', url: '' }],
-                poster: { mode: 'none', url: '', current: '' },   // mode: none | upload | url | keep
-                files: [], addFiles: false,                        // files: [{ path, removed }]
+                // upload = a new image: picked here when connected, dropped into the GitHub issue otherwise
+                poster: { mode: 'none', url: '', current: '', file: null, preview: '' },   // mode: none | upload | url | keep
+                files: [], newFiles: [], addFiles: false,                                  // files: [{ path, removed }], newFiles: [File]
             };
         }
+        const connected = () => !!TOKEN;
 
         // ---------- helpers ----------
         function slug(text, limit = 60) {
-            let s = text.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+            let s = text.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
             if (s.length > limit) { s = s.slice(0, limit); if (s.includes('-')) s = s.slice(0, s.lastIndexOf('-')); }
             return s;
         }
+        // same as clean_name() in event_info.py: "Hand out (final).PDF" → "Hand-out-final.pdf"
+        const cleanPart = s => s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9._-]+/g, '-').replace(/-{2,}/g, '-').replace(/^[-.]+|[-.]+$/g, '');
+        const cleanName = n => (cleanPart(n.replace(/\.[^.]*$/, '')) || 'file') + cleanPart(ext(n)).replace(/^(?=.)/, '.');
         function suggestedRepo() {
             const base = slug([state.event, state.title].filter(Boolean).join(' '));
             const year = state.date.slice(0, 4);
@@ -691,15 +777,75 @@
             const d = `${MARK}${state.type || 'Demo'}: ${state.title.trim()}` + (state.event.trim() ? ` — ${state.event.trim()}` : '') + (state.date ? ` (${state.date})` : '');
             return d.slice(0, 340);
         }
-        async function gh(path) {
-            const res = await fetch(API + path, { headers: { Accept: 'application/vnd.github+json' } });
+        function headers(extra = {}) {
+            // logged out, keep requests "simple" (no CORS preflight)
+            return { Accept: 'application/vnd.github+json', ...(TOKEN ? { Authorization: `Bearer ${TOKEN}`, 'X-GitHub-Api-Version': '2022-11-28' } : {}), ...extra };
+        }
+        // read-only calls; work without a token (60 an hour), with one (5000 an hour, private repos too)
+        async function gh(path, extra) {
+            const res = await fetch(API + path, { headers: headers(extra) });
             if (res.status === 403 && res.headers.get('x-ratelimit-remaining') === '0') throw Object.assign(new Error('rate'), { rate: true });
             return res;
+        }
+        // calls that change something; throw with GitHub's message
+        async function call(method, path, body) {
+            const res = await fetch(API + path, { method, headers: headers({ 'Content-Type': 'application/json' }), body: body && JSON.stringify(body) });
+            const data = res.status === 204 ? null : await res.json().catch(() => null);
+            if (!res.ok) throw new Error(`${data?.message || res.statusText} (HTTP ${res.status})`);
+            return data;
         }
         function toast(msg) {
             const t = $('toast'); t.textContent = msg; t.classList.add('show');
             clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2400);
         }
+
+        // ---------- token ----------
+        function loadToken() {
+            try { TOKEN = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || null; } catch (_) { TOKEN = null; }
+        }
+        function storeToken(token, remember) {
+            try {
+                localStorage.removeItem(TOKEN_KEY); sessionStorage.removeItem(TOKEN_KEY);
+                if (token) (remember ? localStorage : sessionStorage).setItem(TOKEN_KEY, token);
+            } catch (_) {}
+            TOKEN = token;
+        }
+        async function verifyToken(token) {
+            const res = await fetch(API + '/user', { headers: { Accept: 'application/vnd.github+json', Authorization: `Bearer ${token}` } });
+            if (res.status === 401) throw new Error("GitHub didn't accept this token — check it was copied completely and hasn't expired.");
+            if (!res.ok) throw new Error(`GitHub answered HTTP ${res.status}.`);
+            const user = await res.json();
+            if (user.login.toLowerCase() !== OWNER) throw new Error(`This token belongs to ${user.login}, not ${OWNER}.`);
+            const scopes = res.headers.get('x-oauth-scopes');   // only classic tokens send this
+            if (scopes !== null && !/\b(public_)?repo\b/.test(scopes)) throw new Error('The token needs the public_repo scope.');
+            return user.login;
+        }
+        function renderConnect() {
+            const on = connected();
+            $('connect').classList.toggle('on', on);
+            $('connect-text').innerHTML = on
+                ? `<b>Connected as ${esc(LOGIN || OWNER)}.</b> Pick the poster and files here; one click creates the repo, uploads everything and builds the README.`
+                : '<b>Upload files right here?</b> Connect GitHub with a token and Demo Studio does everything in one click. Without it, you finish on GitHub by dropping files into an issue.';
+            $('connect-btn').innerHTML = on ? '<i class="fas fa-plug-circle-xmark"></i> Disconnect' : '<i class="fas fa-plug"></i> Connect GitHub';
+            $('connect-btn').className = 'btn btn-sm ' + (on ? 'btn-ghost' : 'btn-primary');
+        }
+        $('connect-btn').addEventListener('click', () => {
+            if (connected()) { storeToken(null); LOGIN = ''; REPOS = null; renderConnect(); render(); toast('Disconnected — the token was removed from this browser'); return; }
+            $('token-input').value = ''; $('token-help').textContent = ''; $('connect-dialog').showModal(); $('token-input').focus();
+        });
+        $('connect-cancel').addEventListener('click', () => $('connect-dialog').close());
+        $('connect-save').addEventListener('click', async () => {
+            const token = $('token-input').value.trim();
+            if (!token) { $('token-help').textContent = 'Paste the token first.'; return; }
+            $('token-help').className = 'help'; $('token-help').innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> checking…';
+            try {
+                LOGIN = await verifyToken(token);
+                storeToken(token, $('token-remember').checked);
+                REPOS = null;
+                $('connect-dialog').close(); renderConnect(); render(); toast(`Connected as ${LOGIN}`);
+            } catch (e) { $('token-help').className = 'help err'; $('token-help').textContent = e.message; }
+        });
+        $('token-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('connect-save').click(); } });
 
         // ---------- load ----------
         async function load() {
@@ -714,10 +860,12 @@
                     });
                 });
                 TOPICS = Object.keys(count).sort((a, b) => count[b] - count[a]).map(k => Object.entries(spelling[k]).sort((a, b) => b[1] - a[1])[0][0]);
-                EVENT_NAMES = events.map(e => e.title);
                 $('topic-list').innerHTML = TOPICS.map(t => `<option value="${esc(t)}">`).join('');
-                $('event-names').innerHTML = EVENT_NAMES.map(t => `<option value="${esc(t)}">`).join('');
+                $('event-names').innerHTML = events.map(e => `<option value="${esc(e.title)}">`).join('');
             } catch (_) { /* suggestions are optional */ }
+            loadToken();
+            if (TOKEN) verifyToken(TOKEN).then(l => { LOGIN = l; renderConnect(); }).catch(() => { storeToken(null); renderConnect(); render(); toast('Your saved GitHub token stopped working — connect again'); });
+            renderConnect();
             $('loading').hidden = true; $('studio').hidden = false;
             checkTemplate();
             restoreDraft();
@@ -742,15 +890,13 @@
             $('hero-cmd').textContent = m === 'new' ? 'new-repo' : 'update-repo';
             $('picker-panel').hidden = m !== 'edit';
             $('repo-panel').hidden = m !== 'new';
-            $('steps-new').hidden = m !== 'new';
-            $('steps-edit').hidden = m !== 'edit';
             $('reset-text').textContent = m === 'new' ? 'Start over' : 'Undo changes';
             original = null; stopPolling();
             if (m === 'new') { restoreDraft(); $('fields').hidden = false; $('side').hidden = false; render(); return; }
             $('fields').hidden = true; $('side').hidden = true; $('picker').hidden = false; $('editing').hidden = true; $('picker-note').textContent = '';
             $('picker-q').value = query;
             loadRepos().then(() => {
-                if (query && REPOS?.some(r => r.name === query)) pickRepo(query); else renderPicker();
+                if (query) pickRepo(query); else renderPicker();   // pickRepo says so if it doesn't exist
             });
             $('picker-q').focus();
         }
@@ -759,11 +905,13 @@
             if (REPOS) return;
             $('picker-results').innerHTML = '<div class="help"><i class="fas fa-circle-notch fa-spin"></i> Loading your repos…</div>';
             try {
-                const res = await gh(`/users/${OWNER}/repos?per_page=100&sort=created`);
+                // with a token, /user/repos includes private repos
+                const res = await gh(connected() ? '/user/repos?affiliation=owner&per_page=100&sort=created' : `/users/${OWNER}/repos?per_page=100&sort=created`);
+                if (!res.ok) throw new Error(String(res.status));
                 REPOS = (await res.json()).filter(r => r.name !== TEMPLATE);
             } catch (e) {
                 REPOS = [];
-                $('picker-note').textContent = e.rate ? "GitHub's API limit is reached (60 requests an hour without login). Type the repo name and press Enter." : "Couldn't list repos — type the repo name and press Enter.";
+                $('picker-note').textContent = e.rate ? "GitHub's API limit is reached (60 requests an hour without login) — connect GitHub, or type the repo name and press Enter." : "Couldn't list repos — type the repo name and press Enter.";
             }
         }
 
@@ -784,26 +932,27 @@
             $('picker-note').textContent = '';
             let ev = null;
             try {
-                const res = await fetch(`${API}/repos/${OWNER}/${name}/contents/event.json`, { headers: { Accept: 'application/vnd.github.raw+json' } });
+                const res = await gh(`/repos/${OWNER}/${name}/contents/event.json`, { Accept: 'application/vnd.github.raw+json' });
                 if (res.status === 404) {
                     const repo = await gh(`/repos/${OWNER}/${name}`);
-                    if (repo.status === 404) { $('picker-note').textContent = `github.com/${OWNER}/${name} doesn't exist (or it's private).`; return; }
+                    if (repo.status === 404) { $('picker-note').textContent = `github.com/${OWNER}/${name} doesn't exist${connected() ? '' : " (or it's private — connect GitHub to see private repos)"}.`; return; }
                     $('picker-note').textContent = 'This repo has no event.json yet — fill in the details and save. (It needs the event-info workflow from the template.)';
                     ev = {};
                 } else if (res.ok) ev = await res.json();
-                else throw Object.assign(new Error('x'), { rate: res.status === 403 });
+                else throw new Error(String(res.status));
             } catch (e) {
-                $('picker-note').textContent = e.rate ? "GitHub's API limit is reached (60 requests an hour without login) — try again later." : "Couldn't load event.json from that repo.";
+                $('picker-note').textContent = e.rate ? "GitHub's API limit is reached (60 requests an hour without login) — connect GitHub or try later." : "Couldn't load event.json from that repo.";
                 return;
             }
             repoName = name;
             original = ev;
             state = {
+                ...blank(),
                 title: ev.title || '', event: ev.event || '', type: ev.type || '', date: ev.date || '', location: ev.location || '',
                 speakers: [...(ev.speakers || [])], topics: [...(ev.topics || [])], about: ev.about || '',
                 links: (ev.links || []).map(l => ({ type: l.type, label: l.label === LINKS[l.type]?.label ? '' : l.label, url: l.url, upload: false })),
-                poster: ev.poster ? { mode: 'keep', url: '', current: ev.poster } : { mode: 'none', url: '', current: '' },
-                files: (ev.files || []).map(path => ({ path, removed: false })), addFiles: false,
+                poster: ev.poster ? { mode: 'keep', url: '', current: ev.poster, file: null, preview: '' } : blank().poster,
+                files: (ev.files || []).map(path => ({ path, removed: false })),
             };
             $('picker').hidden = true; $('editing').hidden = false;
             $('editing-title').textContent = ev.title || name;
@@ -831,14 +980,20 @@
             $('topic-sugg').addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) addTag('topics', b.dataset.topic); });
 
             $('res-list').addEventListener('input', e => {
-                const row = e.target.closest('.res'); if (!row) return;
+                const row = e.target.closest('.res'); if (!row || !e.target.dataset.k) return;
                 state.links[row.dataset.i][e.target.dataset.k] = e.target.value; update();
+            });
+            $('res-list').addEventListener('change', e => {
+                if (e.target.type !== 'file') return;
+                const l = state.links[e.target.closest('.res').dataset.i], f = e.target.files[0];
+                if (f && f.size > MAX_FILE) { toast(`${f.name} is over 25 MB — host it elsewhere and paste the URL`); return; }
+                l.file = f || null; renderLinks(); update();
             });
             $('res-list').addEventListener('click', e => {
                 const b = e.target.closest('button'); if (!b) return;
                 const i = Number(b.closest('.res').dataset.i);
                 if (b.dataset.act === 'del') state.links.splice(i, 1);
-                if (b.dataset.act === 'upload') { const l = state.links[i]; l.upload = !l.upload; if (l.upload) l.url = ''; }
+                if (b.dataset.act === 'upload') { const l = state.links[i]; l.upload = !l.upload; l.file = null; if (l.upload) l.url = ''; }
                 renderLinks(); update();
             });
             $('add-res').addEventListener('click', e => {
@@ -854,11 +1009,24 @@
                 renderPoster(); update();
                 if (b.dataset.mode === 'url') $('f-poster-url').focus();
             });
+            $('poster-actions').addEventListener('change', e => { if (e.target.type === 'file') choosePoster(e.target.files[0]); });
+            const thumb = $('poster-thumb');
+            thumb.addEventListener('dragover', e => { if (connected()) { e.preventDefault(); thumb.classList.add('over'); } });
+            thumb.addEventListener('dragleave', () => thumb.classList.remove('over'));
+            thumb.addEventListener('drop', e => { e.preventDefault(); thumb.classList.remove('over'); if (connected()) choosePoster(e.dataTransfer.files[0]); });
             $('f-poster-url').addEventListener('input', e => { state.poster.url = e.target.value.trim(); renderPoster(); update(); });
+
             $('file-list').addEventListener('click', e => {
                 const b = e.target.closest('button'); if (!b) return;
-                const f = state.files[Number(b.dataset.i)]; f.removed = !f.removed; renderFiles(); update();
+                if (b.dataset.new !== undefined) state.newFiles.splice(Number(b.dataset.new), 1);
+                else { const f = state.files[Number(b.dataset.i)]; f.removed = !f.removed; }
+                renderFiles(); update();
             });
+            $('files-input').addEventListener('change', e => { addFiles(e.target.files); e.target.value = ''; });
+            const drop = $('files-drop');
+            drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
+            drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+            drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); addFiles(e.dataTransfer.files); });
             $('f-add-files').addEventListener('change', e => { state.addFiles = e.target.checked; update(); });
 
             $('f-repo').addEventListener('input', e => { repoName = e.target.value.trim(); repoNameEdited = !!repoName; checkName(); update(); });
@@ -866,9 +1034,24 @@
                 const b = e.target.closest('button'); if (!b) return;
                 visibility = b.dataset.v;
                 $('visibility').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-                $('h-visibility').textContent = visibility === 'private' ? 'Private repos work, but “Update a repo” can only load public ones — update a private repo with its Event info issue form.' : '';
                 update();
             });
+        }
+
+        function choosePoster(file) {
+            if (!file) return;
+            if (!file.type.startsWith('image/')) { toast('The poster has to be an image (PNG, JPG, WebP…)'); return; }
+            if (file.size > MAX_FILE) { toast('That image is over 25 MB'); return; }
+            if (state.poster.preview) URL.revokeObjectURL(state.poster.preview);
+            Object.assign(state.poster, { mode: 'upload', file, preview: URL.createObjectURL(file) });
+            renderPoster(); update();
+        }
+        function addFiles(list) {
+            for (const f of list) {
+                if (f.size > MAX_FILE) { toast(`${f.name} is over 25 MB — skipped`); continue; }
+                if (!state.newFiles.some(x => x.name === f.name && x.size === f.size)) state.newFiles.push(f);
+            }
+            renderFiles(); update();
         }
 
         function bindTags(inputId, key) {
@@ -888,7 +1071,6 @@
                 if (x) { state[key].splice(Number(x.dataset.del), 1); renderTags(key); update(); } else input.focus();
             });
         }
-
         function addTag(key, raw) {
             const input = $(key === 'topics' ? 'f-topic' : 'f-speaker');
             const v = raw.trim().replace(/\s+/g, ' ');
@@ -991,6 +1173,12 @@
             $('f-add-files').checked = state.addFiles;
             $('f-poster-url').value = state.poster.url;
             if (mode === 'new') $('f-repo').value = repoName;
+            const on = connected();
+            $('files-drop').hidden = !on; $('files-later').hidden = on;
+            $('direct').hidden = !on;
+            $('steps-new').hidden = on || mode !== 'new';
+            $('steps-edit').hidden = on || mode !== 'edit';
+            $('issue-details').hidden = on; $('copy').hidden = on;
             renderTypes(); renderTags('speakers'); renderTags('topics'); renderLinks(); renderPoster(); renderFiles(); update();
         }
         function renderTypes() {
@@ -1007,20 +1195,25 @@
             }
         }
         function renderLinks() {
+            const on = connected();
             $('res-list').innerHTML = state.links.map((l, i) => {
                 const m = LINKS[l.type];
                 const local = !l.upload && l.url && !isUrl(l.url);
+                const uploadUi = on
+                    ? (l.file ? `<div class="chosen"><i class="fas fa-file-circle-check"></i><span>${esc(l.file.name)}</span> <span style="color:var(--text-muted)">${kb(l.file.size)}</span></div>` : '')
+                      + `<label class="btn btn-ghost btn-sm pick-file"><input type="file"><i class="fas fa-folder-open"></i> ${l.file ? 'Choose another file' : 'Choose file'}</label>`
+                    : `<div class="upload-note"><i class="fas fa-paperclip"></i><span>You'll drag the file in on GitHub. It's saved in the repo's <code>event/</code> folder.</span></div>`;
                 return `
                 <div class="res" data-i="${i}">
                     <div class="res-type t-${m.cls}"><i class="${m.icon}"></i> ${m.name}</div>
                     <div class="res-body">
-                        ${l.upload ? `<div class="upload-note"><i class="fas fa-paperclip"></i><span>You'll drag the file in on GitHub. It's saved in the repo's <code>event/</code> folder.</span></div>`
+                        ${l.upload ? uploadUi
                           : local ? `<div class="local-file"><i class="fas fa-file"></i> ${esc(l.url)}</div>`
                           : `<input class="input" data-k="url" value="${esc(l.url)}" placeholder="${esc(m.ph)}" aria-label="${esc(m.name)} URL">`}
                         <input class="input res-label" data-k="label" value="${esc(l.label)}" placeholder="Button text: ${esc(m.label)}" aria-label="Button text">
                     </div>
                     <div class="res-actions">
-                        ${m.upload ? `<button type="button" class="icon-btn${l.upload ? ' on' : ''}" data-act="upload" title="${l.upload ? 'Use a URL instead' : 'Upload a file on GitHub'}" aria-pressed="${!!l.upload}"><i class="fas fa-${l.upload ? 'link' : 'paperclip'}"></i></button>` : ''}
+                        ${m.upload ? `<button type="button" class="icon-btn${l.upload ? ' on' : ''}" data-act="upload" title="${l.upload ? 'Use a URL instead' : 'Upload a file'}" aria-pressed="${!!l.upload}"><i class="fas fa-${l.upload ? 'link' : 'paperclip'}"></i></button>` : ''}
                         <button type="button" class="icon-btn del" data-act="del" title="Remove"><i class="fas fa-xmark"></i></button>
                     </div>
                 </div>`;
@@ -1030,29 +1223,42 @@
         }
         function posterSrc() {
             const p = state.poster;
+            if (p.mode === 'upload' && p.preview) return p.preview;
             if (p.mode === 'url' && isUrl(p.url)) return p.url;
-            if (p.mode === 'keep' && p.current) return raw(repoName, p.current);
+            if (p.mode === 'keep' && p.current) return isUrl(p.current) ? p.current : raw(repoName, p.current);
             return '';
         }
         function renderPoster() {
-            const p = state.poster, src = posterSrc();
+            const p = state.poster, src = posterSrc(), on = connected();
+            if (p.mode === 'upload' && !on && p.file) Object.assign(p, { file: null, preview: '' });   // picked files can't go through an issue
             const thumb = $('poster-thumb');
             thumb.classList.toggle('has', !!src);
             thumb.style.backgroundImage = src ? `url("${src.replace(/"/g, '%22')}")` : '';
-            thumb.innerHTML = src ? '' : p.mode === 'upload' ? '<i class="fas fa-paperclip"></i>' : '<i class="fas fa-image"></i>';
+            thumb.innerHTML = src ? '' : p.mode === 'upload' ? '<i class="fas fa-paperclip"></i>' : `<i class="fas fa-image"></i>`;
+            thumb.title = on ? 'Drop an image here' : '';
             const btn = (m, icon, text) => `<button type="button" class="chip${p.mode === m ? ' on c-green' : ''}" data-mode="${m}"><i class="fas fa-${icon}"></i> ${text}</button>`;
+            const pick = `<label class="chip pick-file${p.mode === 'upload' ? ' on c-green' : ''}"><input type="file" accept="image/*"><i class="fas fa-folder-open"></i> ${p.file ? 'Choose another image' : p.current ? 'Replace with an image…' : 'Choose image…'}</label>`;
             $('poster-actions').innerHTML = (p.current ? btn('keep', 'check', 'Keep current') : '')
-                + btn('upload', 'paperclip', p.current ? 'Replace (upload on GitHub)' : 'Upload on GitHub')
+                + (on ? pick : btn('upload', 'paperclip', p.current ? 'Replace (upload on GitHub)' : 'Upload on GitHub'))
                 + btn('url', 'link', 'Image URL')
                 + btn('none', 'ban', p.current ? 'Remove' : 'No poster');
             $('f-poster-url').hidden = p.mode !== 'url';
-            $('h-poster').textContent = p.mode === 'upload' ? "You'll drag the event or speaker poster into the issue; it's saved as event/poster.*" : p.mode === 'keep' ? p.current : '';
+            $('h-poster').dataset.base = p.mode === 'upload'
+                ? (on ? (p.file ? `${esc(p.file.name)} · ${kb(p.file.size)} → event/poster${esc(ext(p.file.name))}` : 'Choose the image, or drop it on the box')
+                      : "You'll drag the event or speaker poster into the issue; it's saved as event/poster.*")
+                : p.mode === 'keep' ? esc(p.current) : on && !p.current && p.mode === 'none' ? 'Choose an image, or drop it on the box' : '';
         }
+        function ext(name) { return (name.match(/\.[A-Za-z0-9]+$/) || [''])[0].toLowerCase(); }
         function renderFiles() {
+            const on = connected();
             $('file-list').innerHTML = state.files.map((f, i) => `
                 <div class="file-row${f.removed ? ' removed' : ''}"><i class="fas fa-file"></i><span title="${esc(f.path)}">${esc(f.path)}</span>
                     <button type="button" class="icon-btn${f.removed ? '' : ' del'}" data-i="${i}" title="${f.removed ? 'Keep' : 'Delete from the repo'}"><i class="fas fa-${f.removed ? 'rotate-left' : 'trash'}"></i></button>
-                </div>`).join('');
+                </div>`).join('')
+                + (on ? state.newFiles.map((f, i) => `
+                <div class="file-row new"><i class="fas fa-plus"></i><span title="${esc(f.name)}">${esc(f.name)}</span><span class="size">${kb(f.size)}</span>
+                    <button type="button" class="icon-btn del" data-new="${i}" title="Don't add"><i class="fas fa-xmark"></i></button>
+                </div>`).join('') : '');
         }
 
         // ---------- README preview (mirrors render() in event_info.py) ----------
@@ -1060,11 +1266,19 @@
             return esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>')
                 .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
         }
+        function mdBlock(text) {
+            return text.trim().split(/\n{2,}/).map(p => {
+                const h = p.match(/^(#{1,6})\s+(.*)$/);
+                if (h && !p.includes('\n')) return `<h${Math.min(h[1].length + 1, 6)}>${mdInline(h[2])}</h${Math.min(h[1].length + 1, 6)}>`;
+                if (/^[-*] /m.test(p) && p.split('\n').every(l => /^[-*] /.test(l))) return '<ul>' + p.split('\n').map(l => `<li>${mdInline(l.slice(2))}</li>`).join('') + '</ul>';
+                return `<p>${mdInline(p).replace(/\n/g, '<br>')}</p>`;
+            }).join('');
+        }
         function renderPreview() {
-            const s = state, out = [];
+            const s = state, out = [], on = connected();
             const src = posterSrc();
             if (src) out.push(`<img class="poster" src="${esc(src)}" alt="">`);
-            else if (s.poster.mode === 'upload') out.push('<div class="poster-pending"><i class="fas fa-paperclip"></i> poster — you\'ll drop it on GitHub</div>');
+            else if (s.poster.mode === 'upload') out.push(`<div class="poster-pending"><i class="fas fa-paperclip"></i> poster — ${on ? 'choose the image' : "you'll drop it on GitHub"}</div>`);
             out.push(`<h1>${esc(s.title.trim() || 'Demo title')}</h1>`);
             const meta = [];
             if (s.event.trim()) meta.push((s.type ? `<b>${esc(s.type)}</b> at ` : '') + `<b>${esc(s.event.trim())}</b>`);
@@ -1074,36 +1288,46 @@
             if (meta.length) out.push(`<p>${meta.join(' · ')}</p>`);
             if (s.speakers.length) out.push(`<p>🎤 ${s.speakers.map(esc).join(', ')}</p>`);
             const links = s.links.filter(l => l.url || l.upload);
-            if (links.length) out.push('<p>' + links.map(l => `<b><a href="${l.upload ? '#' : esc(isUrl(l.url) ? l.url : raw(repoName, l.url))}" target="_blank" rel="noopener">${EMOJI[l.type]} ${esc(l.label || LINKS[l.type].label)}</a></b>${l.upload ? ' <span class="muted">(upload)</span>' : ''}`).join(' · ') + '</p>');
+            if (links.length) out.push('<p>' + links.map(l => `<b><a href="${l.upload ? '#' : esc(isUrl(l.url) ? l.url : raw(repoName, l.url))}" target="_blank" rel="noopener">${EMOJI[l.type]} ${esc(l.label || LINKS[l.type].label)}</a></b>${l.upload ? ` <span class="muted">(${l.file ? esc(l.file.name) : 'upload'})</span>` : ''}`).join(' · ') + '</p>');
             if (s.topics.length) out.push('<p>' + s.topics.map(t => `<code>${esc(t)}</code>`).join(' ') + '</p>');
-            if (s.about.trim()) out.push('<h2>About</h2>' + s.about.trim().split(/\n{2,}/).map(p => `<p>${mdInline(p).replace(/\n/g, '<br>')}</p>`).join(''));
-            const kept = s.files.filter(f => !f.removed).map(f => f.path), img = p => /\.(png|jpe?g|gif|webp|svg)$/i.test(p);
-            const docs = kept.filter(p => !img(p)), imgs = kept.filter(img);
-            if (docs.length || s.addFiles) out.push('<h2>Files</h2><ul>' + docs.map(p => `<li>📎 <a href="${esc(raw(repoName, p))}" target="_blank" rel="noopener">${esc(p.split('/').pop())}</a></li>`).join('') + (s.addFiles ? '<li class="muted">📎 files you attach on GitHub</li>' : '') + '</ul>');
-            if (imgs.length) out.push('<h2>Gallery</h2><div class="gallery">' + imgs.map(p => `<img src="${esc(raw(repoName, p))}" alt="">`).join('') + '</div>');
+            if (s.about.trim()) out.push('<h2>About</h2>' + mdBlock(s.about));
+            const kept = s.files.filter(f => !f.removed).map(f => f.path);
+            const newNames = on ? s.newFiles.map(f => f.name) : [];
+            const docs = kept.filter(p => !isImage(p)), imgs = kept.filter(isImage);
+            const newDocs = newNames.filter(n => !isImage(n)), newImgs = on ? s.newFiles.filter(f => isImage(f.name)) : [];
+            if (docs.length || newDocs.length || (!on && s.addFiles)) out.push('<h2>Files</h2><ul>'
+                + docs.map(p => `<li>📎 <a href="${esc(raw(repoName, p))}" target="_blank" rel="noopener">${esc(p.split('/').pop())}</a></li>`).join('')
+                + newDocs.map(n => `<li>📎 <a href="#">${esc(cleanName(n))}</a> <span class="muted">(new)</span></li>`).join('')
+                + (!on && s.addFiles ? '<li class="muted">📎 files you attach on GitHub</li>' : '') + '</ul>');
+            if (imgs.length || newImgs.length) out.push('<h2>Gallery</h2><div class="gallery">'
+                + imgs.map(p => `<img src="${esc(raw(repoName, p))}" alt="">`).join('')
+                + newImgs.map(f => `<img src="${esc(thumbUrl(f))}" alt="">`).join('') + '</div>');
             out.push('<div class="yours"><b>## Demo</b> — your own notes, setup and run steps. Never overwritten.</div>');
             $('preview').innerHTML = out.join('');
-            const name = mode === 'new' ? repoName : repoName;
-            $('preview-repo').textContent = name ? `· ${OWNER}/${name}` : '';
+            $('preview-repo').textContent = repoName ? `· ${OWNER}/${repoName}` : '';
         }
+        const thumbs = new WeakMap();
+        const thumbUrl = f => { if (!thumbs.has(f)) thumbs.set(f, URL.createObjectURL(f)); return thumbs.get(f); };
 
         // ---------- validation ----------
         let touched = new Set(), nameStatus = { name: '', state: '' };
         const shown = id => touched.has('*') || touched.has(id);
         function validate() {
-            const errs = {};
+            const errs = {}, on = connected();
             if (!state.title.trim()) errs.title = 'Required';
             if (state.date && !/^\d{4}-\d{2}-\d{2}$/.test(state.date)) errs.date = 'Pick a date';
             state.links.forEach((l, i) => {
-                if (!l.upload && !l.url.trim()) errs['l' + i] = `${LINKS[l.type].name}: paste a URL, upload a file, or remove the row`;
-                else if (!l.upload && !isUrl(l.url.trim()) && !l.url.startsWith('event/')) errs['l' + i] = `${LINKS[l.type].name}: link must start with https://`;
+                if (l.upload) { if (on && !l.file) errs['l' + i] = `${LINKS[l.type].name}: choose the file, or remove the row`; }
+                else if (!l.url.trim()) errs['l' + i] = `${LINKS[l.type].name}: paste a URL, upload a file, or remove the row`;
+                else if (!isUrl(l.url.trim()) && !l.url.startsWith('event/')) errs['l' + i] = `${LINKS[l.type].name}: link must start with https://`;
             });
             if (state.poster.mode === 'url' && !isUrl(state.poster.url)) errs.poster = 'Paste an image URL starting with https://';
+            if (state.poster.mode === 'upload' && on && !state.poster.file) errs.poster = 'Choose the poster image';
             if (mode === 'new') {
                 if (!repoName) errs.repo = 'Required';
                 else if (!/^[A-Za-z0-9._-]{1,100}$/.test(repoName)) errs.repo = 'Letters, numbers, - _ and . only';
-                // once you've clicked Create, the repo existing is the point
-                else if (nameStatus.name === repoName && nameStatus.state === 'taken' && !step1Clicked) errs.repo = 'You already have a repo with this name';
+                // once you've created it (on GitHub, or here), the repo existing is the point
+                else if (nameStatus.name === repoName && nameStatus.state === 'taken' && !step1Clicked && createdRepo !== repoName) errs.repo = 'You already have a repo with this name';
             }
             return errs;
         }
@@ -1120,8 +1344,7 @@
         function checkName() {
             clearTimeout(nameTimer);
             const name = repoName;
-            if (!/^[A-Za-z0-9._-]{1,100}$/.test(name)) return;
-            if (nameStatus.name === name) return;
+            if (!/^[A-Za-z0-9._-]{1,100}$/.test(name) || nameStatus.name === name) return;
             nameStatus = { name, state: 'checking' }; update();
             nameTimer = setTimeout(async () => {
                 try {
@@ -1140,7 +1363,7 @@
                      unknown: "couldn't check (GitHub API limit) — GitHub will tell you if it's taken" }[st] || '';
         }
 
-        // ---------- issue body ----------
+        // ---------- issue body (not connected) ----------
         const linkLine = l => {
             const label = l.label.trim() && l.label.trim() !== LINKS[l.type].label ? ` | ${l.label.trim()}` : '';
             return l.upload ? `<!-- 📎 Click at the very end of the next line, then drag your file in -->\n${l.type}${label} | ` : `${l.type}${label} | ${l.url.trim()}`;
@@ -1159,11 +1382,12 @@
             ];
         }
         function body() {
-            const out = [], changes = [], editing = mode === 'edit';
+            const out = [], changes = [], editing = mode === 'edit', on = connected();
             for (const [label, now, was] of fields()) {
                 if (editing && now === was) continue;
                 if (!now && !was) continue;
-                out.push(`### ${label}`, now || '-');
+                // a "### " line inside About would start a new field in the issue
+                out.push(`### ${label}`, (now || '-').replace(/^### /gm, '#### '));
                 if (editing) changes.push(label.toLowerCase());
             }
             const origLinks = (original?.links || []).map(l => ({ ...l, label: l.label === LINKS[l.type]?.label ? '' : l.label }));
@@ -1173,14 +1397,14 @@
                 if (editing) changes.push('links');
             }
             const p = state.poster;
-            const posterChanged = p.mode === 'upload' || (p.mode === 'url' && p.url) || (p.mode === 'none' && p.current);
-            if (posterChanged) {
+            if (p.mode === 'upload' || (p.mode === 'url' && p.url) || (p.mode === 'none' && p.current)) {
                 out.push('### Poster', p.mode === 'upload' ? '<!-- 📎 Click on the empty line below, then drag the poster image in -->\n' : p.mode === 'url' ? p.url : '-');
                 if (editing) changes.push('poster');
             }
             const kept = state.files.filter(f => !f.removed).map(f => f.path);
-            if (state.addFiles || kept.length !== state.files.length) {
-                out.push('### Files', [...kept, state.addFiles ? '<!-- 📎 Click on the empty line below, then drag your files in -->\n' : ''].filter(Boolean).join('\n') || '-');
+            const adding = on ? state.newFiles.length > 0 : state.addFiles;
+            if (adding || kept.length !== state.files.length) {
+                out.push('### Files', [...kept, adding && !on ? '<!-- 📎 Click on the empty line below, then drag your files in -->\n' : ''].filter(Boolean).join('\n') || '-');
                 if (editing) changes.push('files');
             }
             return { text: out.join('\n\n') + '\n', changes };
@@ -1202,23 +1426,29 @@
                 if (s !== repoName) { repoName = s; $('f-repo').value = s; checkName(); }
             }
             renderPreview();
-            const errs = validate();
+            const errs = validate(), on = connected();
             setHelp('title', errs, 'The demo or workshop name');
             setHelp('date', errs, dateHelp());
-            setHelp('poster', errs, $('h-poster').innerHTML);
+            setHelp('poster', errs, $('h-poster').dataset.base || '');
             if (mode === 'new') setHelp('repo', errs, nameHelp());
+            $('h-visibility').textContent = visibility === 'private' && !on ? 'Private repos work, but “Update a repo” only sees them when GitHub is connected.' : '';
             $('about-count').textContent = state.about.length ? `${state.about.length}/4000` : '';
 
             const b = body();
             const linkErrs = Object.keys(errs).filter(k => /^l\d/.test(k)).map(k => errs[k]);
-            const uploads = state.links.filter(l => l.upload).length + (state.poster.mode === 'upload' ? 1 : 0) + (state.addFiles ? 1 : 0);
             const items = [
                 [!errs.title, errs.title ? 'Add the demo or workshop title' : 'Title'],
                 ...linkErrs.map(e => [false, e]),
                 ...(errs.poster ? [[false, 'Poster: ' + errs.poster]] : []),
             ];
             if (mode === 'new') items.push([!errs.repo, errs.repo ? `Repo name: ${errs.repo}` : `Repo: ${repoName}`]);
-            if (uploads) items.push(['warn', `${uploads} upload${uploads > 1 ? 's' : ''} to drag in on GitHub`]);
+            if (on) {
+                const n = plan().uploads.length;   // same count the publish step shows (a file picked twice uploads once)
+                if (n) items.push([true, `${n} file${n > 1 ? 's' : ''} to upload`]);
+            } else {
+                const n = state.links.filter(l => l.upload).length + (state.poster.mode === 'upload' ? 1 : 0) + (state.addFiles ? 1 : 0);
+                if (n) items.push(['warn', `${n} upload${n > 1 ? 's' : ''} to drag in on GitHub`]);
+            }
             if (mode === 'edit') items.unshift([b.changes.length > 0, b.changes.length ? `${b.changes.length} change${b.changes.length > 1 ? 's' : ''}` : 'No changes yet']);
             $('checks').innerHTML = items.map(([ok, text]) =>
                 `<li class="${ok === 'warn' ? 'warn' : ok ? 'ok' : 'err'}"><i class="fas fa-${ok === 'warn' ? 'paperclip' : ok ? 'check' : 'circle-exclamation'}"></i><span>${esc(text)}</span></li>`).join('');
@@ -1226,8 +1456,13 @@
             $('changes').innerHTML = b.changes.map(c => `<span>~ ${esc(c)}</span>`).join('');
 
             const ready = Object.keys(errs).length === 0;
-            const title = `[event] ${state.title.trim()}`;
-            if (mode === 'new') {
+            if (on) {
+                const can = ready && (mode === 'new' || b.changes.length > 0);
+                $('publish').setAttribute('aria-disabled', String(!can));
+                $('publish-text').textContent = mode === 'new' ? (createdRepo === repoName ? 'Publish again' : 'Create repo & publish') : 'Save changes';
+                $('publish-note').textContent = mode === 'new' ? `Creates github.com/${OWNER}/${repoName || '…'}, uploads the files and builds the README` : `Commits to ${OWNER}/${repoName} and rebuilds the README`;
+            } else if (mode === 'new') {
+                const title = `[event] ${state.title.trim()}`;
                 setLink('create', ready, createUrl());
                 const exists = nameStatus.name === repoName && (nameStatus.state === 'taken' || repoSeen);
                 setLink('fill', ready && (exists || step1Clicked), issueUrl(repoName, title, b.text));
@@ -1236,7 +1471,7 @@
                 $('step2').classList.toggle('off', !(exists || step1Clicked));
                 $('step3').classList.toggle('off', !(exists || step1Clicked));
             } else {
-                setLink('save', ready && b.changes.length > 0, issueUrl(repoName, title, b.text));
+                setLink('save', ready && b.changes.length > 0, issueUrl(repoName, `[event] ${state.title.trim()}`, b.text));
             }
             $('body-preview').textContent = b.text;
             saveDraft();
@@ -1249,7 +1484,139 @@
             return `${d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · ${when}`;
         }
 
-        // ---------- steps ----------
+        // ---------- publish directly (connected) ----------
+        let createdRepo = '';
+        // event.json as the form describes it, plus the files to upload and delete; same shape event_info.py writes
+        function plan() {
+            const o = original || {}, s = state, uploads = [], taken = new Set();
+            const keep = p => p && p.startsWith('event/') && taken.add(p);
+            s.files.filter(f => !f.removed).forEach(f => keep(f.path));
+            s.links.forEach(l => !l.upload && keep(l.url));
+            const placed = new Map();   // the same file picked twice (e.g. as slides and under files) is uploaded once
+            const place = (file, name) => {
+                const id = `${file.name}|${file.size}|${file.lastModified}`;
+                if (placed.has(id)) return placed.get(id);
+                let [stem, suffix] = [name.replace(/\.[^.]+$/, ''), ext(name)], path = `event/${stem}${suffix}`, n = 1;
+                while (taken.has(path)) path = `event/${stem}-${++n}${suffix}`;
+                taken.add(path); uploads.push({ path, file }); placed.set(id, path); return path;
+            };
+            const ev = {};
+            const text = { title: s.title.trim(), event: s.event.trim(), type: s.type, location: s.location.trim(), about: s.about.trim(), date: s.date };
+            Object.entries(text).forEach(([k, v]) => { if (v) ev[k] = v; });
+            if (s.speakers.length) ev.speakers = [...s.speakers];
+            if (s.topics.length) ev.topics = [...s.topics];
+            const links = s.links.filter(l => l.upload ? l.file : l.url.trim()).map(l => ({
+                type: l.type, label: l.label.trim() || LINKS[l.type].label, url: l.upload ? place(l.file, cleanName(l.file.name)) : l.url.trim(),
+            }));
+            if (links.length) ev.links = links;
+            const p = s.poster;
+            if (p.mode === 'keep' && p.current) ev.poster = p.current;
+            else if (p.mode === 'url' && p.url) ev.poster = p.url;
+            else if (p.mode === 'upload' && p.file) {
+                const path = `event/poster${ext(p.file.name) || '.png'}`;
+                taken.add(path); uploads.push({ path, file: p.file }); ev.poster = path;
+            }
+            const files = [...new Set([...s.files.filter(f => !f.removed).map(f => f.path), ...s.newFiles.map(f => place(f, cleanName(f.name)))])];
+            if (files.length) ev.files = files;
+            ev.updated = todayIso();
+            const stored = e => new Set([e.poster, ...(e.files || []), ...(e.links || []).map(l => l.url)].filter(x => x && x.startsWith('event/')));
+            const after = stored(ev), deletes = [...stored(o)].filter(x => !after.has(x));
+            return { ev, uploads, deletes };
+        }
+        const base64 = file => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.onerror = () => rej(r.error); r.readAsDataURL(file); });
+
+        // one commit with every change (Git Data API), so the README workflow runs once
+        async function commit(repo, message, { ev, uploads, deletes }, onFile) {
+            const info = await call('GET', `/repos/${OWNER}/${repo}`);
+            const branch = info.default_branch;
+            const ref = await call('GET', `/repos/${OWNER}/${repo}/git/ref/heads/${branch}`);
+            const head = await call('GET', `/repos/${OWNER}/${repo}/git/commits/${ref.object.sha}`);
+            const tree = [];
+            for (const [i, u] of uploads.entries()) {
+                onFile(i + 1, uploads.length, u.path);
+                const blob = await call('POST', `/repos/${OWNER}/${repo}/git/blobs`, { content: await base64(u.file), encoding: 'base64' });
+                tree.push({ path: u.path, mode: '100644', type: 'blob', sha: blob.sha });
+            }
+            tree.push({ path: 'event.json', mode: '100644', type: 'blob', content: JSON.stringify(ev, null, 2) + '\n' });
+            deletes.forEach(path => tree.push({ path, mode: '100644', type: 'blob', sha: null }));
+            const t = await call('POST', `/repos/${OWNER}/${repo}/git/trees`, { base_tree: head.tree.sha, tree });
+            const c = await call('POST', `/repos/${OWNER}/${repo}/git/commits`, { message, tree: t.sha, parents: [ref.object.sha] });
+            await call('PATCH', `/repos/${OWNER}/${repo}/git/refs/heads/${branch}`, { sha: c.sha });
+            return c.sha;
+        }
+
+        // the repo's event-info workflow renders the README after a push that changes event.json
+        async function waitForReadme(repo, sha) {
+            for (let i = 0; i < 60; i++) {
+                await sleep(i < 5 ? 3000 : 5000);
+                const runs = await call('GET', `/repos/${OWNER}/${repo}/actions/runs?head_sha=${sha}`);
+                const run = runs.workflow_runs?.[0];
+                if (run?.status === 'completed') return run;
+            }
+            throw new Error('still running after 5 minutes — check the Actions tab');
+        }
+
+        function progress(steps) {
+            $('pub-steps').innerHTML = steps.map(s => `<li class="${s.state}"><i class="fas fa-${{ wait: 'circle', run: 'circle-notch fa-spin', ok: 'check', err: 'xmark' }[s.state]}"></i><span>${s.text}${s.note ? `<small>${s.note}</small>` : ''}</span></li>`).join('');
+        }
+
+        async function publish() {
+            if ($('publish').getAttribute('aria-disabled') === 'true') { touched.add('*'); update(); toast('Fix the items marked in red first'); return; }
+            const repo = repoName, creating = mode === 'new' && createdRepo !== repo;
+            const work = plan();
+            const steps = [
+                ...(creating ? [{ text: `Create <b>${esc(OWNER)}/${esc(repo)}</b> from the template`, state: 'wait' }, { text: 'Wait for GitHub to set it up', state: 'wait' }] : []),
+                { text: work.uploads.length ? `Upload ${work.uploads.length} file${work.uploads.length > 1 ? 's' : ''} and event.json` : 'Save event.json', state: 'wait' },
+                { text: 'Build the README', state: 'wait' },
+            ];
+            let i = 0;
+            const run = (note) => { steps[i].state = 'run'; steps[i].note = note || ''; progress(steps); };
+            const ok = (note) => { steps[i].state = 'ok'; if (note !== undefined) steps[i].note = note; i++; progress(steps); };
+            $('pub-title').textContent = mode === 'new' ? 'Creating your demo repo' : 'Saving changes';
+            $('pub-intro').textContent = 'Keep this tab open — it takes about a minute.';
+            $('pub-open').hidden = true; $('pub-speaking').hidden = true; $('pub-done').disabled = true;
+            progress(steps); $('publish-dialog').showModal();
+            try {
+                if (creating) {
+                    run();
+                    await call('POST', `/repos/${OWNER}/${TEMPLATE}/generate`, { owner: OWNER, name: repo, description: description(), private: visibility === 'private', include_all_branches: false });
+                    createdRepo = repo; nameStatus = { name: repo, state: 'taken' };
+                    ok(); run();
+                    let ready = false;
+                    for (let t = 0; t < 30 && !ready; t++) { await sleep(2000); ready = (await gh(`/repos/${OWNER}/${repo}/git/ref/heads/main`)).ok; }
+                    if (!ready) throw new Error("GitHub hasn't finished creating the repo — wait a moment and click Publish again");
+                    ok();
+                }
+                run();
+                const sha = await commit(repo, mode === 'new' && creating ? 'event: add event info' : 'event: update event info', work,
+                    (n, total, path) => { steps[i].note = `${n}/${total} · ${esc(path)}`; progress(steps); });
+                ok(work.uploads.map(u => esc(u.path)).join(', '));
+                run('the repo’s workflow is writing it');
+                const wf = await waitForReadme(repo, sha);
+                if (wf.conclusion !== 'success') throw new Error(`the workflow failed — <a href="${esc(wf.html_url)}" target="_blank" rel="noopener">see the log</a>`);
+                ok('');
+                $('pub-title').textContent = mode === 'new' ? 'Your demo repo is live' : 'Saved';
+                $('pub-intro').textContent = mode === 'new' ? 'Push your demo code as usual, and write setup steps under ## Demo in the README.' : 'The README and event.json are updated.';
+                $('pub-open').href = `https://github.com/${OWNER}/${repo}`; $('pub-open').hidden = false;
+                if (mode === 'new') { $('pub-speaking').href = speakingUrl(); $('pub-speaking').hidden = false; }
+                if (mode === 'new') { clearDraft(); publishedNew = true; }
+            } catch (e) {
+                steps[i].state = 'err'; steps[i].note = /<a /.test(e.message) ? e.message : esc(e.message); progress(steps);
+                $('pub-title').textContent = 'Something went wrong';
+                $('pub-intro').textContent = 'Nothing you entered is lost — fix what the step says and click the button again.';
+                if (createdRepo) { $('pub-open').href = `https://github.com/${OWNER}/${createdRepo}`; $('pub-open').hidden = false; }
+            }
+            $('pub-done').disabled = false;
+        }
+        let publishedNew = false;
+        $('publish').addEventListener('click', publish);
+        $('pub-done').addEventListener('click', () => {
+            $('publish-dialog').close();
+            if (publishedNew) { publishedNew = false; REPOS = null; createdRepo = ''; restoreDraft(); render(); }
+            else if (mode === 'edit' && $('pub-title').textContent === 'Saved') { REPOS = null; setMode('edit', repoName); }
+        });
+
+        // ---------- steps on GitHub (not connected) ----------
         let polling = null, pollTries = 0, step1Clicked = false, repoSeen = false;
         function blocked(e, id) {
             if ($(id).getAttribute('aria-disabled') !== 'true') return false;
@@ -1316,12 +1683,17 @@
             if (mode === 'edit') setMode('edit', repoName);
         });
 
-        // ---------- drafts (new mode) ----------
-        function saveDraft() { if (mode !== 'new') return; try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ state, repoName: repoNameEdited ? repoName : '', visibility })); } catch (_) {} }
+        // ---------- drafts (new mode; picked files can't be saved) ----------
+        function saveDraft() {
+            if (mode !== 'new') return;
+            const s = { ...state, poster: { ...state.poster, file: null, preview: '' }, newFiles: [], links: state.links.map(l => ({ ...l, file: null })) };
+            try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ state: s, repoName: repoNameEdited ? repoName : '', visibility })); } catch (_) {}
+        }
         function restoreDraft() {
             let d = null;
             try { d = JSON.parse(localStorage.getItem(DRAFT_KEY)); } catch (_) {}
-            state = d?.state && Array.isArray(d.state.links) ? { ...blank(), ...d.state } : blank();
+            state = d?.state && Array.isArray(d.state.links) ? { ...blank(), ...d.state, newFiles: [] } : blank();
+            state.poster = { ...blank().poster, ...state.poster, file: null, preview: '' };
             repoName = d?.repoName || ''; repoNameEdited = !!repoName;
             step1Clicked = false; repoSeen = false; nameStatus = { name: '', state: '' };
             $('repo-status').textContent = '';
@@ -1353,7 +1725,10 @@
             const id = { 'f-title': 'title', 'f-date': 'date', 'f-repo': 'repo', 'f-poster-url': 'poster' }[e.target.id];
             if (id) { touched.add(id); update(); }
         });
-        window.addEventListener('beforeunload', () => clearDraftSoon && clearDraft());
+        window.addEventListener('beforeunload', e => {
+            if (clearDraftSoon) clearDraft();
+            if ($('publish-dialog').open && $('pub-done').disabled) e.preventDefault();   // mid-publish
+        });
 
         bind();
         bindLocation();

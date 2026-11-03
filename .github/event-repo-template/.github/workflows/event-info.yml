@@ -2,7 +2,8 @@ name: Event info
 
 # "[event] …" issues opened by the repo owner (from Demo Studio on nomadicmehul.dev, or the
 # "Event info" issue form) → event.json, files in event/ and the event section of README.md,
-# then a comment and the issue is closed. Editing event.json by hand re-renders the README.
+# then a comment and the issue is closed. A push that changes event.json (Demo Studio's
+# "Connect GitHub" mode commits it directly, or a hand edit) re-renders the README.
 # If something is invalid, the errors are commented on the issue; editing the issue re-runs this.
 
 on:
@@ -48,7 +49,9 @@ jobs:
 
       - name: Commit and push
         run: |
-          git add -A event.json event README.md
+          git add -A event.json README.md
+          # event/ only exists once a file was added (and may be gone again after removing them all)
+          if [ -e event ] || git ls-files --error-unmatch event >/dev/null 2>&1; then git add -A event; fi
           git diff --cached --quiet && { echo "Nothing changed"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

@@ -21,6 +21,7 @@ import mimetypes
 import os
 import re
 import sys
+import unicodedata
 import urllib.error
 import urllib.request
 from datetime import date, datetime
@@ -87,8 +88,14 @@ def first_link(value):
 # ---------- files ----------
 
 def clean_name(name):
-    name = re.sub(r"[^A-Za-z0-9._-]+", "-", unquote(name))
-    return re.sub(r"-{2,}", "-", name).strip("-.") or "file"
+    """'Hand out (final).PDF' → 'Hand-out-final.pdf' (same as cleanName() in Demo Studio)"""
+    def part(s):
+        s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
+        return re.sub(r"-{2,}", "-", re.sub(r"[^A-Za-z0-9._-]+", "-", s)).strip("-.")
+    name = unquote(name)
+    m = re.search(r"\.[A-Za-z0-9]+$", name)
+    stem, suffix = (name[:m.start()], m.group(0).lower()) if m else (name, "")
+    return (part(stem) or "file") + suffix
 
 
 def fetch(url):

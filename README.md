@@ -25,7 +25,11 @@ A page on the site for adding or editing speaking events: **calendar date picker
 
 ### 🧪 Workshop & talk demo repos: [Demo Studio](https://nomadicmehul.dev/demo-studio.html)
 
-Creates a separate GitHub repo for a workshop or talk demo, e.g. `github.com/nomadicmehul/2027-kubecon-europe-claude-agents`. Fill in the title, event, type, date (calendar), location, speakers, topics, an About text, links, the event or speaker **poster** and any **files**. Then:
+Creates a separate GitHub repo for a workshop or talk demo, e.g. `github.com/nomadicmehul/2027-kubecon-europe-claude-agents`. Fill in the title, event, type, date (calendar), location, speakers, topics, an About text, links, the event or speaker **poster** and any **files**.
+
+**Recommended: Connect GitHub** (button at the top). Paste a [classic token with only `public_repo`](https://github.com/settings/tokens/new?scopes=public_repo&description=Demo+Studio+%28nomadicmehul.dev%29) once; it stays in that browser and is only sent to api.github.com. Then you pick the poster and files right on the page, and **Create repo & publish** creates the repo from the template, uploads everything in one commit and waits until the README is built. **Update a repo** works the same way (and can see private repos). *Disconnect* removes the token.
+
+**Without a token** you finish on GitHub:
 
 1. **Create on GitHub**: opens GitHub's new-repo page with the name and description filled in, from the `event-demo-template` repo. Click *Create repository*; the page notices when it exists.
 2. **Add details on GitHub**: opens a filled-in issue in the new repo. Drag in the poster and files, submit. The repo's own workflow writes `event.json`, saves files to `event/`, and generates the top of the README (poster, date, location, links, about, files, gallery). Everything under **## Demo** in the README is yours and never overwritten.

@@ -1,7 +1,7 @@
 <!-- event:start — generated from event.json by .github/scripts/event_info.py; change it with an “[event]” issue -->
 # Event demo
 
-Event details appear here once the first **[event]** issue is processed (Demo Studio opens it for you).
+Event details appear here once they're published from [Demo Studio](https://nomadicmehul.dev/demo-studio.html).
 <!-- event:end -->
 
 ## Demo
