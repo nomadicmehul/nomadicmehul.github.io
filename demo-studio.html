@@ -686,7 +686,7 @@
         <h3><i class="fab fa-github" style="color:var(--term-green)"></i> Connect GitHub</h3>
         <p>With a token, Demo Studio creates the repo and uploads your poster and files itself — no GitHub issue needed. The token is kept only in this browser and only sent to api.github.com.</p>
         <ol class="steps">
-            <li><span><a href="https://github.com/settings/tokens/new?scopes=public_repo&amp;description=Demo+Studio+%28nomadicmehul.dev%29" target="_blank" rel="noopener" style="color:var(--term-green);text-decoration:underline">Create a classic token</a> — <b>public_repo</b> is already ticked (it can create and update public repos, not delete them). Pick an expiry such as 90 days, then <b>Generate token</b>.</span></li>
+            <li><span><a href="https://github.com/settings/tokens/new?scopes=public_repo&amp;description=Studios+%28nomadicmehul.dev%29" target="_blank" rel="noopener" style="color:var(--term-green);text-decoration:underline">Create a classic token</a> — <b>public_repo</b> is already ticked (it can create and update public repos, not delete them). Pick an expiry such as 90 days, then <b>Generate token</b>.</span></li>
             <li><span>Copy it and paste it here.</span></li>
         </ol>
         <input class="input" id="token-input" type="password" placeholder="ghp_…" autocomplete="off" spellcheck="false">
@@ -719,7 +719,7 @@
         const TEMPLATE = 'event-demo-template';
         const API = 'https://api.github.com';
         const DRAFT_KEY = 'demo-studio-draft-v1';
-        const TOKEN_KEY = 'demo-studio-token';
+        const TOKEN_KEY = 'studio-github-token';   // shared with studio.html
         const MAX_FILE = 25 * 1024 * 1024;
         const MARK = '🎤 ';   // repo descriptions start with this, so "Update a repo" can list demo repos
         const TYPES = ['Workshop', 'Talk', 'Demo', 'Meetup', 'Hackathon', 'Webinar'];
@@ -801,7 +801,12 @@
 
         // ---------- token ----------
         function loadToken() {
-            try { TOKEN = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || null; } catch (_) { TOKEN = null; }
+            try {
+                const old = localStorage.getItem('demo-studio-token');   // the key used before it was shared
+                if (old && !localStorage.getItem(TOKEN_KEY)) localStorage.setItem(TOKEN_KEY, old);
+                localStorage.removeItem('demo-studio-token');
+                TOKEN = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || null;
+            } catch (_) { TOKEN = null; }
         }
         function storeToken(token, remember) {
             try {

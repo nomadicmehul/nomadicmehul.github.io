@@ -311,6 +311,31 @@
         }
         *:focus-visible { outline: 2px solid var(--term-green); outline-offset: 2px; }
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+        /* Connect GitHub + direct publish (same as demo-studio.html) */
+        .connect {
+            display: flex; align-items: center; gap: 12px; flex-wrap: wrap; border: 1px solid var(--border-default); background: var(--bg-card);
+            border-radius: 12px; padding: 12px 16px; margin-bottom: 24px; font-size: 0.88rem; color: var(--text-secondary);
+        }
+        .connect.on { border-color: rgba(74,222,128,.35); }
+        .connect .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--text-muted); flex-shrink: 0; }
+        .connect.on .dot { background: var(--term-green); box-shadow: 0 0 8px var(--term-green); }
+        .connect .grow { flex: 1; min-width: 220px; }
+        .connect b { color: var(--text-primary); }
+        .pick-file { cursor: pointer; align-self: flex-start; }
+        .pick-file input { display: none; }
+        .res.drag-over { border-color: var(--term-purple); }
+        .chosen { font-family: var(--font-mono); font-size: 0.8rem; color: var(--term-green); display: flex; gap: 8px; align-items: center; min-width: 0; }
+        .chosen span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .progress { display: flex; flex-direction: column; gap: 12px; margin-bottom: 22px; }
+        .progress li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: 0.9rem; color: var(--text-muted); align-items: baseline; }
+        .progress li.run { color: var(--text-primary); } .progress li.ok { color: var(--text-secondary); } .progress li.err { color: var(--term-red); }
+        .progress li i { text-align: center; }
+        .progress li.ok i { color: var(--term-green); }
+        .progress small { display: block; font-size: 0.78rem; color: var(--text-muted); word-break: break-word; }
+        .progress small a { color: var(--term-green); text-decoration: underline; }
+        dialog .input + .toggle-row { margin-top: 10px; }
+        .toggle-row { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.88rem; color: var(--text-secondary); }
+        .toggle-row input { accent-color: var(--term-green); width: 16px; height: 16px; }
     </style>
 </head>
 <body>
@@ -334,7 +359,7 @@
             <div class="container">
                 <div class="hero-prompt"><span class="u">mehul</span>@<span class="h">berlin</span>:<span class="p">~/studio</span>$ <span id="hero-cmd">new-event</span></div>
                 <h1>Content <span class="hl">Studio</span></h1>
-                <p>Add or update a speaking event. You'll finish on GitHub, where the site updates itself. Files you drag in are saved in the event's own folder and open in the browser.</p>
+                <p>Add or update a speaking event. Slides and other files are saved in the event's own folder on the site and open in the browser, not as a download.</p>
                 <div class="hero-bar">
                     <div class="segmented" role="tablist" aria-label="Mode">
                         <button role="tab" id="tab-new" aria-selected="true"><i class="fas fa-plus"></i> New event</button>
@@ -350,6 +375,12 @@
         </section>
 
         <div class="container">
+            <div class="connect" id="connect">
+                <span class="dot"></span>
+                <span class="grow" id="connect-text"></span>
+                <button type="button" class="btn btn-primary btn-sm" id="connect-btn"></button>
+            </div>
+
             <div class="loading" id="loading"><i class="fas fa-circle-notch fa-spin"></i> loading events…</div>
 
             <div class="studio" id="studio" hidden>
@@ -437,12 +468,13 @@
                         <div class="changes" id="changes" hidden></div>
                         <ul class="checks" id="checks"></ul>
                         <a class="btn btn-primary btn-lg" id="submit" target="_blank" rel="noopener" href="#"><i class="fab fa-github"></i> <span id="submit-text">Continue on GitHub</span></a>
+                        <button type="button" class="btn btn-primary btn-lg" id="publish" hidden><i class="fas fa-rocket"></i> <span id="publish-text">Publish to site</span></button>
                         <div class="submit-row">
                             <button type="button" class="btn btn-ghost btn-sm" id="copy"><i class="fas fa-copy"></i> Copy issue text</button>
                             <button type="button" class="btn btn-ghost btn-sm" id="reset"><i class="fas fa-rotate-left"></i> <span id="reset-text">Start over</span></button>
                         </div>
-                        <div class="kbd">⌘/Ctrl + Enter to continue</div>
-                        <details class="issue"><summary>What gets sent</summary><pre id="body-preview"></pre></details>
+                        <div class="kbd" id="kbd">⌘/Ctrl + Enter to continue</div>
+                        <details class="issue" id="issue-details"><summary>What gets sent</summary><pre id="body-preview"></pre></details>
                     </section>
                 </aside>
             </div>
@@ -458,6 +490,31 @@
             <button type="button" class="btn btn-primary btn-sm" id="next-done"><i class="fas fa-check"></i> Done</button>
         </div>
     </dialog>
+    <dialog id="connect-dialog">
+        <h3><i class="fab fa-github" style="color:var(--term-green)"></i> Connect GitHub</h3>
+        <p>With a token, the studio saves your event and uploads files to the site itself — no GitHub issue needed. The same token works in Demo Studio. It's kept only in this browser and only sent to api.github.com.</p>
+        <ol class="steps">
+            <li><span><a href="https://github.com/settings/tokens/new?scopes=public_repo&amp;description=Studios+%28nomadicmehul.dev%29" target="_blank" rel="noopener" style="color:var(--term-green);text-decoration:underline">Create a classic token</a> — <b>public_repo</b> is already ticked (it can update and create public repos, not delete them). Pick an expiry such as 90 days, then <b>Generate token</b>.</span></li>
+            <li><span>Copy it and paste it here.</span></li>
+        </ol>
+        <input class="input" id="token-input" type="password" placeholder="ghp_…" autocomplete="off" spellcheck="false">
+        <label class="toggle-row"><input type="checkbox" id="token-remember" checked> Remember on this device</label>
+        <div class="help" id="token-help"></div>
+        <div class="dialog-actions">
+            <button type="button" class="btn btn-ghost btn-sm" id="connect-cancel">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm" id="connect-save"><i class="fas fa-plug"></i> Connect</button>
+        </div>
+    </dialog>
+
+    <dialog id="publish-dialog">
+        <h3><i class="fas fa-rocket" style="color:var(--term-green)"></i> <span id="pub-title">Publishing</span></h3>
+        <p id="pub-intro"></p>
+        <ol class="progress" id="pub-steps"></ol>
+        <div class="dialog-actions">
+            <a class="btn btn-ghost btn-sm" id="pub-view" href="speaking.html" target="_blank" rel="noopener" hidden><i class="fas fa-up-right-from-square"></i> View speaking page</a>
+            <button type="button" class="btn btn-primary btn-sm" id="pub-done" disabled><i class="fas fa-check"></i> Done</button>
+        </div>
+    </dialog>
     <div class="toast" id="toast" role="status"></div>
 
     <footer class="footer">
@@ -466,7 +523,11 @@
 
     <script>
         const REPO = 'nomadicmehul/nomadicmehul.github.io';
+        const OWNER = 'nomadicmehul';
+        const API = 'https://api.github.com';
         const DRAFT_KEY = 'studio-draft-v1';
+        const TOKEN_KEY = 'studio-github-token';   // shared with demo-studio.html
+        const MAX_FILE = 25 * 1024 * 1024;
         // order and button labels match RESOURCE_FIELDS in .github/scripts/issue_to_data.py
         const RES = {
             event:  { label: 'Event Page',  icon: 'fas fa-external-link-alt', ph: 'https://event-page.com', name: 'Event page' },
@@ -482,7 +543,7 @@
         const isLocal = s => /^assets\/\S+$/.test(s) || /^[^:/\s]+\.\w+$/.test(s);   // a file already on the site
         const todayIso = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
 
-        let EVENTS = [], ROLES = [], LABELS = [], TOPICS = [];
+        let EVENTS = [], ROLES = [], LABELS = [], TOPICS = [], TOKEN = null, LOGIN = '';
         const PAST_LOCS = {};   // location → number of events there
         let mode = 'new', original = null, originalIndex = -1;
         let state = blank();
@@ -512,6 +573,71 @@
             if (/^https?:\/\//.test(url)) return url;
             return url.startsWith('assets/') ? url : 'assets/slides/' + url;
         }
+        // "Hand out (final).PDF" → "Hand-out-final.pdf" (same as cleanName() in demo-studio.html)
+        const ext = name => (name.match(/\.[A-Za-z0-9]+$/) || [''])[0].toLowerCase();
+        const cleanPart = s => s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9._-]+/g, '-').replace(/-{2,}/g, '-').replace(/^[-.]+|[-.]+$/g, '');
+        const cleanName = n => (cleanPart(n.replace(/\.[^.]*$/, '')) || 'file') + cleanPart(ext(n)).replace(/^(?=.)/, '.');
+        const kb = n => n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB';
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+        const connected = () => !!TOKEN;
+
+        // ---------- GitHub token (optional): publish without an issue ----------
+        function loadToken() {
+            try {
+                const old = localStorage.getItem('demo-studio-token');   // the key Demo Studio used first
+                if (old && !localStorage.getItem(TOKEN_KEY)) localStorage.setItem(TOKEN_KEY, old);
+                localStorage.removeItem('demo-studio-token');
+                TOKEN = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || null;
+            } catch (_) { TOKEN = null; }
+        }
+        function storeToken(token, remember) {
+            try {
+                localStorage.removeItem(TOKEN_KEY); sessionStorage.removeItem(TOKEN_KEY);
+                if (token) (remember ? localStorage : sessionStorage).setItem(TOKEN_KEY, token);
+            } catch (_) {}
+            TOKEN = token;
+        }
+        async function verifyToken(token) {
+            const res = await fetch(API + '/user', { headers: { Accept: 'application/vnd.github+json', Authorization: `Bearer ${token}` } });
+            if (res.status === 401) throw new Error("GitHub didn't accept this token — check it was copied completely and hasn't expired.");
+            if (!res.ok) throw new Error(`GitHub answered HTTP ${res.status}.`);
+            const user = await res.json();
+            if (user.login.toLowerCase() !== OWNER) throw new Error(`This token belongs to ${user.login}, not ${OWNER}.`);
+            const scopes = res.headers.get('x-oauth-scopes');   // only classic tokens send this
+            if (scopes !== null && !/\b(public_)?repo\b/.test(scopes)) throw new Error('The token needs the public_repo scope.');
+            return user.login;
+        }
+        async function call(method, path, body, accept = 'application/vnd.github+json') {
+            const res = await fetch(API + path, { method, headers: { Accept: accept, Authorization: `Bearer ${TOKEN}`, 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' }, body: body && JSON.stringify(body) });
+            const data = res.status === 204 ? null : accept.includes('raw') ? await res.text() : await res.json().catch(() => null);
+            if (!res.ok) throw new Error(`${data?.message || res.statusText} (HTTP ${res.status})`);
+            return data;
+        }
+        function renderConnect() {
+            const on = connected();
+            $('connect').classList.toggle('on', on);
+            $('connect-text').innerHTML = on
+                ? `<b>Connected as ${esc(LOGIN || OWNER)}.</b> Choose slide files right here; <b>Publish to site</b> saves everything in one step.`
+                : '<b>Upload slides right here?</b> Connect GitHub with a token and the studio publishes for you. Without it, you finish on GitHub by dropping files into an issue.';
+            $('connect-btn').innerHTML = on ? '<i class="fas fa-plug-circle-xmark"></i> Disconnect' : '<i class="fas fa-plug"></i> Connect GitHub';
+            $('connect-btn').className = 'btn btn-sm ' + (on ? 'btn-ghost' : 'btn-primary');
+        }
+        $('connect-btn').addEventListener('click', () => {
+            if (connected()) { storeToken(null); LOGIN = ''; renderConnect(); render(); toast('Disconnected — the token was removed from this browser'); return; }
+            $('token-input').value = ''; $('token-help').textContent = ''; $('connect-dialog').showModal(); $('token-input').focus();
+        });
+        $('connect-cancel').addEventListener('click', () => $('connect-dialog').close());
+        $('connect-save').addEventListener('click', async () => {
+            const token = $('token-input').value.trim();
+            if (!token) { $('token-help').textContent = 'Paste the token first.'; return; }
+            $('token-help').className = 'help'; $('token-help').innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> checking…';
+            try {
+                LOGIN = await verifyToken(token);
+                storeToken(token, $('token-remember').checked);
+                $('connect-dialog').close(); renderConnect(); render(); toast(`Connected as ${LOGIN}`);
+            } catch (e) { $('token-help').className = 'help err'; $('token-help').textContent = e.message; }
+        });
+        $('token-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('connect-save').click(); } });
 
         // ---------- load ----------
         async function load() {
@@ -535,6 +661,9 @@
             EVENTS.forEach(e => { PAST_LOCS[e.location] = (PAST_LOCS[e.location] || 0) + 1; });
             $('picker-count').textContent = `${EVENTS.length} events`;
 
+            loadToken();
+            if (TOKEN) verifyToken(TOKEN).then(l => { LOGIN = l; renderConnect(); }).catch(() => { storeToken(null); renderConnect(); render(); toast('Your saved GitHub token stopped working — connect again'); });
+            renderConnect();
             $('loading').hidden = true; $('studio').hidden = false;
             restoreDraft();
             const params = new URLSearchParams(location.search);
@@ -647,9 +776,20 @@
                 const b = e.target.closest('button'); if (!b) return;
                 const i = Number(b.closest('.res').dataset.i);
                 if (b.dataset.act === 'del') state.resources.splice(i, 1);
-                if (b.dataset.act === 'upload') { const r = state.resources[i]; r.upload = !r.upload; if (r.upload) r.url = ''; }
+                if (b.dataset.act === 'upload') { const r = state.resources[i]; r.upload = !r.upload; r.file = null; if (r.upload) r.url = ''; }
                 renderResources(); update();
             });
+            const setFile = (row, file) => {
+                if (!file) return;
+                if (file.size > MAX_FILE) { toast(`${file.name} is over 25 MB — host it elsewhere and paste the URL`); return; }
+                Object.assign(state.resources[row.dataset.i], { upload: true, url: '', file });
+                renderResources(); update();
+            };
+            $('res-list').addEventListener('change', e => { if (e.target.type === 'file') setFile(e.target.closest('.res'), e.target.files[0]); });
+            // connected: drop a file straight onto a slides/demo/recording row
+            $('res-list').addEventListener('dragover', e => { const row = e.target.closest('.res'); if (connected() && row && RES[state.resources[row.dataset.i].type]?.upload) { e.preventDefault(); row.classList.add('drag-over'); } });
+            $('res-list').addEventListener('dragleave', e => e.target.closest('.res')?.classList.remove('drag-over'));
+            $('res-list').addEventListener('drop', e => { const row = e.target.closest('.res'); if (!row || !connected()) return; e.preventDefault(); row.classList.remove('drag-over'); setFile(row, e.dataTransfer.files[0]); });
             $('add-res').addEventListener('click', e => {
                 const b = e.target.closest('button'); if (!b) return;
                 state.resources.push({ type: b.dataset.type, label: '', url: '', upload: false });
@@ -796,13 +936,16 @@
                 <div class="res" data-i="${i}">
                     <div class="res-type t-${esc(r.type)}"><i class="${meta.icon}"></i> ${esc(meta.name || r.type)}</div>
                     <div class="res-body">
-                        ${r.upload ? `<div class="upload-note"><i class="fas fa-paperclip"></i><span>You'll drag the file in on GitHub (PDF or PPTX). It's saved to this event's folder and opens in a new tab.</span></div>`
+                        ${r.upload ? (connected()
+                              ? (r.file ? `<div class="chosen"><i class="fas fa-file-circle-check"></i><span>${esc(r.file.name)}</span> <span style="color:var(--text-muted)">${kb(r.file.size)}</span></div>` : '')
+                                + `<label class="btn btn-ghost btn-sm pick-file"><input type="file"><i class="fas fa-folder-open"></i> ${r.file ? 'Choose another file' : 'Choose file (or drop it here)'}</label>`
+                              : `<div class="upload-note"><i class="fas fa-paperclip"></i><span>You'll drag the file in on GitHub (PDF or PPTX). It's saved to this event's folder and opens in a new tab. <b>Connect GitHub</b> at the top to choose it here instead.</span></div>`)
                           : local ? `<div class="local-file"><i class="fas fa-file"></i> ${esc(resolveUrl(r.url))}</div>`
                           : `<input class="input" data-k="url" value="${esc(r.url)}" placeholder="${esc(meta.ph)}" aria-label="${esc(meta.name)} URL">`}
                         <input class="input res-label" data-k="label" value="${esc(r.label)}" placeholder="Button text: ${esc(meta.label)}" aria-label="Button text">
                     </div>
                     <div class="res-actions">
-                        ${meta.upload ? `<button type="button" class="icon-btn${r.upload ? ' on' : ''}" data-act="upload" title="${r.upload ? 'Use a URL instead' : 'Upload a file on GitHub'}" aria-pressed="${!!r.upload}"><i class="fas fa-${r.upload ? 'link' : 'paperclip'}"></i></button>` : ''}
+                        ${meta.upload ? `<button type="button" class="icon-btn${r.upload ? ' on' : ''}" data-act="upload" title="${r.upload ? 'Use a URL instead' : 'Upload a file'}" aria-pressed="${!!r.upload}"><i class="fas fa-${r.upload ? 'link' : 'paperclip'}"></i></button>` : ''}
                         <button type="button" class="icon-btn del" data-act="del" title="Remove"><i class="fas fa-xmark"></i></button>
                     </div>
                 </div>`;
@@ -818,7 +961,7 @@
             const res = s.resources.filter(r => r.url || r.upload).map(r => {
                 const m = RES[r.type] || { icon: 'fas fa-link', label: r.type };
                 const label = esc(r.label || m.label);
-                return r.upload ? `<span class="resource-link type-${esc(r.type)} pending" title="Uploaded on GitHub"><i class="fas fa-paperclip"></i> ${label}</span>`
+                return r.upload ? `<span class="resource-link type-${esc(r.type)} pending" title="${r.file ? esc(r.file.name) : 'File to upload'}"><i class="fas fa-paperclip"></i> ${label}</span>`
                     : `<a class="resource-link type-${esc(r.type)}" href="${esc(resolveUrl(r.url))}" target="_blank" rel="noopener"><i class="${m.icon}"></i> ${label}</a>`;
             }).join('');
             $('preview').innerHTML = `
@@ -848,7 +991,8 @@
             if (!s.topics.length) errs.topics = 'Add at least one topic';
             if (!s.roles.length) warns.roles = 'No role picked — it will be saved as Speaker';
             s.resources.forEach((r, i) => {
-                if (!r.upload && !r.url.trim()) errs['res' + i] = `${RES[r.type]?.name || r.type}: paste a URL, upload a file, or remove the row`;
+                if (r.upload && connected() && !r.file) errs['res' + i] = `${RES[r.type]?.name || r.type}: choose the file, or remove the row`;
+                else if (!r.upload && !r.url.trim()) errs['res' + i] = `${RES[r.type]?.name || r.type}: paste a URL, upload a file, or remove the row`;
                 else if (!r.upload && !isUrl(r.url.trim()) && !isLocal(r.url.trim())) errs['res' + i] = `${RES[r.type]?.name || r.type}: link must start with https://`;
             });
             const dup = EVENTS.find((e, i) => i !== originalIndex && e.title.trim().toLowerCase() === s.title.trim().toLowerCase() && e.date === s.date);
@@ -951,8 +1095,8 @@
                 [!errs.topics, errs.topics || `${state.topics.length} topic${state.topics.length === 1 ? '' : 's'}`],
                 ...resErrs.map(e => [false, e]),
             ];
-            const uploads = state.resources.filter(r => r.upload).length;
-            if (uploads) items.push(['warn', `${uploads} file${uploads > 1 ? 's' : ''} to drag in on GitHub`]);
+            const uploads = state.resources.filter(r => r.upload).length, on = connected();
+            if (uploads) items.push(on ? [true, `${uploads} file${uploads > 1 ? 's' : ''} to upload`] : ['warn', `${uploads} file${uploads > 1 ? 's' : ''} to drag in on GitHub`]);
             if (ch) items.unshift([nChanges > 0, nChanges ? `${nChanges} change${nChanges > 1 ? 's' : ''}` : 'No changes yet']);
             $('checks').innerHTML = items.map(([ok, text]) =>
                 `<li class="${ok === 'warn' ? 'warn' : ok ? 'ok' : 'err'}"><i class="fas fa-${ok === 'warn' ? 'paperclip' : ok ? 'check' : 'circle-exclamation'}"></i><span>${esc(text)}</span></li>`).join('');
@@ -969,6 +1113,10 @@
             $('submit').href = ready ? issueUrl(data) : '#';
             $('submit').setAttribute('aria-disabled', String(!ready));
             $('submit-text').textContent = mode === 'new' ? 'Add event on GitHub' : 'Save changes on GitHub';
+            ['submit', 'copy', 'kbd', 'issue-details'].forEach(id => { $(id).hidden = on; });
+            $('publish').hidden = !on;
+            $('publish').setAttribute('aria-disabled', String(!ready));
+            $('publish-text').textContent = mode === 'new' ? 'Publish to site' : 'Save to site';
             $('body-preview').textContent = data.body;
             saveDraft();
         }
@@ -1009,14 +1157,127 @@
                 armTimer = setTimeout(disarmRemove, 4000); return;
             }
             disarmRemove();
+            if (connected()) { publish('remove'); return; }
             const label = LABELS[originalIndex];
             const url = issueUrl({ title: `[remove] ${label}`, labels: 'data:edit', body: `### Speaking event\n\n${label}\n\n### Action\n\nRemove\n` });
             window.open(url, '_blank', 'noopener');
             showNext(url, true);
         });
 
+        // ---------- publish directly (connected) ----------
+        // Does what issue_to_data.py does for an issue, in one commit: the edit-forms.yml workflow then stamps
+        // added/updated dates, refreshes MANAGE.md, moves files if the title or date changed, and redeploys.
+        const localPath = url => /^https?:\/\//.test(url) ? '' : url.startsWith('assets/') ? url : `assets/slides/${url}`;
+        const fileSets = events => new Set(events.flatMap(e => (e.resources || []).map(r => localPath(r.url)).filter(Boolean)));
+
+        function progress(steps) {
+            $('pub-steps').innerHTML = steps.map(s => `<li class="${s.state}"><i class="fas fa-${{ wait: 'circle', run: 'circle-notch fa-spin', ok: 'check', err: 'xmark' }[s.state]}"></i><span>${s.text}${s.note ? `<small>${s.note}</small>` : ''}</span></li>`).join('');
+        }
+
+        async function publish(action) {
+            if (action !== 'remove' && $('publish').getAttribute('aria-disabled') === 'true') { touched.add('*'); update(); toast('Fix the items marked in red first'); return; }
+            const s = state, uploads = s.resources.filter(r => r.upload && r.file);
+            const steps = [
+                { text: 'Get the latest speaking.json from GitHub', state: 'wait' },
+                { text: action === 'remove' ? 'Remove the event and its files' : uploads.length ? `Upload ${uploads.length} file${uploads.length > 1 ? 's' : ''} and save the event` : 'Save the event', state: 'wait' },
+                { text: 'Deploy the site', state: 'wait' },
+            ];
+            let i = 0;
+            const run = note => { steps[i].state = 'run'; steps[i].note = note || ''; progress(steps); };
+            const ok = note => { steps[i].state = 'ok'; if (note !== undefined) steps[i].note = note; i++; progress(steps); };
+            $('pub-title').textContent = { add: 'Adding the event', update: 'Saving changes', remove: 'Removing the event' }[action];
+            $('pub-intro').textContent = 'Keep this tab open — it takes a minute or two.';
+            $('pub-view').hidden = true; $('pub-done').disabled = true;
+            progress(steps); $('publish-dialog').showModal();
+            try {
+                run();
+                const ref = await call('GET', `/repos/${REPO}/git/ref/heads/main`);
+                const head = await call('GET', `/repos/${REPO}/git/commits/${ref.object.sha}`);
+                const events = JSON.parse(await call('GET', `/repos/${REPO}/contents/data/speaking.json?ref=${ref.object.sha}`, null, 'application/vnd.github.raw+json'));
+                const before = fileSets(events);
+                let idx = -1;
+                if (action !== 'add') {
+                    idx = events.findIndex(e => e.title === original.title && (e.date || '') === (original.date || ''));
+                    if (idx < 0) throw new Error('This event changed on GitHub since the page loaded — reload the page and try again.');
+                }
+                ok();
+
+                run();
+                const tree = [];
+                let entry = null;
+                if (action === 'remove') events.splice(idx, 1);
+                else {
+                    if (events.some((e, j) => j !== idx && e.title.trim().toLowerCase() === s.title.trim().toLowerCase() && e.date === s.date))
+                        throw new Error('An event with this title and date already exists.');
+                    const folder = folderOf(s.title.trim(), s.date);
+                    const taken = new Set(before);
+                    const resources = [];
+                    for (const r of s.resources.filter(r => r.upload ? r.file : r.url.trim())) {
+                        let url = r.url.trim();
+                        if (r.upload) {
+                            const name = cleanName(r.file.name);
+                            let path = folder + name, n = 1;
+                            while (taken.has(path)) path = `${folder}${name.replace(/(\.[^.]*)?$/, `-${++n}$1`)}`;
+                            taken.add(path);
+                            steps[i].note = `uploading ${esc(r.file.name)}…`; progress(steps);
+                            const blob = await call('POST', `/repos/${REPO}/git/blobs`, { content: await base64(r.file), encoding: 'base64' });
+                            tree.push({ path, mode: '100644', type: 'blob', sha: blob.sha });
+                            url = path;
+                        }
+                        resources.push({ type: r.type, label: r.label.trim() || RES[r.type]?.label || r.type, url });
+                    }
+                    const fields = { year: Number(s.date.slice(0, 4)), date: s.date, title: s.title.trim(), location: s.location.trim(), role: s.roles.length ? [...s.roles] : ['Speaker'], topics: [...s.topics], resources };
+                    if (action === 'add') { entry = fields; events.unshift(entry); }
+                    else { entry = Object.assign(events[idx], fields); }   // keeps added/updated; the workflow re-stamps updated
+                    events.sort((a, b) => (b.date || '').localeCompare(a.date || ''));   // newest first, like issue_to_data.py
+                }
+                const after = fileSets(events);
+                [...before].filter(p => !after.has(p) && /^assets\/(events|slides)\//.test(p)).forEach(path => tree.push({ path, mode: '100644', type: 'blob', sha: null }));
+                tree.push({ path: 'data/speaking.json', mode: '100644', type: 'blob', content: JSON.stringify(events, null, 2) + '\n' });
+                const name = action === 'remove' ? original.title : entry.title;
+                const t = await call('POST', `/repos/${REPO}/git/trees`, { base_tree: head.tree.sha, tree });
+                const c = await call('POST', `/repos/${REPO}/git/commits`, { message: `data: ${action} speaking event "${name}"`, tree: t.sha, parents: [ref.object.sha] });
+                await call('PATCH', `/repos/${REPO}/git/refs/heads/main`, { sha: c.sha });
+                ok(`<a href="https://github.com/${REPO}/commit/${c.sha}" target="_blank" rel="noopener">commit ${c.sha.slice(0, 7)}</a>` + (uploads.length && action !== 'remove' ? ' · ' + entry.resources.filter(r => r.url.startsWith('assets/')).map(r => esc(r.url)).join(', ') : ''));
+
+                run('GitHub Pages is building it');
+                let deploy = null;
+                for (let n = 0; n < 60 && deploy?.status !== 'completed'; n++) {
+                    await sleep(n < 4 ? 4000 : 6000);
+                    const runs = await call('GET', `/repos/${REPO}/actions/runs?head_sha=${c.sha}`);
+                    deploy = runs.workflow_runs?.find(r => r.path === '.github/workflows/deploy.yml') || deploy;
+                }
+                if (!deploy || deploy.status !== 'completed') throw new Error(`still deploying — <a href="https://github.com/${REPO}/actions" target="_blank" rel="noopener">check Actions</a>; the change is saved`);
+                if (deploy.conclusion !== 'success') throw new Error(`the deploy failed — <a href="${esc(deploy.html_url)}" target="_blank" rel="noopener">see the log</a>; the change is saved`);
+                ok('live now (refresh the page if it still shows the old version)');
+
+                $('pub-title').textContent = { add: 'Event added', update: 'Changes saved', remove: 'Event removed' }[action];
+                $('pub-intro').textContent = 'A bot adds the added/updated dates and refreshes MANAGE.md in a moment.';
+                $('pub-view').hidden = false;
+                EVENTS = events; LABELS = entryLabels(EVENTS); $('picker-count').textContent = `${EVENTS.length} events`;
+                published = action;
+            } catch (e) {
+                steps[i].state = 'err'; steps[i].note = /<a /.test(e.message) ? e.message : esc(e.message); progress(steps);
+                $('pub-title').textContent = 'Something went wrong';
+                $('pub-intro').textContent = i < 2 ? 'Nothing was changed — fix what the step says and try again.' : '';
+            }
+            $('pub-done').disabled = false;
+        }
+        const base64 = file => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.onerror = () => rej(r.error); r.readAsDataURL(file); });
+        let published = '';
+        $('pub-done').addEventListener('click', () => {
+            $('publish-dialog').close();
+            if (published === 'add') { clearDraft(); state = blank(); touched = new Set(); render(); }
+            else if (published) setMode('edit');
+            published = '';
+        });
+        window.addEventListener('beforeunload', e => { if ($('publish-dialog').open && $('pub-done').disabled) e.preventDefault(); });
+
         // ---------- drafts (new mode only) ----------
-        function saveDraft() { if (mode !== 'new') return; try { localStorage.setItem(DRAFT_KEY, JSON.stringify(state)); } catch (_) {} }
+        function saveDraft() {
+            if (mode !== 'new') return;
+            try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ ...state, resources: state.resources.map(r => ({ ...r, file: null })) })); } catch (_) {}
+        }
         function clearDraft() { try { localStorage.removeItem(DRAFT_KEY); } catch (_) {} }
         function restoreDraft(reset) {
             let d = null;
@@ -1038,6 +1299,7 @@
         $('picker-results').addEventListener('click', e => { const b = e.target.closest('.pick'); if (b) pick(Number(b.dataset.i)); });
         $('change-event').addEventListener('click', () => setMode('edit'));
         $('submit').addEventListener('click', submit);
+        $('publish').addEventListener('click', () => publish(mode === 'new' ? 'add' : 'update'));
         $('form').addEventListener('submit', e => e.preventDefault());
         $('copy').addEventListener('click', async () => {
             try { await navigator.clipboard.writeText($('body-preview').textContent); toast('Issue text copied'); } catch (_) { toast('Copy failed — open “What gets sent” and copy by hand'); }
@@ -1049,6 +1311,7 @@
         document.addEventListener('keydown', e => {
             if ((e.metaKey || e.ctrlKey) && e.key === 'Enter' && !$('side').hidden) {
                 e.preventDefault();
+                if (connected()) return publish(mode === 'new' ? 'add' : 'update');
                 if ($('submit').getAttribute('aria-disabled') === 'true') return submit(e);
                 window.open($('submit').href, '_blank', 'noopener'); submit();
             }
