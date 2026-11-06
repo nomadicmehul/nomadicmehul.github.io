@@ -211,8 +211,7 @@ Commits made by workflows with `GITHUB_TOKEN` don't trigger other workflows, so 
      ]
    }
    ```
-3. The home page shows the first 6 events; the speaking page shows all.
-   Events dated today or later get an amber **Upcoming** badge automatically (no field needed).
+3. Events dated today or later (visitor's local date) are **upcoming** automatically, no field needed: the home page lists up to 3 in a `$ ls ~/talks --upcoming` panel above its 6 most recent past events; the speaking page gets an **Upcoming** tab (`speaking.html#upcoming`) and, under All Years, a **Coming up** section of ticket cards with a countdown, soonest first (picking a single year shows that year's events as normal cards with an Upcoming badge).
 4. Only add the resources you have — empty `"resources": []` is fine too.
 
 ## Color Palette (Terminal Theme)

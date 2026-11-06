@@ -118,7 +118,7 @@ Everything runs on GitHub Actions; nothing to install.
 - **Dark mode only** — because terminals don't do light mode
 - **Data-driven** — speaking, projects, testimonials and blog posts live in `data/*.json`
 - **SEO ready** — Open Graph and Twitter Cards with a designed link-preview image, schema.org ProfilePage data, sitemap, robots.txt
-- **Upcoming talks** — events dated today or later get an **Upcoming** badge automatically
+- **Upcoming talks** — events dated today or later automatically show in a "Next up" panel on the home page and an **Upcoming** tab / **Coming up** section (ticket cards with a countdown) on the speaking page
 - **Accessible** — skip-to-content, ARIA labels, focus states, reduced motion support
 - **Zero dependencies** — pure HTML, CSS, and vanilla JS (no build tools needed)
 - **Custom 404 page** — `bash: page_not_found: command not found`
@@ -172,7 +172,7 @@ Open `http://localhost:8000` and start customizing.
 
 ## Speaking Events Data
 
-All speaking events are managed in `data/speaking.json`. Each event entry renders as a card on both the home page (first 6) and the speaking page (all events). Events dated today or later get an amber **Upcoming** badge automatically; no extra field needed.
+All speaking events are managed in `data/speaking.json`. Each event entry renders as a card on both the home page (6 most recent past events) and the speaking page (all events). Events dated today or later are treated as upcoming automatically, no extra field needed: they're listed in the home page's "Next up" panel and in the speaking page's **Upcoming** tab (`speaking.html#upcoming`).
 
 ### Event Structure
 

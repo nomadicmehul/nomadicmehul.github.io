@@ -1103,20 +1103,57 @@
             transform: translateY(-2px);
         }
 
-        /* Future events (date >= today) */
-        .event-card.upcoming { border-color: rgba(251, 191, 36, 0.45); }
-        .upcoming-badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono);
-            text-transform: uppercase; letter-spacing: 0.5px;
-            padding: 3px 10px; border-radius: 100px;
-            background: rgba(251, 191, 36, 0.12); color: var(--term-amber);
-            border: 1px solid rgba(251, 191, 36, 0.3);
-            align-self: flex-start; width: fit-content; margin-bottom: 8px;
+        /* "Next up" terminal panel: future events (date >= today), soonest first */
+        .next-up {
+            margin-bottom: 32px; border-radius: 14px; overflow: hidden; font-family: var(--font-mono);
+            background: var(--bg-card); border: 1px solid rgba(251, 191, 36, 0.35);
+            box-shadow: 0 0 24px rgba(251, 191, 36, 0.06);
         }
-        .upcoming-badge::before {
-            content: ''; width: 6px; height: 6px; border-radius: 50%;
-            background: var(--term-amber); box-shadow: 0 0 6px var(--term-amber);
+        .next-up-bar {
+            display: flex; align-items: center; gap: 10px; padding: 12px 20px; font-size: 0.85rem;
+            background: rgba(251, 191, 36, 0.06); border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+            color: var(--text-secondary);
+        }
+        .next-up-bar .np-prompt { color: var(--term-amber); }
+        .next-up-bar .np-count { margin-left: auto; color: var(--text-muted); font-size: 0.75rem; }
+        .live-dot {
+            width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+            background: var(--term-amber); animation: live-pulse 1.8s ease-out infinite;
+        }
+        @keyframes live-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.6); }
+            70%, 100% { box-shadow: 0 0 0 7px rgba(251, 191, 36, 0); }
+        }
+        .next-row {
+            display: grid; grid-template-columns: 64px 1fr auto 16px; align-items: center; gap: 20px;
+            padding: 16px 20px; transition: background 0.2s;
+        }
+        .next-row + .next-row { border-top: 1px dashed var(--border-default); }
+        .next-row:hover { background: rgba(251, 191, 36, 0.05); }
+        .next-date { text-align: center; line-height: 1.1; }
+        .next-date b { display: block; font-size: 1.6rem; color: var(--text-primary); }
+        .next-date span { font-size: 0.7rem; font-weight: 700; color: var(--term-amber); letter-spacing: 2px; text-transform: uppercase; }
+        .next-main { min-width: 0; font-family: var(--font-sans); }
+        .next-title { display: block; font-weight: 700; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .next-meta { font-size: 0.85rem; color: var(--text-muted); }
+        .countdown {
+            display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 3px 10px; border-radius: 100px;
+            background: rgba(251, 191, 36, 0.12); color: var(--term-amber); border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+        .countdown.now { background: rgba(74, 222, 128, 0.12); color: var(--term-green); border-color: rgba(74, 222, 128, 0.35); }
+        .countdown.now .live-dot { background: var(--term-green); }
+        .next-arrow { color: var(--text-muted); transition: all 0.2s; }
+        .next-row:hover .next-arrow { color: var(--term-amber); transform: translateX(3px); }
+        .next-more { display: block; padding: 12px 20px; font-size: 0.8rem; color: var(--term-amber); border-top: 1px dashed var(--border-default); }
+        .next-more:hover { background: rgba(251, 191, 36, 0.05); }
+        @media (max-width: 600px) {
+            .next-row { grid-template-columns: 52px 1fr; gap: 6px 14px; padding: 14px 16px; }
+            .next-row .countdown { grid-column: 2; justify-self: start; }
+            .next-arrow { display: none; }
+            .next-title { white-space: normal; }
+            .next-up-bar { padding: 12px 16px; }
         }
 
         .event-card h4 {
@@ -2216,9 +2253,11 @@
                 </div>
             </div>
 
-            <!-- Year-wise highlights (latest first, 2 per year) -->
+            <!-- Upcoming events (filled from speaking.json; hidden when nothing is scheduled) -->
+            <div class="next-up" id="next-up" hidden></div>
+
+            <!-- Most recent past events (filled from speaking.json) -->
             <div class="speaking-events" id="speaking-highlights">
-                <!-- Will be dynamically loaded from speaking.json (first 2 events only) -->
             </div>
 
             <!-- View All CTA -->
@@ -2475,11 +2514,46 @@
             document.querySelectorAll('#projects-container .animate-on-scroll').forEach(el => observer.observe(el));
         }
 
-        // Load speaking events from JSON (single source of truth: data/speaking.json; shows 6 = 2 rows of 3)
-        // date is YYYY-MM-DD, so string comparison works; today counts as upcoming
-        const TODAY = new Date().toISOString().slice(0, 10);
+        // Load speaking events from JSON (single source of truth: data/speaking.json)
+        // date is YYYY-MM-DD, so string comparison works; today (in the visitor's time zone) counts as upcoming
+        const now = new Date();
+        const TODAY = [now.getFullYear(), now.getMonth() + 1, now.getDate()].map(n => String(n).padStart(2, '0')).join('-');
         const isUpcoming = e => Boolean(e.date) && e.date >= TODAY;
         const formatDate = d => new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        function countdown(date) {
+            const days = Math.round((new Date(date + 'T00:00:00') - new Date(TODAY + 'T00:00:00')) / 864e5);
+            if (days <= 0) return 'Happening today';
+            if (days === 1) return 'Tomorrow';
+            if (days < 14) return `In ${days} days`;
+            if (days < 60) return `In ${Math.round(days / 7)} weeks`;
+            return `In ${Math.round(days / 30)} months`;
+        }
+
+        // Up to 3 future events, soonest first; each row opens the Upcoming tab on the speaking page
+        function renderNextUp(upcoming) {
+            const panel = document.getElementById('next-up');
+            if (!upcoming.length) return;
+            const rows = upcoming.slice(0, 3).map(e => {
+                const d = new Date(e.date + 'T00:00:00');
+                return `
+                    <a class="next-row" href="speaking.html#upcoming">
+                        <span class="next-date"><b>${d.getDate()}</b><span>${d.toLocaleDateString('en-US', { month: 'short' })}</span></span>
+                        <span class="next-main">
+                            <span class="next-title">${esc(e.title)}</span>
+                            <span class="next-meta"><i class="fas fa-map-marker-alt"></i> ${esc(e.location)}</span>
+                        </span>
+                        <span class="countdown${e.date === TODAY ? ' now' : ''}"><span class="live-dot"></span>${countdown(e.date)}</span>
+                        <i class="fas fa-arrow-right next-arrow"></i>
+                    </a>`;
+            }).join('');
+            const more = upcoming.length - 3;
+            panel.innerHTML = `
+                <div class="next-up-bar"><span class="live-dot"></span><span><span class="np-prompt">$</span> ls ~/talks --upcoming</span><span class="np-count">${upcoming.length} scheduled</span></div>
+                ${rows}
+                ${more > 0 ? `<a class="next-more" href="speaking.html#upcoming">+ ${more} more upcoming &rarr;</a>` : ''}`;
+            panel.hidden = false;
+        }
+
         async function loadSpeaking() {
             let events = [];
             try {
@@ -2487,12 +2561,14 @@
                 events = await response.json();
             } catch (e) { console.error('Failed to load speaking.json — run via a local server, not file://', e); return; }
 
+            renderNextUp(events.filter(isUpcoming).sort((a, b) => a.date.localeCompare(b.date)));
+
+            // the 6 most recent past events (2 rows of 3); future ones are in the panel above
             const container = document.getElementById('speaking-highlights');
-            const recentEvents = events.slice(0, 6);
+            const recentEvents = events.filter(e => !isUpcoming(e)).slice(0, 6);
 
             container.innerHTML = recentEvents.map(event => `
-                <div class="event-card animate-on-scroll${isUpcoming(event) ? ' upcoming' : ''}">
-                    ${isUpcoming(event) ? '<span class="upcoming-badge">Upcoming</span>' : ''}
+                <div class="event-card animate-on-scroll">
                     <h4>${esc(event.title)}</h4>
                     ${renderRole(event.role)}
                     <div class="event-meta">

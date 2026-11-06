@@ -188,6 +188,58 @@
             background: var(--term-amber); box-shadow: 0 0 6px var(--term-amber);
         }
 
+        /* Upcoming tab + "Coming up" ticket cards */
+        .year-btn.upcoming-btn { display: inline-flex; align-items: center; gap: 8px; color: var(--term-amber); border-color: rgba(251, 191, 36, 0.3); }
+        .year-btn.upcoming-btn:hover { color: var(--term-amber); border-color: rgba(251, 191, 36, 0.6); }
+        .year-btn.upcoming-btn.active { background: rgba(251, 191, 36, 0.15); border-color: rgba(251, 191, 36, 0.5); box-shadow: 0 0 20px rgba(251, 191, 36, 0.15); }
+        .upcoming-btn .n { font-size: 0.7rem; background: rgba(251, 191, 36, 0.2); padding: 0 7px; border-radius: 100px; }
+        .live-dot {
+            width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+            background: var(--term-amber); animation: live-pulse 1.8s ease-out infinite;
+        }
+        @keyframes live-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.6); }
+            70%, 100% { box-shadow: 0 0 0 7px rgba(251, 191, 36, 0); }
+        }
+        .year-label.soon {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: rgba(251, 191, 36, 0.1); color: var(--term-amber); border-color: rgba(251, 191, 36, 0.3);
+        }
+        .year-line.soon { background: linear-gradient(90deg, rgba(251, 191, 36, 0.4), var(--border-default)); }
+
+        .tickets { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 20px; }
+        .ticket {
+            display: grid; grid-template-columns: 96px 1fr; position: relative; overflow: hidden;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.06), transparent 45%), var(--bg-card);
+            border: 1px solid rgba(251, 191, 36, 0.35); border-radius: 14px; transition: all 0.3s;
+        }
+        .ticket:hover { border-color: rgba(251, 191, 36, 0.6); box-shadow: 0 0 24px rgba(251, 191, 36, 0.12); transform: translateY(-3px); }
+        .ticket-stub {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px 8px; font-family: var(--font-mono); text-align: center; position: relative;
+            background: rgba(251, 191, 36, 0.08); border-right: 2px dashed rgba(251, 191, 36, 0.3);
+        }
+        /* punched notches where the stub tears off */
+        .ticket-stub::before, .ticket-stub::after {
+            content: ''; position: absolute; right: -10px; width: 18px; height: 18px; border-radius: 50%;
+            background: var(--bg-primary); border: 1px solid rgba(251, 191, 36, 0.35);
+        }
+        .ticket-stub::before { top: -10px; }
+        .ticket-stub::after { bottom: -10px; }
+        .ticket-month { font-size: 0.8rem; font-weight: 700; color: var(--term-amber); letter-spacing: 2px; text-transform: uppercase; }
+        .ticket-day { font-size: 2.5rem; font-weight: 800; color: var(--text-primary); line-height: 1.1; }
+        .ticket-dow { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+        .ticket-year { font-size: 0.7rem; color: var(--text-muted); margin-top: 8px; }
+        .ticket-body { padding: 20px 22px; display: flex; flex-direction: column; min-width: 0; }
+        .countdown {
+            display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; margin-bottom: 10px;
+            font-size: 0.7rem; font-weight: 700; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 3px 10px; border-radius: 100px;
+            background: rgba(251, 191, 36, 0.12); color: var(--term-amber); border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+        .countdown.now { background: rgba(74, 222, 128, 0.12); color: var(--term-green); border-color: rgba(74, 222, 128, 0.35); }
+        .countdown.now .live-dot { background: var(--term-green); }
+
         .event-card::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
             background: linear-gradient(90deg, var(--term-green), var(--term-cyan));
@@ -349,7 +401,12 @@
             .event-count { font-size: 0.75rem; white-space: nowrap; }
             .count-verb { display: none; }
         }
-        @media (max-width: 480px) { .nav-logo { font-size: 0.85rem; } .footer p { font-size: 0.75rem; } }
+        @media (max-width: 480px) {
+            .nav-logo { font-size: 0.85rem; } .footer p { font-size: 0.75rem; }
+            .ticket { grid-template-columns: 76px 1fr; }
+            .ticket-day { font-size: 2rem; }
+            .ticket-body { padding: 18px 16px; }
+        }
 
         /* Accessibility */
         .skip-link {
@@ -496,10 +553,19 @@
             return `<div class="event-roles">${badges}</div>`;
         }
 
-        let allEvents = [];
-        // date is YYYY-MM-DD, so string comparison works; today counts as upcoming
-        const TODAY = new Date().toISOString().slice(0, 10);
+        let allEvents = [], upcomingEvents = [];
+        // date is YYYY-MM-DD, so string comparison works; today (in the visitor's time zone) counts as upcoming
+        const now = new Date();
+        const TODAY = [now.getFullYear(), now.getMonth() + 1, now.getDate()].map(n => String(n).padStart(2, '0')).join('-');
         const isUpcoming = e => Boolean(e.date) && e.date >= TODAY;
+        const daysUntil = date => Math.round((new Date(date + 'T00:00:00') - new Date(TODAY + 'T00:00:00')) / 864e5);
+        function countdown(days) {
+            if (days <= 0) return 'Happening today';
+            if (days === 1) return 'Tomorrow';
+            if (days < 14) return `In ${days} days`;
+            if (days < 60) return `In ${Math.round(days / 7)} weeks`;
+            return `In ${Math.round(days / 30)} months`;
+        }
 
         async function loadEvents() {
             try {
@@ -540,19 +606,36 @@
                 filtersContainer.appendChild(btn);
             });
 
-            filtersContainer.addEventListener('click', (e) => {
-                if (!e.target.classList.contains('year-btn')) return;
-                filtersContainer.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                e.target.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
-                renderTimeline(e.target.dataset.year);
-            });
+            // soonest first; the tab only exists while something is scheduled
+            upcomingEvents = allEvents.filter(isUpcoming).sort((a, b) => a.date.localeCompare(b.date));
+            if (upcomingEvents.length) {
+                filtersContainer.insertAdjacentHTML('afterbegin',
+                    `<button class="year-btn upcoming-btn" data-year="upcoming"><span class="live-dot"></span>Upcoming <span class="n">${upcomingEvents.length}</span></button>`);
+            }
 
-            renderTimeline('all');
+            const select = year => {
+                filtersContainer.querySelectorAll('.year-btn').forEach(b => b.classList.toggle('active', b.dataset.year === year));
+                renderTimeline(year);
+            };
+            filtersContainer.addEventListener('click', (e) => {
+                const btn = e.target.closest('.year-btn');
+                if (!btn) return;
+                select(btn.dataset.year);
+                btn.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+                // speaking.html#upcoming is a shareable link to the tab (the home page uses it)
+                history.replaceState(null, '', btn.dataset.year === 'upcoming' ? '#upcoming' : location.pathname + location.search);
+            });
 
             // year headers stick just below the filter bar, whose height changes with screen width
             const bar = document.querySelector('.filter-bar');
             new ResizeObserver(() => document.documentElement.style.setProperty('--filter-h', bar.offsetHeight + 'px')).observe(bar);
+
+            if (location.hash === '#upcoming' && upcomingEvents.length) {
+                select('upcoming');
+                window.scrollTo({ top: bar.getBoundingClientRect().top + scrollY - 72 });
+            } else {
+                select('all');
+            }
         }
 
         // Web URLs as-is; event files are paths from the site root (assets/events/...);
@@ -579,13 +662,43 @@
             }</div>`;
         }
 
+        // a future event as a ticket: tear-off date stub + countdown
+        function renderTicket(e) {
+            const d = new Date(e.date + 'T00:00:00');
+            const days = daysUntil(e.date);
+            return `
+                <article class="ticket">
+                    <div class="ticket-stub">
+                        <span class="ticket-month">${d.toLocaleDateString('en-US', { month: 'short' })}</span>
+                        <span class="ticket-day">${d.getDate()}</span>
+                        <span class="ticket-dow">${d.toLocaleDateString('en-US', { weekday: 'short' })}</span>
+                        <span class="ticket-year">${d.getFullYear()}</span>
+                    </div>
+                    <div class="ticket-body">
+                        <span class="countdown${days <= 0 ? ' now' : ''}"><span class="live-dot"></span>${countdown(days)}</span>
+                        <h4>${esc(e.title)}</h4>
+                        ${renderRole(e.role)}
+                        <div class="event-meta"><span><i class="fas fa-map-marker-alt"></i> ${esc(e.location)}</span></div>
+                        <div class="event-topics">
+                            ${e.topics.map(t => `<span class="event-topic">${esc(t)}</span>`).join('')}
+                        </div>
+                        <div class="event-footer">${renderResources(e.resources)}</div>
+                    </div>
+                </article>`;
+        }
+
+        // filterYear: 'all' (Coming up section + past events by year), 'upcoming', or a year (all of that year)
         function renderTimeline(filterYear) {
             const container = document.getElementById('timeline-container');
-            const filtered = filterYear === 'all' ? allEvents : allEvents.filter(e => e.year == filterYear);
+            const soon = filterYear === 'all' || filterYear === 'upcoming' ? upcomingEvents : [];
+            const filtered = filterYear === 'upcoming' ? []
+                : filterYear === 'all' ? allEvents.filter(e => !isUpcoming(e))
+                : allEvents.filter(e => e.year == filterYear);
+            const total = soon.length + filtered.length;
 
-            document.getElementById('event-count').innerHTML = `<span class="count-verb">Showing </span>${filtered.length} event${filtered.length !== 1 ? 's' : ''}`;
+            document.getElementById('event-count').innerHTML = `<span class="count-verb">Showing </span>${total} event${total !== 1 ? 's' : ''}`;
 
-            if (filtered.length === 0) {
+            if (total === 0) {
                 container.innerHTML = '<div class="no-results"><i class="fas fa-calendar-xmark"></i><p>No events found.</p></div>';
                 return;
             }
@@ -597,7 +710,15 @@
             });
 
             const sortedYears = Object.keys(grouped).sort((a, b) => b - a);
-            let html = '';
+            let html = soon.length ? `
+                <div class="year-group">
+                    <div class="year-header">
+                        <span class="year-label soon"><span class="live-dot"></span>Coming up</span>
+                        <div class="year-line soon"></div>
+                        <span class="year-count">${soon.length} event${soon.length !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="tickets">${soon.map(renderTicket).join('')}</div>
+                </div>` : '';
             sortedYears.forEach(year => {
                 const events = grouped[year];
                 html += `
