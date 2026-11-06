@@ -21,6 +21,8 @@ Add, update or remove speaking events, projects and testimonials by filling in a
 
 ### 📅 Speaking events: [Content Studio](https://nomadicmehul.dev/studio.html)
 
+**Connect GitHub** (button at the top, same token as Demo Studio) to choose slide files right on the page: **Publish to site** uploads them to the event's folder, updates `data/speaking.json` in one commit and waits for the deploy. Without a token you finish on GitHub as below.
+
 A page on the site for adding or editing speaking events: **calendar date picker**, role chips, topic suggestions from past events, **location autocomplete** (your past places first, then cities worldwide as you type), a **live preview** of the card, duplicate checks, and drafts that survive a reload. When it's ready, **Add event on GitHub** opens the issue already filled in. If you're attaching slides, drag the file in there, then submit. **Edit event** lets you search any event, change it, and sends only what changed (or removes it).
 
 ### 🧪 Workshop & talk demo repos: [Demo Studio](https://nomadicmehul.dev/demo-studio.html)
