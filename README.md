@@ -17,19 +17,20 @@ A Linux terminal-inspired portfolio theme for developers, DevOps engineers, and 
 
 ## Updating Content (no code needed)
 
-Add, update or remove speaking events, projects and testimonials by filling in a GitHub issue form. A workflow validates the change, commits it to `data/*.json`, redeploys the site and closes the issue.
+Add, update or remove speaking events, projects and testimonials without touching code: publish speaking events straight from the **Content Studio**, or fill in a **GitHub issue form** (a workflow validates the change, commits it to `data/*.json`, redeploys the site and closes the issue). Changes are live about a minute or two later; a normal refresh shows them.
 
 ### 📅 Speaking events: [Content Studio](https://nomadicmehul.dev/studio.html)
 
-**Connect GitHub** (button at the top, same token as Demo Studio) to choose slide files right on the page: **Publish to site** uploads them to the event's folder, updates `data/speaking.json` in one commit and waits for the deploy. Without a token you finish on GitHub as below.
+A page on the site for adding, editing and removing speaking events: **calendar date picker**, role chips, topic suggestions from past events, **location autocomplete** (your past places first, then cities worldwide as you type), a **live preview** of the card, duplicate checks, and drafts that survive a reload. **Edit event** lets you search any event, change it and send only what changed, or remove it. Future dates show up as **Upcoming** on the site automatically.
 
-A page on the site for adding or editing speaking events: **calendar date picker**, role chips, topic suggestions from past events, **location autocomplete** (your past places first, then cities worldwide as you type), a **live preview** of the card, duplicate checks, and drafts that survive a reload. When it's ready, **Add event on GitHub** opens the issue already filled in. If you're attaching slides, drag the file in there, then submit. **Edit event** lets you search any event, change it, and sends only what changed (or removes it).
+- **Recommended: Connect GitHub** (button at the top; one token for both studios, see [The GitHub token](#-the-github-token--security)). Choose slide files right on the page; **Publish to site** uploads them to the event's folder, updates `data/speaking.json` in one commit, deletes files nothing links to any more, and waits until the site is live.
+- **Without a token:** **Add event on GitHub** opens an issue that's already filled in. Drag any slides into it and submit; the workflow does the rest (see *How it works* below).
 
 ### 🧪 Workshop & talk demo repos: [Demo Studio](https://nomadicmehul.dev/demo-studio.html)
 
 Creates a separate GitHub repo for a workshop or talk demo, e.g. `github.com/nomadicmehul/2027-kubecon-europe-claude-agents`. Fill in the title, event, type, date (calendar), location, speakers, topics, an About text, links, the event or speaker **poster** and any **files**.
 
-**Recommended: Connect GitHub** (button at the top). Paste a [classic token with only `public_repo`](https://github.com/settings/tokens/new?scopes=public_repo&description=Demo+Studio+%28nomadicmehul.dev%29) once; it stays in that browser and is only sent to api.github.com. Then you pick the poster and files right on the page, and **Create repo & publish** creates the repo from the template, uploads everything in one commit and waits until the README is built. **Update a repo** works the same way (and can see private repos). *Disconnect* removes the token.
+**Recommended: Connect GitHub** (button at the top; same token as the Content Studio, see [The GitHub token](#-the-github-token--security)). Then you pick the poster and files right on the page, and **Create repo & publish** creates the repo from the template, uploads everything in one commit and waits until the README is built. **Update a repo** works the same way (and can see private repos). *Disconnect* removes the token.
 
 **Without a token** you finish on GitHub:
 
@@ -54,6 +55,17 @@ The template's files live in this repo at [`.github/event-repo-template/`](.gith
 
 After changing the template, push it again the same way (`git push --force`); repos already created keep their own copy.
 </details>
+
+### 🔐 The GitHub token & security
+
+Both studios use one **classic personal access token with only the `public_repo` scope** ([create one](https://github.com/settings/tokens/new?scopes=public_repo&description=Studios+%28nomadicmehul.dev%29); an expiry date such as 90 days is a good idea).
+
+- **Where it lives:** only in that browser (`localStorage`, or only until the tab closes if you untick *Remember on this device*). It's never committed and only ever sent to `api.github.com`. *Disconnect* removes it from the browser.
+- **Revoke any time** at [github.com/settings/tokens](https://github.com/settings/tokens); it stops working immediately. The studios link there, and warn if a token has more scopes than `public_repo`.
+- **The repo being public is fine.** The pages contain no secrets. A token only works for repos its owner can write to, and GitHub enforces that on its servers, so someone opening the studios with **their own** token can't publish to this repo (they'd only reach their own repos). The studios also refuse tokens that don't belong to the owner.
+- **Issue forms:** only issues opened by the repo owner are processed, here and in every demo repo. Pull requests from forks change nothing unless you merge them.
+- **On the pages:** everything from `data/*.json` (including Medium posts) is escaped before it's shown, the studios ignore the token when loaded inside another site's frame, and the site loads no third-party JavaScript.
+- **If a token leaks:** revoke it, create a new one, and reconnect.
 
 ### 👉 Everything else: [MANAGE.md](https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md)
 
@@ -86,6 +98,7 @@ All forms: [Issues → New issue](https://github.com/nomadicmehul/nomadicmehul.g
 - **Tracking:** every entry has `added` and `updated` dates (YYYY-MM-DD), set automatically on add, update and direct JSON edits. Don't type them yourself.
 - **Update or remove:** click the entry's link in [MANAGE.md](https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md), then fill in **only the fields that should change**; blank fields keep their current value. Opening the form directly works too: type the title, or a unique part of it. Each type has its own fields, e.g. *New location* and *New topics* for events, *Featured* for projects, *Stars* for testimonials.
 - **Add a recording after a talk:** MANAGE.md → find the event → ✏️ Update → Add resources = `video | https://youtube.com/...`
+- **Don't see a change?** Deploys take a minute or two: check the [Actions tab](https://github.com/nomadicmehul/nomadicmehul.github.io/actions). After that a normal refresh shows it (the pages always ask the server for fresh data).
 - **Broken links:** every Monday a workflow checks all links in `data/*.json` and keeps a **Broken links report** issue up to date (closed automatically once everything is fixed). Run it any time from **Actions → Check links**.
 
 **Setup** (already done for this repo; needed once on a fork)
@@ -100,13 +113,15 @@ Everything runs on GitHub Actions; nothing to install.
 
 | Workflow | When | What it does |
 |---|---|---|
-| **Deploy to GitHub Pages** | Push to `main` (site files or `data/`) | Validates all `data/*.json`, then publishes the site |
-| **Issue form → site data** | Owner opens or edits a form issue | Validates the entry, stamps `added`/`updated`, commits, regenerates `MANAGE.md`, redeploys, closes the issue |
-| **Refresh MANAGE.md, forms & entry dates** | Direct push to `data/*.json` | Stamps dates on changed entries, regenerates `MANAGE.md` and the forms |
+| **Deploy to GitHub Pages** | Push to `main` (site files or `data/`) | Validates all `data/*.json` (dates, URLs, roles, every linked event file exists), then publishes the site |
+| **Issue form → site data** | Owner opens or edits a form issue | Validates the entry, saves dropped files to the event's folder, stamps `added`/`updated`, commits, regenerates `MANAGE.md`, redeploys, closes the issue |
+| **Refresh MANAGE.md, forms & entry dates** | Direct push to `data/*.json` (incl. Content Studio publishes) | Moves event files into the right folder (e.g. after a title or date change), stamps dates on changed entries, regenerates `MANAGE.md` and the forms, redeploys |
 | **Sync Medium posts** | Daily 06:00 UTC, or manually | Adds new Medium posts to `data/blog.json` and redeploys |
 | **Check links** | Mondays 07:00 UTC, or manually | Checks every link in `data/`; keeps one **Broken links report** issue up to date |
 | **Sync labels** | Push to `main` touching the forms | Creates the labels the forms need |
 | **Auto-assign PRs** | PR opened | Assigns the PR to the repo owner |
+
+Each demo repo made by the Demo Studio has its own **Event info** workflow: it turns an owner's `[event]` issue, or a push to `event.json`, into `event.json`, files in `event/` and the top part of the README.
 
 ## What You Get
 
@@ -114,6 +129,7 @@ Everything runs on GitHub Actions; nothing to install.
 - **Matrix rain background** — animated canvas with falling code characters
 - **CRT scanline overlay** — subtle retro terminal aesthetic
 - **4 complete pages** — Home (portfolio), Speaking (timeline), Projects (grid), Blog (Medium)
+- **2 admin tools** — Content Studio (speaking events) and Demo Studio (a repo per workshop/talk demo), both plain pages on the site
 - **Fully responsive** — works on desktop, tablet, and mobile
 - **Dark mode only** — because terminals don't do light mode
 - **Data-driven** — speaking, projects, testimonials and blog posts live in `data/*.json`
@@ -130,7 +146,7 @@ Everything runs on GitHub Actions; nothing to install.
 1. Click **"Use this template"** on GitHub (or fork the repo)
 2. Rename to `yourusername.github.io`
 3. Replace the personal content in the HTML pages (name, bio, social links, hero, recognition)
-4. Update the data in `data/` folder
+4. Update the data in `data/` folder, and point the studios and scripts at your account (see [What to Customize](#what-to-customize))
 5. Push — your site is live at `https://yourusername.github.io`
 
 ### Option 2: Local Development
@@ -168,6 +184,8 @@ Open `http://localhost:8000` and start customizing.
 | `speaking.html` | Page title and description |
 | `projects.html` | Page title and description |
 | `CNAME` | Your custom domain (delete it to use `yourusername.github.io`) |
+| `studio.html` (`REPO`, `OWNER`), `demo-studio.html` (`OWNER`) | Your GitHub user and site repo; the studios only accept that owner's token |
+| `.github/scripts/issue_to_data.py` (`SITE`), `build_manage.py` (`STUDIO_URL`) | Your site's URL, used in issue comments and MANAGE.md |
 | `.github/ISSUE_TEMPLATE/config.yml`, this README | Links that point at `nomadicmehul/nomadicmehul.github.io`; replace with your repo |
 
 ## Speaking Events Data
@@ -186,7 +204,7 @@ All speaking events are managed in `data/speaking.json`. Each event entry render
   "topics": ["Google Cloud", "Cloud", "Builders Day"],
   "resources": [
     { "type": "event", "label": "Event Page", "url": "https://cloud.google.com/..." },
-    { "type": "slides", "label": "Slide Deck", "url": "my-talk.pdf" },
+    { "type": "slides", "label": "Slide Deck", "url": "assets/events/2026/2026-03-17-google-cloud-builders-day-in-berlin/my-talk.pdf" },
     { "type": "code", "label": "GitHub Repo", "url": "https://github.com/user/repo" }
   ],
   "added": "2026-03-28",
@@ -259,7 +277,7 @@ The easy way is the [Add speaking event](https://github.com/nomadicmehul/nomadic
 ```
 ├── index.html              # Main portfolio page
 ├── speaking.html           # Speaking engagements timeline
-├── studio.html             # Content Studio: add/edit speaking events (calendar, live preview → GitHub issue)
+├── studio.html             # Content Studio: add/edit/remove speaking events (publish directly, or via a GitHub issue)
 ├── demo-studio.html        # Demo Studio: create/update a separate GitHub repo per workshop or talk demo
 ├── projects.html           # Open-source projects grid
 ├── blog.html               # Medium articles
@@ -273,7 +291,8 @@ The easy way is the [Add speaking event](https://github.com/nomadicmehul/nomadic
 │   │   └── profile.jpg     # Profile photo
 │   ├── events/             # Event files: <year>/<date>-<event-name>/slides.pdf (managed by the workflows)
 │   ├── og-image.png        # 1200×630 link-preview image (generated from .github/og-card/)
-│   └── favicon.svg         # Terminal prompt favicon
+│   ├── favicon.svg         # Terminal prompt favicon
+│   └── Mehul_Patel_Resume.pdf
 └── data/
     ├── projects.json       # Projects data
     ├── speaking.json       # Speaking events data
@@ -282,6 +301,7 @@ The easy way is the [Add speaking event](https://github.com/nomadicmehul/nomadic
     └── blog.json           # Medium posts (auto-synced)
 .github/
 ├── ISSUE_TEMPLATE/         # Add / update-or-remove forms (update forms are generated)
+├── event-repo-template/    # Files of the event-demo-template repo used by Demo Studio (not deployed)
 ├── og-card/                # Source + render script for assets/og-image.png
 ├── scripts/                # Python behind the workflows (no dependencies)
 └── workflows/              # See Automation
@@ -309,7 +329,7 @@ The homepage features an animated canvas background with falling characters (`01
 - **Structured data:** the home page has schema.org `ProfilePage` data (name, title, location, skills, recognitions, social profiles) for search engines. Check it with Google's [Rich Results Test](https://search.google.com/test/rich-results).
 
 ### Data-Driven Pages
-Speaking events, projects, testimonials and blog posts load from JSON files in `data/` via `fetch()`, so serve the site over HTTP (see Local Development) rather than opening the files directly. Entries are usually managed through GitHub issue forms and [MANAGE.md](MANAGE.md); see [Updating Content](#updating-content-no-code-needed).
+Speaking events, projects, testimonials and blog posts load from JSON files in `data/` via `fetch()`, so serve the site over HTTP (see Local Development) rather than opening the files directly. The pages always revalidate that data (GitHub Pages lets browsers cache files for 10 minutes), so new entries show on a normal refresh right after a deploy. Entries are usually managed through the Content Studio, GitHub issue forms and [MANAGE.md](MANAGE.md); see [Updating Content](#updating-content-no-code-needed).
 
 ### Accessibility
 - Skip-to-content link on every page
@@ -339,6 +359,8 @@ npx vercel
 
 ### Any Static Host
 This is pure HTML/CSS/JS — it works everywhere. Just upload the files.
+
+> The content tools (issue forms, Content Studio publishing, MANAGE.md, link checks) run on GitHub Actions and commit to the repo. On another host they still work as long as it redeploys from the repo; only the Content Studio's "wait until live" step watches GitHub Pages' deploy.
 
 ## Color Palette
 
