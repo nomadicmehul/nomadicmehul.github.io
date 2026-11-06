@@ -1246,14 +1246,22 @@
                 ok(`<a href="https://github.com/${REPO}/commit/${c.sha}" target="_blank" rel="noopener">commit ${c.sha.slice(0, 7)}</a>` + (uploads.length && action !== 'remove' ? ' · ' + entry.resources.filter(r => r.url.startsWith('assets/')).map(r => esc(r.url)).join(', ') : ''));
 
                 run('GitHub Pages is building it');
-                let deploy = null;
-                for (let n = 0; n < 60 && deploy?.status !== 'completed'; n++) {
+                // Any deploy of main that starts after this commit includes it. The push starts one, then edit-forms.yml
+                // stamps the dates and starts another, which cancels the first (deploy.yml: cancel-in-progress) — so a
+                // cancelled run just means a newer one took over.
+                const since = Date.parse(c.committer?.date || new Date().toISOString()) - 5000;
+                let live = null, failed = null;
+                for (let n = 0; n < 70 && !live && !failed; n++) {
                     await sleep(n < 4 ? 4000 : 6000);
-                    const runs = await call('GET', `/repos/${REPO}/actions/runs?head_sha=${c.sha}`);
-                    deploy = runs.workflow_runs?.find(r => r.path === '.github/workflows/deploy.yml') || deploy;
+                    const runs = (await call('GET', `/repos/${REPO}/actions/workflows/deploy.yml/runs?branch=main&per_page=10`)).workflow_runs || [];
+                    const ours = runs.filter(r => Date.parse(r.created_at) >= since);
+                    live = ours.find(r => r.conclusion === 'success');
+                    const newest = ours[0];   // newest first
+                    if (!live && newest?.status === 'completed' && !['success', 'cancelled'].includes(newest.conclusion)) failed = newest;
+                    if (ours.length) steps[i].note = `GitHub Pages is building it · ${ours.length > 1 ? 'a newer deploy took over' : newest.status.replace('_', ' ')}`, progress(steps);
                 }
-                if (!deploy || deploy.status !== 'completed') throw new Error(`still deploying — <a href="https://github.com/${REPO}/actions" target="_blank" rel="noopener">check Actions</a>; the change is saved`);
-                if (deploy.conclusion !== 'success') throw new Error(`the deploy failed — <a href="${esc(deploy.html_url)}" target="_blank" rel="noopener">see the log</a>; the change is saved`);
+                if (failed) throw new Error(`the deploy failed — <a href="${esc(failed.html_url)}" target="_blank" rel="noopener">see the log</a>; the change is saved`);
+                if (!live) throw new Error(`still deploying — <a href="https://github.com/${REPO}/actions" target="_blank" rel="noopener">check Actions</a>; the change is saved`);
                 ok('live now (refresh the page if it still shows the old version)');
 
                 $('pub-title').textContent = { add: 'Event added', update: 'Changes saved', remove: 'Event removed' }[action];

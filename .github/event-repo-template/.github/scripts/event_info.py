@@ -179,7 +179,7 @@ def apply(f, ev, errors):
     poster = f.get("Poster", "")
     if poster == "-":
         ev.pop("poster", None)
-    elif in_event_dir(poster.split()[0]):
+    elif poster and in_event_dir(poster.split()[0]):
         ev["poster"] = poster.split()[0]
     elif poster:
         link = first_link(poster)
