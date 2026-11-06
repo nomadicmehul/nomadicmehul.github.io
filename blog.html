@@ -393,6 +393,12 @@
     </footer>
 
     <script>
+        // data/*.json goes into innerHTML, so escape it (blog.json comes from Medium's feed, where
+        // an article quoting HTML code would otherwise become live HTML); links must be web or site URLs
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const safeUrl = u => /^(https?:\/\/|assets\/)/i.test(String(u ?? '')) ? esc(u) : '#';
+
+
         let allArticles = [];
 
         // Format date
@@ -405,23 +411,23 @@
         function buildCard(article) {
             const thumb = article.thumbnail;
             const thumbHtml = thumb
-                ? `<img src="${thumb}" alt="${article.title}" loading="lazy">`
+                ? `<img src="${safeUrl(thumb)}" alt="${esc(article.title)}" loading="lazy">`
                 : `<div class="blog-card-thumb-placeholder"><i class="fab fa-medium"></i></div>`;
 
             const tags = (article.categories || []).slice(0, 4).map(
-                tag => `<span class="blog-tag">${tag}</span>`
+                tag => `<span class="blog-tag">${esc(tag)}</span>`
             ).join('');
 
             return `
-                <a href="${article.link}" target="_blank" rel="noopener" class="blog-card">
+                <a href="${safeUrl(article.link)}" target="_blank" rel="noopener" class="blog-card">
                     <div class="blog-card-thumb">${thumbHtml}</div>
                     <div class="blog-card-body">
                         <div class="blog-card-meta">
                             <span class="blog-card-date"><i class="fas fa-calendar-day"></i> ${formatDate(article.pubDate)}</span>
-                            <span class="blog-card-readtime"><i class="fas fa-clock"></i> ${article.readTime}</span>
+                            <span class="blog-card-readtime"><i class="fas fa-clock"></i> ${esc(article.readTime)}</span>
                         </div>
-                        <h3>${article.title}</h3>
-                        <p class="blog-card-excerpt">${article.excerpt}</p>
+                        <h3>${esc(article.title)}</h3>
+                        <p class="blog-card-excerpt">${esc(article.excerpt)}</p>
                         <div class="blog-card-tags">${tags}</div>
                         <span class="blog-card-link">Read on Medium <i class="fas fa-arrow-right"></i></span>
                     </div>

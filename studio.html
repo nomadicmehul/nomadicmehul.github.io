@@ -543,7 +543,7 @@
         const isLocal = s => /^assets\/\S+$/.test(s) || /^[^:/\s]+\.\w+$/.test(s);   // a file already on the site
         const todayIso = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
 
-        let EVENTS = [], ROLES = [], LABELS = [], TOPICS = [], TOKEN = null, LOGIN = '';
+        let EVENTS = [], ROLES = [], LABELS = [], TOPICS = [], TOKEN = null, LOGIN = '', EXTRA = '';
         const PAST_LOCS = {};   // location → number of events there
         let mode = 'new', original = null, originalIndex = -1;
         let state = blank();
@@ -583,6 +583,8 @@
 
         // ---------- GitHub token (optional): publish without an issue ----------
         function loadToken() {
+            // inside another site's frame, act as if not connected (clickjacking)
+            if (window.top !== window.self) { TOKEN = null; return; }
             try {
                 const old = localStorage.getItem('demo-studio-token');   // the key Demo Studio used first
                 if (old && !localStorage.getItem(TOKEN_KEY)) localStorage.setItem(TOKEN_KEY, old);
@@ -605,6 +607,8 @@
             if (user.login.toLowerCase() !== OWNER) throw new Error(`This token belongs to ${user.login}, not ${OWNER}.`);
             const scopes = res.headers.get('x-oauth-scopes');   // only classic tokens send this
             if (scopes !== null && !/\b(public_)?repo\b/.test(scopes)) throw new Error('The token needs the public_repo scope.');
+            // more than public_repo (private repos, deleting repos, admin, …) is more than these pages need
+            EXTRA = scopes === null ? '' : scopes.split(',').map(x => x.trim()).filter(x => x && x !== 'public_repo').join(', ');
             return user.login;
         }
         async function call(method, path, body, accept = 'application/vnd.github+json') {
@@ -617,13 +621,14 @@
             const on = connected();
             $('connect').classList.toggle('on', on);
             $('connect-text').innerHTML = on
-                ? `<b>Connected as ${esc(LOGIN || OWNER)}.</b> Choose slide files right here; <b>Publish to site</b> saves everything in one step.`
+                ? (EXTRA ? `<b style="color:var(--term-amber)">⚠ This token can also: ${esc(EXTRA)}.</b> Create one with only <b>public_repo</b> to limit the damage if it ever leaks. ` : '')
+                  + `<b>Connected as ${esc(LOGIN || OWNER)}.</b> Choose slide files right here; <b>Publish to site</b> saves everything in one step. <a href="https://github.com/settings/tokens" target="_blank" rel="noopener" style="text-decoration:underline">Manage or revoke the token</a>`
                 : '<b>Upload slides right here?</b> Connect GitHub with a token and the studio publishes for you. Without it, you finish on GitHub by dropping files into an issue.';
             $('connect-btn').innerHTML = on ? '<i class="fas fa-plug-circle-xmark"></i> Disconnect' : '<i class="fas fa-plug"></i> Connect GitHub';
             $('connect-btn').className = 'btn btn-sm ' + (on ? 'btn-ghost' : 'btn-primary');
         }
         $('connect-btn').addEventListener('click', () => {
-            if (connected()) { storeToken(null); LOGIN = ''; renderConnect(); render(); toast('Disconnected — the token was removed from this browser'); return; }
+            if (connected()) { storeToken(null); LOGIN = ''; renderConnect(); render(); toast('Removed from this browser. To revoke it everywhere, delete it on GitHub → Settings → Tokens'); return; }
             $('token-input').value = ''; $('token-help').textContent = ''; $('connect-dialog').showModal(); $('token-input').focus();
         });
         $('connect-cancel').addEventListener('click', () => $('connect-dialog').close());

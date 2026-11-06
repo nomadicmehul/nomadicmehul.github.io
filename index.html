@@ -2357,6 +2357,12 @@
     </footer>
 
     <script>
+        // data/*.json goes into innerHTML, so escape it (blog.json comes from Medium's feed, where
+        // an article quoting HTML code would otherwise become live HTML); links must be web or site URLs
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const safeUrl = u => /^(https?:\/\/|assets\/)/i.test(String(u ?? '')) ? esc(u) : '#';
+
+
         // Role badge helpers for speaking cards
         // Role name → { icon, color } from data/roles.json (the single list of roles; see CLAUDE.md)
         let ROLES = {};
@@ -2371,7 +2377,7 @@
             const roles = Array.isArray(role) ? role : [role];
             const badges = roles.map(r => {
                 const { icon = 'fas fa-tag', color = 'default' } = ROLES[r] || {};
-                return `<span class="event-role role-${color}"><i class="${icon}"></i> ${r}</span>`;
+                return `<span class="event-role role-${esc(color)}"><i class="${esc(icon)}"></i> ${esc(r)}</span>`;
             }).join('');
             return `<div class="event-roles">${badges}</div>`;
         }
@@ -2401,7 +2407,7 @@
                     const icon = RESOURCE_ICONS[r.type] || 'fas fa-link';
                     const typeClass = 'type-' + (r.type || 'code');
                     const href = resolveUrl(r.url);
-                    return `<a href="${href}" target="_blank" rel="noopener" class="resource-link ${typeClass}"><i class="${icon}"></i> ${r.label}</a>`;
+                    return `<a href="${safeUrl(href)}" target="_blank" rel="noopener" class="resource-link ${esc(typeClass)}"><i class="${icon}"></i> ${esc(r.label)}</a>`;
                 }).join('')
             }</div>`;
         }
@@ -2454,13 +2460,13 @@
 
             container.innerHTML = featuredProjects.map(project => `
                 <div class="project-card animate-on-scroll">
-                    <div class="project-icon"><i class="${project.icon}" style="color:${project.iconColor}"></i></div>
-                    <h4>${project.title}</h4>
-                    <p>${project.description}</p>
+                    <div class="project-icon"><i class="${esc(project.icon)}" style="color:${esc(project.iconColor)}"></i></div>
+                    <h4>${esc(project.title)}</h4>
+                    <p>${esc(project.description)}</p>
                     <div class="project-tech">
-                        ${project.tech.map(tech => `<span>${tech}</span>`).join('')}
+                        ${project.tech.map(tech => `<span>${esc(tech)}</span>`).join('')}
                     </div>
-                    <a href="${project.repo}" target="_blank" class="project-link">
+                    <a href="${safeUrl(project.repo)}" target="_blank" rel="noopener" class="project-link">
                         View on GitHub <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -2487,14 +2493,14 @@
             container.innerHTML = recentEvents.map(event => `
                 <div class="event-card animate-on-scroll${isUpcoming(event) ? ' upcoming' : ''}">
                     ${isUpcoming(event) ? '<span class="upcoming-badge">Upcoming</span>' : ''}
-                    <h4>${event.title}</h4>
+                    <h4>${esc(event.title)}</h4>
                     ${renderRole(event.role)}
                     <div class="event-meta">
                         ${event.date ? `<span class="event-date"><i class="fas fa-calendar-day"></i> ${formatDate(event.date)}</span>` : ''}
-                        <span><i class="fas fa-map-marker-alt"></i> ${event.location}</span>
+                        <span><i class="fas fa-map-marker-alt"></i> ${esc(event.location)}</span>
                     </div>
                     <div class="event-topics">
-                        ${event.topics.map(topic => `<span class="event-topic">${topic}</span>`).join('')}
+                        ${event.topics.map(topic => `<span class="event-topic">${esc(topic)}</span>`).join('')}
                     </div>
                     ${renderResources(event.resources)}
                 </div>
@@ -2518,18 +2524,18 @@
                 const initials = t.name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
                 const stars = Array(t.stars || 5).fill('<i class="fas fa-star"></i>').join('');
                 const extLink = t.link
-                    ? `<a href="${t.link}" target="_blank" class="testimonial-ext-link" title="View original"><i class="fab fa-linkedin"></i></a>`
+                    ? `<a href="${safeUrl(t.link)}" target="_blank" rel="noopener" class="testimonial-ext-link" title="View original"><i class="fab fa-linkedin"></i></a>`
                     : '';
                 return `
                     <div class="testimonial-card">
                         <div class="testimonial-stars">${stars}</div>
-                        <blockquote>"${t.quote}"</blockquote>
+                        <blockquote>"${esc(t.quote)}"</blockquote>
                         <div class="testimonial-footer">
                             <div class="testimonial-author">
                                 <div class="testimonial-avatar">${initials}</div>
                                 <div>
-                                    <div class="testimonial-name">${t.name}</div>
-                                    <div class="testimonial-role">${t.role}</div>
+                                    <div class="testimonial-name">${esc(t.name)}</div>
+                                    <div class="testimonial-role">${esc(t.role)}</div>
                                 </div>
                             </div>
                             ${extLink}
@@ -2594,20 +2600,20 @@
 
             container.innerHTML = items.map(item => {
                 const thumbHtml = item.thumbnail
-                    ? `<img src="${item.thumbnail}" alt="${item.title}" loading="lazy">`
+                    ? `<img src="${safeUrl(item.thumbnail)}" alt="${esc(item.title)}" loading="lazy">`
                     : `<div class="blog-preview-thumb-placeholder"><i class="fab fa-medium"></i></div>`;
-                const tags = (item.categories || []).slice(0, 3).map(t => `<span class="blog-preview-tag">${t}</span>`).join('');
+                const tags = (item.categories || []).slice(0, 3).map(t => `<span class="blog-preview-tag">${esc(t)}</span>`).join('');
 
                 return `
-                    <a href="${item.link}" target="_blank" rel="noopener" class="blog-preview-card animate-on-scroll">
+                    <a href="${safeUrl(item.link)}" target="_blank" rel="noopener" class="blog-preview-card animate-on-scroll">
                         <div class="blog-preview-thumb">${thumbHtml}</div>
                         <div class="blog-preview-body">
                             <div class="blog-preview-meta">
                                 <span class="blog-preview-date"><i class="fas fa-calendar-day"></i> ${formatBlogDate(item.pubDate)}</span>
-                                <span><i class="fas fa-clock"></i> ${item.readTime}</span>
+                                <span><i class="fas fa-clock"></i> ${esc(item.readTime)}</span>
                             </div>
-                            <h4>${item.title}</h4>
-                            <p class="blog-preview-excerpt">${item.excerpt}</p>
+                            <h4>${esc(item.title)}</h4>
+                            <p class="blog-preview-excerpt">${esc(item.excerpt)}</p>
                             <div class="blog-preview-tags">${tags}</div>
                             <span class="blog-preview-link">Read on Medium <i class="fas fa-arrow-right"></i></span>
                         </div>

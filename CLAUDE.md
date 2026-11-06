@@ -237,6 +237,13 @@ Commits made by workflows with `GITHUB_TOKEN` don't trigger other workflows, so 
 - **Deploys via GitHub Actions** (Pages source = GitHub Actions), so no Jekyll runs and `.nojekyll` isn't needed. `upload-pages-artifact` v4+ skips dotfiles, so don't rely on any dotfile being served.
 - **Local dev** — Run `python3 -m http.server 8080` from project root and open `http://localhost:8080`
 
+## Security notes
+
+- **Escape everything rendered from `data/*.json`.** Pages build HTML with template strings + `innerHTML`, so every data field goes through `esc()` and every data URL through `safeUrl()` (only `http(s)://` or `assets/…`). `blog.json` is generated from Medium's RSS: an article that quotes HTML code would otherwise become live HTML on the site, i.e. script running on the same origin as the studios' GitHub token.
+- **Studio token** (`localStorage` `studio-github-token`, shared by both studios): never committed or sent anywhere but api.github.com; ignored when the page is framed; the banner warns if it has scopes beyond `public_repo` and links to github.com/settings/tokens to revoke. *Disconnect* only removes it from the browser.
+- Pages load no third-party JavaScript (only Google Fonts / FontAwesome CSS); keep it that way, since any script on the origin can read the token.
+- Issue workflows only act on issues whose author is the repo **owner**; issue bodies reach scripts through env vars, never `${{ }}` inside `run:`.
+
 ## Commit Messages
 
 - Do **not** add `Co-Authored-By` or any Claude/AI attribution lines to commit messages.

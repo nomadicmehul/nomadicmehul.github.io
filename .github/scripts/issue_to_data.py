@@ -381,7 +381,7 @@ def main():
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
 
     verb, prep = {"add": ("Added", "to"), "update": ("Updated", "in"), "remove": ("Removed", "from")}[action]
-    name = entry[t["key"]]
+    name = " ".join(str(entry[t["key"]]).split())  # one line: it goes into $GITHUB_OUTPUT and the commit message
     with open(os.environ.get("GITHUB_OUTPUT", os.devnull), "a") as out:
         out.write(f"file={t['path']}\nmessage=data: {action} {t['noun']} \"{name}\"\n")
     page = {"speaking": "speaking.html", "project": "projects.html", "testimonial": "index.html#testimonials"}[kind]
