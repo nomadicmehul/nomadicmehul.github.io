@@ -1,6 +1,36 @@
 [
   {
     "year": 2026,
+    "date": "2026-11-05",
+    "title": "Berlin | Claude Code Meetup",
+    "location": "Berlin, Germany",
+    "role": [
+      "Speaker",
+      "Event Organizer"
+    ],
+    "topics": [
+      "Open Source",
+      "Security",
+      "DevOps",
+      "Cloud",
+      "AIOps",
+      "Claude Code"
+    ],
+    "resources": [
+      {
+        "type": "event",
+        "label": "Event Page",
+        "url": "https://luma.com/claude-pxv3"
+      },
+      {
+        "type": "slides",
+        "label": "Slide Deck",
+        "url": "assets/events/2026/2026-11-05-berlin-claude-code-meetup/Claude_Code_Berlin_Session02-Final-.pptx.pdf"
+      }
+    ]
+  },
+  {
+    "year": 2026,
     "date": "2026-10-22",
     "title": "Berlin | Claude Workshop: Build Agents That Debug and Review with Claude Code",
     "location": "Berlin, Germany",
