@@ -490,7 +490,7 @@
         // Articles are synced from Medium into data/blog.json by .github/workflows/sync-medium.yml
         async function loadBlog() {
             try {
-                const response = await fetch('data/blog.json');
+                const response = await fetch('data/blog.json', { cache: 'no-cache' });
                 if (!response.ok) throw new Error('blog.json fetch failed');
                 allArticles = await response.json();
             } catch (e) {

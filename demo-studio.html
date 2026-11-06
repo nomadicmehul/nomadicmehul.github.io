@@ -860,7 +860,7 @@
         // ---------- load ----------
         async function load() {
             try {
-                const events = await (await fetch('data/speaking.json')).json();
+                const events = await (await fetch('data/speaking.json', { cache: 'no-cache' })).json();
                 const count = {}, spelling = {};
                 events.forEach(e => {
                     PAST_LOCS[e.location] = (PAST_LOCS[e.location] || 0) + 1;

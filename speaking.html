@@ -480,7 +480,7 @@
         let ROLES = {};
         async function loadRoles() {
             try {
-                const roles = await (await fetch('data/roles.json')).json();
+                const roles = await (await fetch('data/roles.json', { cache: 'no-cache' })).json();
                 ROLES = Object.fromEntries(roles.map(r => [r.name, r]));
             } catch (e) { console.warn('Failed to load roles.json — role badges use defaults', e); }
         }
@@ -503,7 +503,7 @@
 
         async function loadEvents() {
             try {
-                const [response] = await Promise.all([fetch('data/speaking.json'), loadRoles()]);
+                const [response] = await Promise.all([fetch('data/speaking.json', { cache: 'no-cache' }), loadRoles()]);
                 if (!response.ok) throw new Error('Failed to load speaking data');
                 allEvents = await response.json();
             } catch (e) {
