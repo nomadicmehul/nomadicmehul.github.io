@@ -647,7 +647,7 @@
         // ---------- load ----------
         async function load() {
             try {
-                const [ev, ro] = await Promise.all([fetch('data/speaking.json'), fetch('data/roles.json')]);
+                const [ev, ro] = await Promise.all([fetch('data/speaking.json', { cache: 'no-cache' }), fetch('data/roles.json', { cache: 'no-cache' })]);
                 EVENTS = await ev.json(); ROLES = await ro.json();
             } catch (e) {
                 $('loading').innerHTML = '<i class="fas fa-triangle-exclamation"></i> Couldn\'t load data/speaking.json — serve the site over HTTP (python3 -m http.server).';

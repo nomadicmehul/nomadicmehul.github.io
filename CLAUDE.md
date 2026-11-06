@@ -54,7 +54,7 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 
 ## Data-Driven Architecture
 
-All dynamic content loads from JSON files via `fetch()` at runtime. The JSON files under `data/` are the **single source of truth** — there is no duplicated inline copy to keep in sync. Because the pages use `fetch()`, they must be served over HTTP (use the local dev server below); opening the raw HTML via `file://` will not load the dynamic content.
+All dynamic content loads from JSON files via `fetch()` at runtime. The JSON files under `data/` are the **single source of truth** — there is no duplicated inline copy to keep in sync. Because the pages use `fetch()`, they must be served over HTTP (use the local dev server below); opening the raw HTML via `file://` will not load the dynamic content. GitHub Pages sends `Cache-Control: max-age=600`, so every data fetch uses `fetch('data/…', { cache: 'no-cache' })`: the browser revalidates (cheap `304` when unchanged) and a refresh shows new entries right after a deploy instead of up to 10 minutes later.
 
 ### speaking.json Structure
 
