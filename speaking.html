@@ -460,6 +460,12 @@
     </footer>
 
     <script>
+        // data/*.json goes into innerHTML, so escape it (blog.json comes from Medium's feed, where
+        // an article quoting HTML code would otherwise become live HTML); links must be web or site URLs
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const safeUrl = u => /^(https?:\/\/|assets\/)/i.test(String(u ?? '')) ? esc(u) : '#';
+
+
         // Resource type icon mapping
         const RESOURCE_ICONS = {
             event: 'fas fa-external-link-alt',
@@ -485,7 +491,7 @@
             const roles = Array.isArray(role) ? role : [role];
             const badges = roles.map(r => {
                 const { icon = 'fas fa-tag', color = 'default' } = ROLES[r] || {};
-                return `<span class="event-role role-${color}"><i class="${icon}"></i> ${r}</span>`;
+                return `<span class="event-role role-${esc(color)}"><i class="${esc(icon)}"></i> ${esc(r)}</span>`;
             }).join('');
             return `<div class="event-roles">${badges}</div>`;
         }
@@ -568,7 +574,7 @@
                     const icon = RESOURCE_ICONS[r.type] || 'fas fa-link';
                     const typeClass = 'type-' + (r.type || 'code');
                     const href = resolveUrl(r.url);
-                    return `<a href="${href}" target="_blank" rel="noopener" class="resource-link ${typeClass}"><i class="${icon}"></i> ${r.label}</a>`;
+                    return `<a href="${safeUrl(href)}" target="_blank" rel="noopener" class="resource-link ${esc(typeClass)}"><i class="${icon}"></i> ${esc(r.label)}</a>`;
                 }).join('')
             }</div>`;
         }
@@ -605,14 +611,14 @@
                             ${events.map(e => `
                                 <div class="event-card${isUpcoming(e) ? ' upcoming' : ''}">
                                     ${isUpcoming(e) ? '<span class="upcoming-badge">Upcoming</span>' : ''}
-                                    <h4>${e.title}</h4>
+                                    <h4>${esc(e.title)}</h4>
                                     ${renderRole(e.role)}
                                     <div class="event-meta">
                                         ${e.date ? `<span class="event-date"><i class="fas fa-calendar-day"></i> ${formatDate(e.date)}</span>` : ''}
-                                        <span><i class="fas fa-map-marker-alt"></i> ${e.location}</span>
+                                        <span><i class="fas fa-map-marker-alt"></i> ${esc(e.location)}</span>
                                     </div>
                                     <div class="event-topics">
-                                        ${e.topics.map(t => `<span class="event-topic">${t}</span>`).join('')}
+                                        ${e.topics.map(t => `<span class="event-topic">${esc(t)}</span>`).join('')}
                                     </div>
                                     <div class="event-footer">
                                         ${renderResources(e.resources)}

@@ -543,7 +543,7 @@
         const isLocal = s => /^assets\/\S+$/.test(s) || /^[^:/\s]+\.\w+$/.test(s);   // a file already on the site
         const todayIso = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
 
-        let EVENTS = [], ROLES = [], LABELS = [], TOPICS = [], TOKEN = null, LOGIN = '';
+        let EVENTS = [], ROLES = [], LABELS = [], TOPICS = [], TOKEN = null, LOGIN = '', EXTRA = '';
         const PAST_LOCS = {};   // location → number of events there
         let mode = 'new', original = null, originalIndex = -1;
         let state = blank();
@@ -583,6 +583,8 @@
 
         // ---------- GitHub token (optional): publish without an issue ----------
         function loadToken() {
+            // inside another site's frame, act as if not connected (clickjacking)
+            if (window.top !== window.self) { TOKEN = null; return; }
             try {
                 const old = localStorage.getItem('demo-studio-token');   // the key Demo Studio used first
                 if (old && !localStorage.getItem(TOKEN_KEY)) localStorage.setItem(TOKEN_KEY, old);
@@ -605,6 +607,8 @@
             if (user.login.toLowerCase() !== OWNER) throw new Error(`This token belongs to ${user.login}, not ${OWNER}.`);
             const scopes = res.headers.get('x-oauth-scopes');   // only classic tokens send this
             if (scopes !== null && !/\b(public_)?repo\b/.test(scopes)) throw new Error('The token needs the public_repo scope.');
+            // more than public_repo (private repos, deleting repos, admin, …) is more than these pages need
+            EXTRA = scopes === null ? '' : scopes.split(',').map(x => x.trim()).filter(x => x && x !== 'public_repo').join(', ');
             return user.login;
         }
         async function call(method, path, body, accept = 'application/vnd.github+json') {
@@ -617,13 +621,14 @@
             const on = connected();
             $('connect').classList.toggle('on', on);
             $('connect-text').innerHTML = on
-                ? `<b>Connected as ${esc(LOGIN || OWNER)}.</b> Choose slide files right here; <b>Publish to site</b> saves everything in one step.`
+                ? (EXTRA ? `<b style="color:var(--term-amber)">⚠ This token can also: ${esc(EXTRA)}.</b> Create one with only <b>public_repo</b> to limit the damage if it ever leaks. ` : '')
+                  + `<b>Connected as ${esc(LOGIN || OWNER)}.</b> Choose slide files right here; <b>Publish to site</b> saves everything in one step. <a href="https://github.com/settings/tokens" target="_blank" rel="noopener" style="text-decoration:underline">Manage or revoke the token</a>`
                 : '<b>Upload slides right here?</b> Connect GitHub with a token and the studio publishes for you. Without it, you finish on GitHub by dropping files into an issue.';
             $('connect-btn').innerHTML = on ? '<i class="fas fa-plug-circle-xmark"></i> Disconnect' : '<i class="fas fa-plug"></i> Connect GitHub';
             $('connect-btn').className = 'btn btn-sm ' + (on ? 'btn-ghost' : 'btn-primary');
         }
         $('connect-btn').addEventListener('click', () => {
-            if (connected()) { storeToken(null); LOGIN = ''; renderConnect(); render(); toast('Disconnected — the token was removed from this browser'); return; }
+            if (connected()) { storeToken(null); LOGIN = ''; renderConnect(); render(); toast('Removed from this browser. To revoke it everywhere, delete it on GitHub → Settings → Tokens'); return; }
             $('token-input').value = ''; $('token-help').textContent = ''; $('connect-dialog').showModal(); $('token-input').focus();
         });
         $('connect-cancel').addEventListener('click', () => $('connect-dialog').close());
@@ -1241,14 +1246,22 @@
                 ok(`<a href="https://github.com/${REPO}/commit/${c.sha}" target="_blank" rel="noopener">commit ${c.sha.slice(0, 7)}</a>` + (uploads.length && action !== 'remove' ? ' · ' + entry.resources.filter(r => r.url.startsWith('assets/')).map(r => esc(r.url)).join(', ') : ''));
 
                 run('GitHub Pages is building it');
-                let deploy = null;
-                for (let n = 0; n < 60 && deploy?.status !== 'completed'; n++) {
+                // Any deploy of main that starts after this commit includes it. The push starts one, then edit-forms.yml
+                // stamps the dates and starts another, which cancels the first (deploy.yml: cancel-in-progress) — so a
+                // cancelled run just means a newer one took over.
+                const since = Date.parse(c.committer?.date || new Date().toISOString()) - 5000;
+                let live = null, failed = null;
+                for (let n = 0; n < 70 && !live && !failed; n++) {
                     await sleep(n < 4 ? 4000 : 6000);
-                    const runs = await call('GET', `/repos/${REPO}/actions/runs?head_sha=${c.sha}`);
-                    deploy = runs.workflow_runs?.find(r => r.path === '.github/workflows/deploy.yml') || deploy;
+                    const runs = (await call('GET', `/repos/${REPO}/actions/workflows/deploy.yml/runs?branch=main&per_page=10`)).workflow_runs || [];
+                    const ours = runs.filter(r => Date.parse(r.created_at) >= since);
+                    live = ours.find(r => r.conclusion === 'success');
+                    const newest = ours[0];   // newest first
+                    if (!live && newest?.status === 'completed' && !['success', 'cancelled'].includes(newest.conclusion)) failed = newest;
+                    if (ours.length) steps[i].note = `GitHub Pages is building it · ${ours.length > 1 ? 'a newer deploy took over' : newest.status.replace('_', ' ')}`, progress(steps);
                 }
-                if (!deploy || deploy.status !== 'completed') throw new Error(`still deploying — <a href="https://github.com/${REPO}/actions" target="_blank" rel="noopener">check Actions</a>; the change is saved`);
-                if (deploy.conclusion !== 'success') throw new Error(`the deploy failed — <a href="${esc(deploy.html_url)}" target="_blank" rel="noopener">see the log</a>; the change is saved`);
+                if (failed) throw new Error(`the deploy failed — <a href="${esc(failed.html_url)}" target="_blank" rel="noopener">see the log</a>; the change is saved`);
+                if (!live) throw new Error(`still deploying — <a href="https://github.com/${REPO}/actions" target="_blank" rel="noopener">check Actions</a>; the change is saved`);
                 ok('live now (refresh the page if it still shows the old version)');
 
                 $('pub-title').textContent = { add: 'Event added', update: 'Changes saved', remove: 'Event removed' }[action];

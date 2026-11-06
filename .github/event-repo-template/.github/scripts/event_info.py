@@ -136,10 +136,15 @@ def save(url, hint="", name=None):
     return target.relative_to(ROOT).as_posix()
 
 
+def in_event_dir(path):
+    """True for a path inside event/ (and not e.g. event/../.github/…)."""
+    return path.startswith(FILES_DIR + "/") and ".." not in Path(path).parts
+
+
 def stored(ev):
     """Every event/ path the event links to."""
     paths = [ev.get("poster", "")] + ev.get("files", []) + [l["url"] for l in ev.get("links", [])]
-    return {p for p in paths if p.startswith(FILES_DIR + "/")}
+    return {p for p in paths if in_event_dir(p)}
 
 
 # ---------- applying the issue ----------
@@ -174,7 +179,7 @@ def apply(f, ev, errors):
     poster = f.get("Poster", "")
     if poster == "-":
         ev.pop("poster", None)
-    elif poster.startswith(FILES_DIR + "/"):
+    elif poster and in_event_dir(poster.split()[0]):
         ev["poster"] = poster.split()[0]
     elif poster:
         link = first_link(poster)
@@ -190,7 +195,7 @@ def apply(f, ev, errors):
     if files == "-":
         ev.pop("files", None)
     elif files:
-        kept = [line.strip() for line in files.splitlines() if line.strip().startswith(FILES_DIR + "/")]
+        kept = [line.strip() for line in files.splitlines() if in_event_dir(line.strip())]
         missing = [p for p in kept if not (ROOT / p).is_file()]
         errors += [f"**Files**: `{p}` isn't in the repo" for p in missing]
         new = []
