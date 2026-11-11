@@ -771,7 +771,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 64px;
-            align-items: start;
+            align-items: center;   /* the text is shorter than the cards; center it beside them */
         }
 
         .about-text p {
@@ -783,46 +783,6 @@
 
         .about-text strong {
             color: var(--term-green);
-        }
-
-        .about-highlights {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-top: 32px;
-        }
-
-        .about-highlight {
-            background: var(--bg-card);
-            border: 1px solid var(--border-default);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s;
-        }
-
-        .about-highlight:hover {
-            border-color: var(--border-accent);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .about-highlight-icon {
-            font-size: 1.5rem;
-            color: var(--term-green);
-            margin-bottom: 8px;
-        }
-
-        .about-highlight-value {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--term-green);
-            font-family: var(--font-mono);
-        }
-
-        .about-highlight-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 500;
         }
 
         .about-cards {
@@ -1847,7 +1807,6 @@
             .projects-grid { grid-template-columns: 1fr; }
             .blog-preview-grid { grid-template-columns: 1fr; }
             .speaking-stats { grid-template-columns: repeat(2, 1fr); }
-            .about-highlights { grid-template-columns: repeat(2, 1fr); }
             .cta-section h2 { font-size: 2rem; }
             .nav-logo { font-size: 1rem; }
             .hero-terminal { display: none; }
@@ -1874,8 +1833,6 @@
             .hero-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
             .hero-actions > :first-child { grid-column: 1 / -1; }
             .hero-actions .btn { justify-content: center; }
-            .about-highlights { gap: 12px; }
-            .about-highlight { padding: 16px 10px; }
             .nav-logo { font-size: 0.85rem; }
             .coffee-ps1 { display: none; }
             .coffee-cmd { font-size: 0.85rem; }
@@ -2087,28 +2044,6 @@
                     <p>
                         I actively organize events and build communities at CNCF Gandhinagar, HashiCorp Gandhinagar, and GDG Cloud Gandhinagar. Currently based in Berlin, I'm focused on AI-powered DevOps, self-healing infrastructure, and Kubernetes security.
                     </p>
-                    <div class="about-highlights">
-                        <div class="about-highlight">
-                            <div class="about-highlight-icon"><i class="fas fa-briefcase"></i></div>
-                            <div class="about-highlight-value">14+</div>
-                            <div class="about-highlight-label">Years Experience</div>
-                        </div>
-                        <div class="about-highlight">
-                            <div class="about-highlight-icon"><i class="fas fa-microphone-alt"></i></div>
-                            <div class="about-highlight-value">500+</div>
-                            <div class="about-highlight-label">Sessions Delivered</div>
-                        </div>
-                        <div class="about-highlight">
-                            <div class="about-highlight-icon"><i class="fas fa-globe-americas"></i></div>
-                            <div class="about-highlight-value">25+</div>
-                            <div class="about-highlight-label">Countries Reached</div>
-                        </div>
-                        <div class="about-highlight">
-                            <div class="about-highlight-icon"><i class="fas fa-users"></i></div>
-                            <div class="about-highlight-value">50K+</div>
-                            <div class="about-highlight-label">Developers Impacted</div>
-                        </div>
-                    </div>
                 </div>
                 <div class="about-cards animate-on-scroll">
                     <div class="about-card">
