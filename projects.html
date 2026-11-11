@@ -83,6 +83,7 @@
         .nav-links { display: flex; align-items: center; gap: 24px; }
         .nav-links a { font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); transition: color 0.2s; font-family: var(--font-mono); }
         .nav-links a:hover { color: var(--term-green); }
+        .nav-links a[aria-current="page"] { color: var(--term-green); }
         .mobile-toggle { display: none; background: none; border: 1px solid var(--border-default); color: var(--text-secondary); padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 1.1rem; }
         .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 72px; left: 0; right: 0; background: var(--bg-secondary); padding: 24px; border-bottom: 1px solid var(--border-default); gap: 16px; z-index: 999; }
         .btn {
@@ -268,8 +269,8 @@
                 <div class="nav-links">
                     <a href="index.html">Home</a>
                     <a href="index.html#about">About</a>
-                    <a href="index.html#speaking">Speaking</a>
-                    <a href="index.html#projects">Projects</a>
+                    <a href="speaking.html">Speaking</a>
+                    <a href="projects.html" aria-current="page">Projects</a>
                     <a href="blog.html">Blog</a>
                     <a href="https://github.com/nomadicmehul" target="_blank" class="btn btn-primary"><i class="fab fa-github"></i> GitHub</a>
                     <a href="https://topmate.io/nomadicmehul" target="_blank" class="btn btn-book"><i class="fas fa-calendar-check"></i> Book Session</a>
