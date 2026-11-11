@@ -1854,6 +1854,17 @@
             .coffee-terminal { padding: 40px 0; }
             .coffee-prompt { font-size: 0.8rem; }
             .coffee-btn { padding: 12px 20px; font-size: 0.85rem; }
+
+            /* phones: compact rows so the page isn't ~19 screens long */
+            .skill-card { display: grid; grid-template-columns: 40px 1fr; column-gap: 14px; align-items: center; padding: 20px; }
+            .skill-icon { width: 40px; height: 40px; margin: 0; font-size: 1.1rem; }
+            .skill-card h3 { margin: 0; }
+            .skill-tags { grid-column: 1 / -1; margin-top: 14px; }
+            .recognition-card { display: grid; grid-template-columns: 48px 1fr; column-gap: 16px; align-items: center; text-align: left; padding: 18px 20px; }
+            .recognition-icon { grid-row: span 2; width: 48px; height: 48px; margin: 0; font-size: 1.3rem; }
+            .recognition-card h4 { margin-bottom: 2px; }
+            .speaking-events > .event-card:nth-child(n+4) { display: none; }   /* 3 latest; "View All" is right below */
+            .resource-link { padding: 7px 12px; }
         }
 
         @media (max-width: 480px) {
@@ -1863,7 +1874,8 @@
             .hero-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
             .hero-actions > :first-child { grid-column: 1 / -1; }
             .hero-actions .btn { justify-content: center; }
-            .about-highlights { grid-template-columns: 1fr; }
+            .about-highlights { gap: 12px; }
+            .about-highlight { padding: 16px 10px; }
             .nav-logo { font-size: 0.85rem; }
             .coffee-ps1 { display: none; }
             .coffee-cmd { font-size: 0.85rem; }
