@@ -770,8 +770,8 @@
         .about-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 64px;
-            align-items: center;   /* the text is shorter than the cards; center it beside them */
+            gap: 56px;
+            align-items: start;
         }
 
         .about-text p {
@@ -785,11 +785,19 @@
             color: var(--term-green);
         }
 
+        /* 2x2 beside the text, so both columns end at about the same height */
         .about-cards {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 16px;
         }
+
+        .about-text a, .about-card p a {
+            color: var(--term-green);
+            border-bottom: 1px dashed rgba(74, 222, 128, 0.5);
+            transition: border-color 0.2s;
+        }
+        .about-text a:hover, .about-card p a:hover { border-bottom-style: solid; border-color: var(--term-green); }
 
         .about-card {
             background: var(--bg-card);
@@ -1803,6 +1811,7 @@
             .section-title { font-size: 2rem; }
             .skills-grid,
             .recognition-grid,
+            .about-cards,
             .speaking-events,
             .projects-grid { grid-template-columns: 1fr; }
             .blog-preview-grid { grid-template-columns: 1fr; }
@@ -2039,7 +2048,7 @@
                         I'm Mehul Patel, a DevOps and Cloud expert with over 14 years of hands-on experience in cutting-edge technologies like AWS, Google Cloud, Docker, Kubernetes, Ansible, Jenkins, and Terraform. Sharing knowledge is my driving force.
                     </p>
                     <p>
-                        Through my initiative <strong>CloudCaptain</strong>, I've conducted over 500 sessions across 25+ countries, helping individuals and organizations excel in DevOps and cloud technologies. I'm honored to serve in leadership roles, including the Mozilla Reps Council, Auth0 by Okta Ambassador, Claude Ambassador, and founder of OSW and OSCF.
+                        Through my initiative <a href="https://cloudcaptain.io/" target="_blank" rel="noopener"><strong>CloudCaptain</strong></a>, I've conducted over 500 sessions across 25+ countries, helping individuals and organizations excel in DevOps and cloud technologies. I'm honored to serve in leadership roles, including the Mozilla Reps Council, Auth0 by Okta Ambassador, Claude Ambassador, and founder of OSW and OSCF.
                     </p>
                     <p>
                         I actively organize events and build communities at CNCF Gandhinagar, HashiCorp Gandhinagar, and GDG Cloud Gandhinagar. Currently based in Berlin, I'm focused on AI-powered DevOps, self-healing infrastructure, and Kubernetes security.
@@ -2065,7 +2074,7 @@
                             <div class="about-card-icon purple"><i class="fas fa-heart"></i></div>
                             <h4>Community Building</h4>
                         </div>
-                        <p>Founder of CloudCaptain, OSW, and OSCF. Organizer at CNCF, HashiCorp, and GDG Cloud communities. Passionate about open-source and knowledge sharing.</p>
+                        <p>Founder of <a href="https://cloudcaptain.io/" target="_blank" rel="noopener">CloudCaptain</a>, OSW, and OSCF. Organizer at CNCF, HashiCorp, and GDG Cloud communities. Passionate about open-source and knowledge sharing.</p>
                     </div>
                     <div class="about-card">
                         <div class="about-card-header">
