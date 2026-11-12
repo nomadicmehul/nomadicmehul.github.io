@@ -1,5 +1,34 @@
 [
   {
+    "title": "I Ran One Command and My Class Became an npm, PyPI and NuGet Package at Once ( Part I )",
+    "link": "https://medium.com/@nomadicmehul/i-ran-one-command-and-my-class-became-an-npm-pypi-and-nuget-package-at-once-part-i-5a836a59f9c9",
+    "pubDate": "2026-11-11T15:54:49Z",
+    "thumbnail": "https://cdn-images-1.medium.com/max/1024/1*pNFc1b5sAA8XPa2JH2bPRA.png",
+    "excerpt": "Meet gg — the Graftcode Gateway CLI. Install it, point it at six lines of code, and watch it host, discover, and print install commands for seven package...",
+    "readTime": "5 min read",
+    "categories": [
+      "graftcode",
+      "python",
+      "open-source",
+      "mcp-server"
+    ]
+  },
+  {
+    "title": "My Storefront Is in Node. My Finance Team’s Formula Is in Python. I Never Wrote an API. ( Part II )",
+    "link": "https://medium.com/@nomadicmehul/my-storefront-is-in-node-my-finance-teams-formula-is-in-python-i-never-wrote-an-api-part-ii-c247afef16d4",
+    "pubDate": "2026-11-11T15:53:50Z",
+    "thumbnail": "https://cdn-images-1.medium.com/max/1024/1*SBbIWzOAkhw6HJOZ5XzRiA.png",
+    "excerpt": "A LoanCalculator.monthly_payment(...) method, written in Python, called directly from a Node/Express product page. No FastAPI wrapper, no OpenAPI spec, no...",
+    "readTime": "7 min read",
+    "categories": [
+      "mcp-server",
+      "graftcode",
+      "api",
+      "open-source",
+      "python"
+    ]
+  },
+  {
     "title": "Your AI Keeps Writing MCP Servers. I Fixed It With One File. (Part II)",
     "link": "https://medium.com/@nomadicmehul/your-ai-keeps-writing-mcp-servers-i-fixed-it-with-one-file-part-ii-8674fe45dad0",
     "pubDate": "2026-10-09T10:59:26Z",
