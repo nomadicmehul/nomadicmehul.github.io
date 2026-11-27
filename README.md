@@ -67,6 +67,10 @@ Both studios use one **classic personal access token with only the `public_repo`
 - **On the pages:** everything from `data/*.json` (including Medium posts) is escaped before it's shown, the studios ignore the token when loaded inside another site's frame, and the site loads no third-party JavaScript.
 - **If a token leaks:** revoke it, create a new one, and reconnect.
 
+### 🔗 Link-in-bio: [nomadicmehul.dev/connect](https://nomadicmehul.dev/connect)
+
+One link for every bio (Instagram, X, conference badges, slides). It lists socials, featured links and site pages, plus a **Latest** section that fills itself from the newest talk (or next upcoming one) and the newest Medium post. To change it, edit [`data/links.json`](data/links.json) on GitHub (pencil icon) and commit; it's live after the deploy. A link with an empty `url` is skipped, so you can park entries there until you have the URL.
+
 ### 👉 Everything else: [MANAGE.md](https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md)
 
 One page listing everything on the site: speaking events grouped by **year → month**, projects, testimonials, and **recent activity by month**. Every row has **✏️ Update** and **🗑️ Remove** links that open the right form with the entry already filled in. It's also linked at the top of **Issues → New issue**.
@@ -281,6 +285,7 @@ The easy way is the [Add speaking event](https://github.com/nomadicmehul/nomadic
 ├── demo-studio.html        # Demo Studio: create/update a separate GitHub repo per workshop or talk demo
 ├── projects.html           # Open-source projects grid
 ├── blog.html               # Medium articles
+├── connect.html            # Link-in-bio page (nomadicmehul.dev/connect), from data/links.json
 ├── 404.html                # Custom 404 error page
 ├── MANAGE.md               # Generated: every entry by year/month with update/remove links
 ├── CNAME                   # Custom domain (nomadicmehul.dev)
@@ -298,6 +303,7 @@ The easy way is the [Add speaking event](https://github.com/nomadicmehul/nomadic
     ├── speaking.json       # Speaking events data
     ├── testimonials.json   # Testimonials data
     ├── roles.json          # Speaking roles (badge icon + color)
+    ├── links.json          # Link-in-bio page: profile, socials, link sections
     └── blog.json           # Medium posts (auto-synced)
 .github/
 ├── ISSUE_TEMPLATE/         # Add / update-or-remove forms (update forms are generated)

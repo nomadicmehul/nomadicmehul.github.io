@@ -34,6 +34,14 @@ def collect():
     for t in json.loads((ROOT / "data/testimonials.json").read_text()):
         if t.get("link"):
             links.append((f"💬 {t['name']} · link", t["link"]))
+    # Connect page: web links and local files (mailto: and the site's own pages are skipped)
+    connect = json.loads((ROOT / "data/links.json").read_text())
+    entries = [("social", s) for s in connect.get("socials", [])]
+    entries += [(sec.get("title", ""), l) for sec in connect.get("sections", []) for l in sec.get("links", [])]
+    for where, l in entries:
+        url = l.get("url", "")
+        if url.startswith(("http", "assets/")):
+            links.append((f"🔗 Connect · {where} · {l.get('label', '')}", url))
     return links
 
 

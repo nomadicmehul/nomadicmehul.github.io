@@ -27,6 +27,7 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 ├── demo-studio.html        # Demo Studio: create/update a separate repo per workshop/talk demo (see "Demo repos")
 ├── projects.html           # Open-source projects grid page
 ├── blog.html               # Medium articles page
+├── connect.html            # Link-in-bio page, served at /connect (see "Connect page")
 ├── 404.html                # Custom 404 page
 ├── MANAGE.md               # Generated admin index: all entries by year/month + update/remove links
 ├── robots.txt              # SEO
@@ -36,6 +37,7 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 │   ├── speaking.json       # All speaking events (source of truth)
 │   ├── projects.json       # Featured projects
 │   ├── testimonials.json   # Testimonials
+│   ├── links.json          # Link-in-bio page: profile, socials, sections of links
 │   ├── roles.json          # Speaking role list (name, icon, color) — single source for pages + forms
 │   └── blog.json           # Medium posts — auto-synced, don't hand-edit
 │
@@ -182,9 +184,34 @@ Both are run in the same commit by `issue-to-data.yml`, and by `edit-forms.yml` 
 - **Step 3** links to `studio.html?new=1&title=&date=&location=&topics=&event=&code=`, which `prefill()` in studio.html turns into a new speaking event.
 - `LINK_TYPES` (Python) and `LINKS` (page), and the location autocomplete code in both studios, are kept in sync by hand.
 
+## Connect page (link-in-bio)
+
+`connect.html` replaces bio.link: GitHub Pages serves it at **nomadicmehul.dev/connect** (extensionless), and it's kept at the root so `data/` and `assets/` paths work and `deploy.yml`'s `*.html` path filter catches it. The home page's **All Links** button points here. Everything comes from `data/links.json`:
+
+```json
+{
+  "profile": { "name": "…", "handle": "nomadicmehul", "tagline": "…", "bio": "…", "avatar": "assets/img/profile.jpg" },
+  "socials": [ { "label": "Bluesky", "url": "https://bsky.app/profile/…" } ],
+  "sections": [
+    { "title": "Featured", "links": [
+      { "label": "CloudCaptain", "description": "Learn DevOps and cloud", "url": "https://cloudcaptain.io/", "icon": "fas fa-anchor", "highlight": true },
+      { "auto": "next-talk" },
+      { "auto": "latest-post" }
+    ] }
+  ]
+}
+```
+
+- `url`: `https://`, `mailto:`, `assets/…` or a site page (`speaking.html`, `index.html#about`); the page's `safeUrl()` allows exactly these. An **empty url hides the entry** (placeholders waiting for a link); `"hidden": true` hides one that has a url.
+- `icon` is optional: `BRANDS` in `connect.html` guesses icon + hover color from the domain (GitHub, LinkedIn, X, YouTube, Bluesky, Spotify, Apple Podcasts, Telegram, Discord, topmate, …), falling back to a link icon. Socials only use the guess unless `icon` is set.
+- `auto` cards: `next-talk` (soonest upcoming event from speaking.json, else the latest past one; links to `speaking.html`) and `latest-post` (newest in blog.json, with thumbnail). A card is dropped if its data fails to load.
+- Section titles render as `$ ls ~/<title-slug>`. The share button uses the native share sheet, or copies `https://nomadicmehul.dev/connect`.
+- `deploy.yml` validates links.json (labels, URL forms, local files/pages exist, `auto` values) and `check_links.py` checks its web links and files.
+- **connect.nomadicmehul.dev** isn't possible from this repo (Pages allows one custom domain per repo); it would need a separate repo with that `CNAME` redirecting to /connect.
+
 ## Link Checking
 
-`.github/workflows/check-links.yml` runs `.github/scripts/check_links.py` every Monday (or manually). It checks every URL in `data/*.json` plus local event files, and keeps one open **Broken links report** issue updated, closing it once all links work. Only 404/410, unresolvable domains and missing event files count as broken; bot-blocking responses (403/429/timeouts) are listed as "couldn't verify".
+`.github/workflows/check-links.yml` runs `.github/scripts/check_links.py` every Monday (or manually). It checks every URL in `data/*.json` (links.json: only web links and `assets/` files) plus local event files, and keeps one open **Broken links report** issue updated, closing it once all links work. Only 404/410, unresolvable domains and missing event files count as broken; bot-blocking responses (403/429/timeouts) are listed as "couldn't verify".
 
 ## Blog (Medium)
 
