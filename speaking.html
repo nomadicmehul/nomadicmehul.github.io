@@ -96,6 +96,20 @@
             border: 1px solid rgba(74, 222, 128, 0.3);
         }
         .btn-primary:hover { background: rgba(74, 222, 128, 0.25); transform: translateY(-1px); box-shadow: var(--shadow-glow); }
+        /* nav buttons keep their accent colour (.nav-links a would turn them grey) */
+        .nav-links a.btn-primary { color: var(--term-green); }
+        .nav-links a.btn-connect { color: var(--term-cyan); }
+        .nav-links a.btn-book { color: var(--term-amber); }
+        .nav-links .btn { white-space: nowrap; }
+        @media (min-width: 769px) and (max-width: 1100px) {
+            .nav-links .btn .cta-label { display: none; }
+            .nav-links .btn { padding-left: 13px; padding-right: 13px; }
+        }
+        .btn-connect {
+            background: rgba(34, 211, 238, 0.12); color: var(--term-cyan);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+        }
+        .btn-connect:hover { background: rgba(34, 211, 238, 0.22); transform: translateY(-1px); box-shadow: 0 0 20px rgba(34, 211, 238, 0.15); }
         .btn-book {
             background: rgba(251, 191, 36, 0.15); color: var(--term-amber);
             border: 1px solid rgba(251, 191, 36, 0.3);
@@ -452,8 +466,9 @@
                     <a href="speaking.html" aria-current="page">Speaking</a>
                     <a href="projects.html">Projects</a>
                     <a href="blog.html">Blog</a>
-                    <a href="https://github.com/nomadicmehul" target="_blank" class="btn btn-primary"><i class="fab fa-github"></i> GitHub</a>
-                    <a href="https://topmate.io/nomadicmehul" target="_blank" class="btn btn-book"><i class="fas fa-calendar-check"></i> Book Session</a>
+                    <a href="connect.html" class="btn btn-connect" title="All my links"><i class="fas fa-link"></i><span class="cta-label"> Connect</span></a>
+                    <a href="https://github.com/nomadicmehul" target="_blank" class="btn btn-primary" title="GitHub"><i class="fab fa-github"></i><span class="cta-label"> GitHub</span></a>
+                    <a href="https://topmate.io/nomadicmehul" target="_blank" class="btn btn-book" title="Book a session"><i class="fas fa-calendar-check"></i><span class="cta-label"> Book Session</span></a>
                 </div>
             </div>
         </div>
