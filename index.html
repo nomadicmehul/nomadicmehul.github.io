@@ -317,6 +317,24 @@
         .nav-cta::after { display: none !important; }
         .nav-cta::before { display: none !important; }
 
+        .nav-cta-connect {
+            background: rgba(34, 211, 238, 0.12) !important;
+            color: var(--term-cyan) !important;
+            border: 1px solid rgba(34, 211, 238, 0.3) !important;
+        }
+        .nav-cta-connect:hover {
+            background: rgba(34, 211, 238, 0.22) !important;
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
+        }
+
+        .nav-cta { white-space: nowrap; }
+        /* between the hamburger (768px) and ~1100px, the three buttons go icon-only so the nav fits on one line */
+        @media (min-width: 769px) and (max-width: 1100px) {
+            .nav-links { gap: 20px; }
+            .nav-cta { padding: 10px 13px; }
+            .nav-cta .cta-label { display: none; }
+        }
+
         .nav-cta-book {
             background: rgba(251, 191, 36, 0.15) !important;
             color: var(--term-amber) !important;
@@ -1917,8 +1935,9 @@
                     <a href="#speaking">Speaking</a>
                     <a href="#projects">Projects</a>
                     <a href="blog.html">Blog</a>
-                    <a href="https://github.com/nomadicmehul" target="_blank" class="nav-cta"><i class="fab fa-github"></i> GitHub</a>
-                    <a href="https://topmate.io/nomadicmehul" target="_blank" class="nav-cta nav-cta-book"><i class="fas fa-calendar-check"></i> Book Session</a>
+                    <a href="connect.html" class="nav-cta nav-cta-connect" title="All my links"><i class="fas fa-link"></i><span class="cta-label"> Connect</span></a>
+                    <a href="https://github.com/nomadicmehul" target="_blank" class="nav-cta" title="GitHub"><i class="fab fa-github"></i><span class="cta-label"> GitHub</span></a>
+                    <a href="https://topmate.io/nomadicmehul" target="_blank" class="nav-cta nav-cta-book" title="Book a session"><i class="fas fa-calendar-check"></i><span class="cta-label"> Book Session</span></a>
                 </div>
                 <button class="mobile-toggle" onclick="toggleMenu()" aria-label="Toggle menu">
                     <i class="fas fa-bars" id="menu-icon"></i>
@@ -1931,6 +1950,7 @@
             <a href="#speaking" onclick="toggleMenu()">Speaking</a>
             <a href="#projects" onclick="toggleMenu()">Projects</a>
             <a href="blog.html" onclick="toggleMenu()">Blog</a>
+            <a href="connect.html" onclick="toggleMenu()">Connect</a>
             <a href="https://github.com/nomadicmehul" target="_blank" onclick="toggleMenu()">GitHub</a>
             <a href="https://topmate.io/nomadicmehul" target="_blank" onclick="toggleMenu()">Book Session</a>
         </div>
@@ -2338,7 +2358,7 @@
                 <a href="mailto:contact@mehulpatel.dev" class="btn btn-white">
                     <i class="fas fa-envelope"></i> Email Me
                 </a>
-                <a href="https://bio.link/nomadicmehul" target="_blank" class="btn btn-ghost">
+                <a href="connect.html" class="btn btn-ghost">
                     <i class="fas fa-link"></i> All Links
                 </a>
             </div>

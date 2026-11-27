@@ -189,6 +189,41 @@ jobs:
           print(f'Blog: {len(data)} posts')
           "
 
+      - name: Validate links.json
+        run: |
+          echo "=== Validating data/links.json (connect page) ==="
+          python3 -c "
+          import json, os, re, sys
+          d = json.load(open('data/links.json'))
+          ok_url = re.compile(r'^(https?://|mailto:|assets/|[\w-]+\.html(#[\w-]*)?$)')
+          errors = []
+          if not d.get('profile', {}).get('name'):
+              errors.append('profile.name is required')
+          items = [('socials', s) for s in d.get('socials', [])]
+          items += [(f'section \"{s.get(\"title\", \"?\")}\"', l) for s in d.get('sections', []) for l in s.get('links', [])]
+          shown = 0
+          for where, l in items:
+              if l.get('auto'):
+                  if l['auto'] not in ('next-talk', 'latest-post'):
+                      errors.append(f'{where}: unknown auto \"{l[\"auto\"]}\" (use next-talk or latest-post)')
+                  continue
+              if not l.get('label'):
+                  errors.append(f'{where}: link without a label')
+              url = l.get('url', '')
+              if not url:
+                  continue  # placeholder, not shown until a url is filled in
+              if not ok_url.match(url):
+                  errors.append(f'{where} / {l.get(\"label\")}: url must be https://, mailto:, assets/... or a page.html (got {url!r})')
+              elif url.startswith('assets/') and not os.path.isfile(url):
+                  errors.append(f'{where} / {l.get(\"label\")}: file missing: {url}')
+              elif re.match(r'^[\w-]+\.html', url) and not os.path.isfile(url.split('#')[0]):
+                  errors.append(f'{where} / {l.get(\"label\")}: page missing: {url}')
+              shown += 1
+          if errors:
+              print('Validation FAILED:'); [print(f'  - {e}') for e in errors]; sys.exit(1)
+          print(f'Connect: {shown} links shown, {sum(1 for _, l in items if not l.get(\"url\") and not l.get(\"auto\"))} placeholders without a url')
+          "
+
       - name: Validate HTML files
         run: |
           echo "=== Checking HTML files ==="
@@ -196,6 +231,7 @@ jobs:
           test -f speaking.html && echo "speaking.html OK" || (echo "speaking.html MISSING" && exit 1)
           test -f projects.html && echo "projects.html OK" || (echo "projects.html MISSING" && exit 1)
           test -f blog.html && echo "blog.html OK" || (echo "blog.html MISSING" && exit 1)
+          test -f connect.html && echo "connect.html OK" || (echo "connect.html MISSING" && exit 1)
           test -f 404.html && echo "404.html OK" || (echo "404.html MISSING" && exit 1)
           test -f robots.txt && echo "robots.txt OK" || echo "robots.txt missing (optional)"
           test -f sitemap.xml && echo "sitemap.xml OK" || echo "sitemap.xml missing (optional)"
