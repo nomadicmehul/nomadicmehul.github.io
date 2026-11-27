@@ -28,6 +28,7 @@ Personal portfolio website for Mehul Patel — a static HTML/CSS/JS site deploye
 ├── projects.html           # Open-source projects grid page
 ├── blog.html               # Medium articles page
 ├── connect.html            # Link-in-bio page, served at /connect (see "Connect page")
+├── links-studio.html       # Links Studio: edit data/links.json with a live preview, publish with the studio token
 ├── 404.html                # Custom 404 page
 ├── MANAGE.md               # Generated admin index: all entries by year/month + update/remove links
 ├── robots.txt              # SEO
@@ -155,7 +156,7 @@ Current roles: Speaker (green), Event Organizer (amber), Mentor (purple), Paneli
 
 **Content Studio** (`studio.html`, noindex, not in the nav) is the friendliest path for speaking events: calendar, role chips, topic suggestions, location autocomplete (past locations, then cities from the free no-key Open-Meteo geocoding API, with country names mapped to the spelling already in speaking.json via `COUNTRY_NAMES`), live card preview, edit-with-diff and remove. It opens `/issues/new?labels=…&title=…&body=…` with a body in the same `### Label` format the issue forms produce (issue-form URL pre-fill only covers text fields, so roles couldn't be pre-filled). Resources go in an `Add resources` section as `type | label | url` lines (also accepted by the add form); a file upload is a `slides | ` line, listed last, that the owner drops the file onto. `parse_form()` strips `<!-- -->` hint comments, and a bare link on a line after an empty `type |` line attaches to it.
 
-With **Connect GitHub** (classic `public_repo` token in `localStorage` key `studio-github-token`, shared with Demo Studio) the Studio skips the issue: `publish()` reads `data/speaking.json` from `main` via the contents API, applies the add/update/remove the way `issue_to_data.py` would (newest-first sort, `role` defaults to Speaker, files to `assets/events/<year>/<date>-<slug>/`, unreferenced event files deleted), and writes everything in one Git Data API commit to `main`. That push triggers `edit-forms.yml` (dates, MANAGE.md, moving files after a title/date change) and `deploy.yml`, whose run for the commit the page waits on. `JSON.stringify(data, null, 2) + "\n"` matches Python's `json.dumps(indent=2, ensure_ascii=False)` byte for byte.
+With **Connect GitHub** (classic `public_repo` token in `localStorage` key `studio-github-token`, shared with Demo Studio and Links Studio) the Studio skips the issue: `publish()` reads `data/speaking.json` from `main` via the contents API, applies the add/update/remove the way `issue_to_data.py` would (newest-first sort, `role` defaults to Speaker, files to `assets/events/<year>/<date>-<slug>/`, unreferenced event files deleted), and writes everything in one Git Data API commit to `main`. That push triggers `edit-forms.yml` (dates, MANAGE.md, moving files after a title/date change) and `deploy.yml`, whose run for the commit the page waits on. `JSON.stringify(data, null, 2) + "\n"` matches Python's `json.dumps(indent=2, ensure_ascii=False)` byte for byte.
 
 Or open a new issue and pick an **Add …** or **Update or remove …** form for speaking events, projects or testimonials (labels `data:speaking`, `data:project`, `data:testimonial`, `data:edit` are created by `labels.yml`). On submit, `.github/workflows/issue-to-data.yml`:
 
@@ -186,7 +187,7 @@ Both are run in the same commit by `issue-to-data.yml`, and by `edit-forms.yml` 
 
 ## Connect page (link-in-bio)
 
-`connect.html` replaces bio.link: GitHub Pages serves it at **nomadicmehul.dev/connect** (extensionless), and it's kept at the root so `data/` and `assets/` paths work and `deploy.yml`'s `*.html` path filter catches it. The home page's **All Links** button points here. Everything comes from `data/links.json`:
+`connect.html` replaces bio.link (edit it in **Links Studio**, below): GitHub Pages serves it at **nomadicmehul.dev/connect** (extensionless), and it's kept at the root so `data/` and `assets/` paths work and `deploy.yml`'s `*.html` path filter catches it. The home page's **All Links** button points here. Everything comes from `data/links.json`:
 
 ```json
 {
@@ -205,6 +206,8 @@ Both are run in the same commit by `issue-to-data.yml`, and by `edit-forms.yml` 
 - `url`: `https://`, `mailto:`, `assets/…` or a site page (`speaking.html`, `index.html#about`); the page's `safeUrl()` allows exactly these. An **empty url hides the entry** (placeholders waiting for a link); `"hidden": true` hides one that has a url.
 - `icon` is optional: `BRANDS` in `connect.html` guesses icon + hover color from the domain (GitHub, LinkedIn, X, YouTube, Bluesky, Spotify, Apple Podcasts, Telegram, Discord, topmate, …), falling back to a link icon. Socials only use the guess unless `icon` is set.
 - `auto` cards: `next-talk` (soonest upcoming event from speaking.json, else the latest past one; links to `speaking.html`) and `latest-post` (newest in blog.json, with thumbnail). A card is dropped if its data fails to load.
+- **Links Studio** (`links-studio.html`, noindex, linked from both studios): forms for profile, socials (quick-add chips per platform with the profile-URL prefix filled in) and sections (add/move/hide/highlight links, move a link across sections with ↑/↓ at the ends, icon picker, `auto` cards), with `connect.html?preview` in a phone-sized frame as the live preview: the studio `postMessage`s the draft JSON, and in preview mode connect.html renders that instead of fetching, accepts messages only from its same-origin parent, and doesn't navigate on link clicks. `serialize()` writes the same bytes as the file's `json.dumps(indent=2, ensure_ascii=False)` format, so "no changes" is an exact comparison. With the studio token, **Publish** PUTs `data/links.json` via the contents API (refusing if the file changed on GitHub since the page loaded) and waits for `deploy.yml`; without one, it copies the JSON and opens GitHub's web editor. Unsaved edits are kept in `localStorage` (`links-studio-draft-v1`). Its `BRANDS` icon list is a copy of connect.html's: keep them in sync by hand.
+- Both pages load Font Awesome **6.7.2** (not 6.5.1 like the rest of the site): 6.5.1 has no Bluesky icon.
 - Section titles render as `$ ls ~/<title-slug>`. The share button uses the native share sheet, or copies `https://nomadicmehul.dev/connect`.
 - `deploy.yml` validates links.json (labels, URL forms, local files/pages exist, `auto` values) and `check_links.py` checks its web links and files.
 - **connect.nomadicmehul.dev** isn't possible from this repo (Pages allows one custom domain per repo); it would need a separate repo with that `CNAME` redirecting to /connect.
@@ -266,7 +269,7 @@ Commits made by workflows with `GITHUB_TOKEN` don't trigger other workflows, so 
 ## Security notes
 
 - **Escape everything rendered from `data/*.json`.** Pages build HTML with template strings + `innerHTML`, so every data field goes through `esc()` and every data URL through `safeUrl()` (only `http(s)://` or `assets/…`). `blog.json` is generated from Medium's RSS: an article that quotes HTML code would otherwise become live HTML on the site, i.e. script running on the same origin as the studios' GitHub token.
-- **Studio token** (`localStorage` `studio-github-token`, shared by both studios): never committed or sent anywhere but api.github.com; ignored when the page is framed; the banner warns if it has scopes beyond `public_repo` and links to github.com/settings/tokens to revoke. *Disconnect* only removes it from the browser.
+- **Studio token** (`localStorage` `studio-github-token`, shared by all three studios: Content, Demo, Links): never committed or sent anywhere but api.github.com; ignored when the page is framed; the banner warns if it has scopes beyond `public_repo` and links to github.com/settings/tokens to revoke. *Disconnect* only removes it from the browser.
 - Pages load no third-party JavaScript (only Google Fonts / FontAwesome CSS); keep it that way, since any script on the origin can read the token.
 - Issue workflows only act on issues whose author is the repo **owner**; issue bodies reach scripts through env vars, never `${{ }}` inside `run:`.
 

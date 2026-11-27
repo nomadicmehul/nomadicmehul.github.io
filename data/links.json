@@ -7,58 +7,155 @@
     "avatar": "assets/img/profile.jpg"
   },
   "socials": [
-    { "label": "LinkedIn", "url": "https://www.linkedin.com/in/nomadicmehul/" },
-    { "label": "GitHub", "url": "https://github.com/nomadicmehul" },
-    { "label": "X (Twitter)", "url": "https://twitter.com/nomadicmehul" },
-    { "label": "YouTube", "url": "https://www.youtube.com/@nomadicmehul" },
-    { "label": "Instagram", "url": "https://www.instagram.com/nomadicmehul/" },
-    { "label": "Medium", "url": "https://medium.com/@nomadicmehul" },
-    { "label": "Bluesky", "url": "" },
-    { "label": "Spotify", "url": "" },
-    { "label": "Apple Podcasts", "url": "" },
-    { "label": "Facebook", "url": "" },
-    { "label": "Telegram", "url": "" },
-    { "label": "Discord", "url": "" },
-    { "label": "Google Developer Profile", "url": "" },
-    { "label": "Email", "url": "mailto:contact@mehulpatel.dev" }
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/nomadicmehul/"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/nomadicmehul"
+    },
+    {
+      "label": "X (Twitter)",
+      "url": "https://twitter.com/nomadicmehul"
+    },
+    {
+      "label": "YouTube",
+      "url": "https://www.youtube.com/@nomadicmehul"
+    },
+    {
+      "label": "Instagram",
+      "url": "https://www.instagram.com/nomadicmehul/"
+    },
+    {
+      "label": "Medium",
+      "url": "https://medium.com/@nomadicmehul"
+    },
+    {
+      "label": "Bluesky",
+      "url": ""
+    },
+    {
+      "label": "Spotify",
+      "url": ""
+    },
+    {
+      "label": "Apple Podcasts",
+      "url": ""
+    },
+    {
+      "label": "Facebook",
+      "url": ""
+    },
+    {
+      "label": "Telegram",
+      "url": ""
+    },
+    {
+      "label": "Discord",
+      "url": ""
+    },
+    {
+      "label": "Google Developer Profile",
+      "url": ""
+    },
+    {
+      "label": "Email",
+      "url": "mailto:contact@mehulpatel.dev"
+    }
   ],
   "sections": [
     {
       "title": "Work with me",
       "links": [
-        { "label": "1:1 Consultation", "description": "Mentoring, career advice, DevOps & cloud questions", "url": "https://topmate.io/nomadicmehul", "icon": "fas fa-calendar-check", "highlight": true },
-        { "label": "Invite me to speak", "description": "Talks, workshops and panels", "url": "mailto:contact@mehulpatel.dev?subject=Speaking%20invitation", "icon": "fas fa-microphone" }
+        {
+          "label": "1:1 Consultation",
+          "description": "Mentoring, career advice, DevOps & cloud questions",
+          "url": "https://topmate.io/nomadicmehul",
+          "icon": "fas fa-calendar-check",
+          "highlight": true
+        },
+        {
+          "label": "Invite me to speak",
+          "description": "Talks, workshops and panels",
+          "url": "mailto:contact@mehulpatel.dev?subject=Speaking%20invitation",
+          "icon": "fas fa-microphone"
+        }
       ]
     },
     {
       "title": "Featured",
       "links": [
-        { "label": "CloudCaptain", "description": "Learn DevOps and cloud", "url": "https://cloudcaptain.io/", "icon": "fas fa-anchor" },
-        { "label": "Why I am here?", "description": "Watch on YouTube", "url": "", "icon": "fab fa-youtube" },
-        { "label": "TACOS with Mehul", "description": "Podcast on Spotify", "url": "", "icon": "fab fa-spotify" }
+        {
+          "label": "CloudCaptain",
+          "description": "Learn DevOps and cloud",
+          "url": "https://cloudcaptain.io/",
+          "icon": "fas fa-anchor"
+        },
+        {
+          "label": "Why I am here?",
+          "description": "Watch on YouTube",
+          "url": "",
+          "icon": "fab fa-youtube"
+        },
+        {
+          "label": "TACOS with Mehul",
+          "description": "Podcast on Spotify",
+          "url": "",
+          "icon": "fab fa-spotify"
+        }
       ]
     },
     {
       "title": "Latest",
       "links": [
-        { "auto": "next-talk" },
-        { "auto": "latest-post" }
+        {
+          "auto": "next-talk"
+        },
+        {
+          "auto": "latest-post"
+        }
       ]
     },
     {
       "title": "Explore",
       "links": [
-        { "label": "Website", "description": "nomadicmehul.dev", "url": "index.html", "icon": "fas fa-terminal" },
-        { "label": "Talks, slides & recordings", "url": "speaking.html", "icon": "fas fa-microphone-lines" },
-        { "label": "Open-source projects", "url": "projects.html", "icon": "fas fa-code-branch" },
-        { "label": "Blog", "url": "blog.html", "icon": "fas fa-pen-nib" },
-        { "label": "Resume", "url": "assets/Mehul_Patel_Resume.pdf", "icon": "fas fa-file-lines" }
+        {
+          "label": "Website",
+          "description": "nomadicmehul.dev",
+          "url": "index.html",
+          "icon": "fas fa-terminal"
+        },
+        {
+          "label": "Talks, slides & recordings",
+          "url": "speaking.html",
+          "icon": "fas fa-microphone-lines"
+        },
+        {
+          "label": "Open-source projects",
+          "url": "projects.html",
+          "icon": "fas fa-code-branch"
+        },
+        {
+          "label": "Blog",
+          "url": "blog.html",
+          "icon": "fas fa-pen-nib"
+        },
+        {
+          "label": "Resume",
+          "url": "assets/Mehul_Patel_Resume.pdf",
+          "icon": "fas fa-file-lines"
+        }
       ]
     },
     {
       "title": "Support",
       "links": [
-        { "label": "Buy me a coffee", "url": "https://buymeacoffee.com/nomadicmehul", "icon": "fas fa-mug-hot" }
+        {
+          "label": "Buy me a coffee",
+          "url": "https://buymeacoffee.com/nomadicmehul",
+          "icon": "fas fa-mug-hot"
+        }
       ]
     }
   ]

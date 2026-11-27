@@ -69,7 +69,7 @@ Both studios use one **classic personal access token with only the `public_repo`
 
 ### 🔗 Link-in-bio: [nomadicmehul.dev/connect](https://nomadicmehul.dev/connect)
 
-One link for every bio (Instagram, X, conference badges, slides). It lists socials, featured links and site pages, plus a **Latest** section that fills itself from the newest talk (or next upcoming one) and the newest Medium post. To change it, edit [`data/links.json`](data/links.json) on GitHub (pencil icon) and commit; it's live after the deploy. A link with an empty `url` is skipped, so you can park entries there until you have the URL.
+One link for every bio (Instagram, X, conference badges, slides). It lists socials, featured links and site pages, plus a **Latest** section that fills itself from the newest talk (or next upcoming one) and the newest Medium post. Edit it in **[Links Studio](https://nomadicmehul.dev/links-studio.html)**: forms for your profile, social icons and link sections, with a live phone preview. Connected with the same GitHub token as the Content Studio, **Publish to site** saves and deploys in one click; without a token it copies the result and opens GitHub's editor for you to paste and commit. (Or edit [`data/links.json`](data/links.json) by hand.) A link with no URL isn't shown, so you can park entries until you have the link.
 
 ### 👉 Everything else: [MANAGE.md](https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/MANAGE.md)
 
@@ -286,6 +286,7 @@ The easy way is the [Add speaking event](https://github.com/nomadicmehul/nomadic
 ├── projects.html           # Open-source projects grid
 ├── blog.html               # Medium articles
 ├── connect.html            # Link-in-bio page (nomadicmehul.dev/connect), from data/links.json
+├── links-studio.html       # Links Studio: edit the link-in-bio page with a live preview
 ├── 404.html                # Custom 404 error page
 ├── MANAGE.md               # Generated: every entry by year/month with update/remove links
 ├── CNAME                   # Custom domain (nomadicmehul.dev)

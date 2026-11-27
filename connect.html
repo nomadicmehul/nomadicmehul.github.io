@@ -28,7 +28,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <style>
         :root {
@@ -171,6 +171,8 @@
 
         a:focus-visible, button:focus-visible { outline: 2px solid var(--term-green); outline-offset: 2px; }
 
+        .preview .fade { animation: none; opacity: 1; transform: none; }
+        .preview .link:hover { transform: none; }
         @media (prefers-reduced-motion: reduce) {
             .fade { animation: none; opacity: 1; transform: none; }
             .link, .social, .share-btn { transition: none; }
@@ -238,7 +240,10 @@
 
         const anchorAttrs = url => isExternal(url) ? ' target="_blank" rel="noopener"' : '';
 
-        const fetchJson = path => fetch(path, { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(path); return r.json(); });
+        const fetched = {};   // one request per file, even when the preview re-renders on every keystroke
+        const fetchJson = path => fetched[path] ||= fetch(path, { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(path); return r.json(); });
+        // ?preview: Links Studio shows this page in a frame and sends the draft links.json with postMessage
+        const PREVIEW = new URLSearchParams(location.search).has('preview');
 
         const todayLocal = () => {
             const d = new Date();
@@ -306,14 +311,17 @@
             return linkCard(l);
         }
 
-        async function render() {
-            const app = document.getElementById('app');
-            let data;
-            try { data = await fetchJson('data/links.json'); }
+        async function load() {
+            try { render(await fetchJson('data/links.json')); }
             catch {
-                app.innerHTML = `<p class="loading" style="animation:none">Couldn't load links. Visit <a href="index.html" style="color:var(--term-green)">nomadicmehul.dev</a></p>`;
-                return;
+                document.getElementById('app').innerHTML = `<p class="loading" style="animation:none">Couldn't load links. Visit <a href="index.html" style="color:var(--term-green)">nomadicmehul.dev</a></p>`;
             }
+        }
+
+        let renderSeq = 0;
+        async function render(data) {
+            const app = document.getElementById('app');
+            const seq = ++renderSeq;
             const p = data.profile || {};
             const socials = (data.socials || []).filter(s => !s.hidden && s.url).map(s => {
                 const [, icon, color] = brandOf(s.url);
@@ -329,6 +337,7 @@
                     <div class="links">${cards.join('')}</div>
                 </section>`;
             }));
+            if (seq !== renderSeq) return;   // a newer render (preview update) finished first
 
             app.innerHTML = `
                 <header class="profile fade">
@@ -364,11 +373,23 @@
         });
 
         document.getElementById('year').textContent = new Date().getFullYear();
-        render();
+        if (PREVIEW && window.parent !== window) {
+            document.body.classList.add('preview');
+            addEventListener('message', e => {
+                if (e.origin !== location.origin || e.source !== window.parent || e.data?.type !== 'links-preview') return;
+                render(e.data.links);
+            });
+            // links in the preview don't navigate the frame away
+            document.addEventListener('click', e => { if (e.target.closest('a')) e.preventDefault(); });
+            window.parent.postMessage({ type: 'links-preview-ready' }, location.origin);
+        }
+        if (!PREVIEW || window.parent === window) {
+            load();
+        }
 
         // ===== Matrix rain (subtle, skipped for reduced motion) =====
         (function () {
-            if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            if (PREVIEW || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
             const canvas = document.getElementById('matrix-bg');
             const ctx = canvas.getContext('2d');
             const chars = '01{}[]()<>/\\|;:=+-*&^%$#@!~abcdef0123456789';

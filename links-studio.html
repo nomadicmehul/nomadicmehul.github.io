@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links Studio — Mehul Patel</title>
+    <meta name="description" content="Edit the link-in-bio page at nomadicmehul.dev/connect.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        :root {
+            --term-green: #4ade80; --term-green-dim: #22c55e; --term-green-bright: #86efac;
+            --term-amber: #fbbf24; --term-cyan: #22d3ee; --term-red: #f87171;
+            --term-purple: #c084fc; --term-blue: #60a5fa;
+            --bg-primary: #0a0e17; --bg-secondary: #0f1623; --bg-tertiary: #151d2e;
+            --bg-card: #111827; --bg-elevated: #1e293b;
+            --text-primary: #e2e8f0; --text-secondary: #94a3b8; --text-muted: #64748b;
+            --border-default: #1e293b; --border-hover: #334155;
+            --border-accent: rgba(74, 222, 128, 0.3);
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+            --shadow-glow: 0 0 20px rgba(74, 222, 128, 0.15);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-sans); color: var(--text-primary); background: var(--bg-primary); line-height: 1.6; -webkit-font-smoothing: antialiased; color-scheme: dark; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        button, input, textarea { font: inherit; color: inherit; }
+        .container { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+
+        /* Nav */
+        .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(10, 14, 23, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-default); }
+        .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+        .nav-logo { font-weight: 700; font-size: 1.25rem; display: flex; align-items: center; font-family: var(--font-mono); color: var(--term-green); }
+        .nav-logo .prompt-user { color: var(--term-green-bright); }
+        .nav-logo .prompt-at { color: var(--term-amber); }
+        .nav-logo .prompt-host { color: var(--term-cyan); }
+        .nav-logo .prompt-colon { color: var(--text-secondary); }
+        .nav-logo .prompt-path { color: var(--term-blue); }
+        .nav-logo .prompt-hash { color: var(--term-red); font-weight: 800; }
+        .nav-logo .cursor-block { display: inline-block; width: 10px; height: 18px; background: var(--term-green); margin-left: 2px; animation: cursor-blink 1s step-end infinite; vertical-align: text-bottom; }
+        @keyframes cursor-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .nav-links { display: flex; align-items: center; gap: 24px; }
+        .nav-links a { font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); transition: color 0.2s; font-family: var(--font-mono); }
+        .nav-links a:hover { color: var(--term-green); }
+
+        /* Buttons */
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; border: 1px solid transparent; cursor: pointer; background: none; }
+        .btn-primary { background: rgba(74, 222, 128, 0.15); color: var(--term-green); border-color: rgba(74, 222, 128, 0.35); }
+        .btn-primary:hover { background: rgba(74, 222, 128, 0.25); box-shadow: var(--shadow-glow); }
+        .btn-ghost { color: var(--text-secondary); border-color: var(--border-hover); }
+        .btn-ghost:hover { border-color: var(--term-green); color: var(--term-green); }
+        .btn-dashed { color: var(--text-secondary); border: 1px dashed var(--border-hover); }
+        .btn-dashed:hover { border-color: var(--term-green); color: var(--term-green); }
+        .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+        .btn-lg { padding: 14px 22px; font-size: 1rem; width: 100%; }
+        .btn[aria-disabled="true"], .btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+
+        /* Hero */
+        .studio-hero { padding: 112px 0 28px; }
+        .hero-prompt { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; }
+        .hero-prompt .u { color: var(--term-green-bright); } .hero-prompt .h { color: var(--term-cyan); } .hero-prompt .p { color: var(--term-blue); }
+        .studio-hero h1 { font-size: 2.4rem; font-weight: 800; line-height: 1.15; margin-bottom: 10px; }
+        .studio-hero h1 .hl { background: linear-gradient(135deg, var(--term-green), var(--term-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .studio-hero p { color: var(--text-secondary); max-width: 720px; }
+        .studio-hero p a { color: var(--term-green); }
+        .quick-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
+
+        /* Connect GitHub */
+        .connect { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; border: 1px solid var(--border-default); background: var(--bg-card); border-radius: 12px; padding: 12px 16px; margin-bottom: 24px; font-size: 0.88rem; color: var(--text-secondary); }
+        .connect.on { border-color: rgba(74,222,128,.35); }
+        .connect .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--text-muted); flex-shrink: 0; }
+        .connect.on .dot { background: var(--term-green); box-shadow: 0 0 8px var(--term-green); }
+        .connect .grow { flex: 1; min-width: 220px; }
+        .connect b { color: var(--text-primary); }
+
+        /* Layout */
+        .studio { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 28px; padding-bottom: 96px; align-items: start; }
+        .side { position: sticky; top: 92px; display: flex; flex-direction: column; gap: 16px; }
+        .panel { background: var(--bg-card); border: 1px solid var(--border-default); border-radius: 14px; padding: 22px; }
+        .panel + .panel { margin-top: 20px; }
+        .panel-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+        .panel-num { font-family: var(--font-mono); font-size: 0.8rem; color: var(--term-green); }
+        .panel-head h2 { font-size: 1.05rem; font-weight: 700; }
+        .panel-head .hint { margin-left: auto; font-size: 0.8rem; color: var(--text-muted); }
+
+        /* Fields */
+        .field { margin-bottom: 14px; }
+        .field:last-child { margin-bottom: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        label.lbl { display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 6px; }
+        label.lbl .req { color: var(--term-red); }
+        .input { width: 100%; background: var(--bg-secondary); border: 1px solid var(--border-hover); border-radius: 8px; padding: 9px 12px; font-size: 0.92rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+        textarea.input { resize: vertical; min-height: 64px; }
+        .input.mono { font-family: var(--font-mono); font-size: 0.82rem; }
+        .input::placeholder { color: var(--text-muted); }
+        .input:focus { border-color: var(--term-green); box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.15); }
+        .input.invalid { border-color: rgba(248, 113, 113, 0.7); }
+
+        /* Items (socials + links) */
+        .items { display: flex; flex-direction: column; gap: 8px; }
+        .item { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 10px; align-items: start; background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: 10px; padding: 10px; transition: border-color .2s, opacity .2s; }
+        .item:focus-within { border-color: var(--border-hover); }
+        .item.off { opacity: 0.55; }
+        .item.off:focus-within { opacity: 1; }
+        .item.hl { border-color: rgba(74, 222, 128, 0.4); background: linear-gradient(135deg, rgba(74,222,128,.08), var(--bg-secondary) 60%); }
+        .item.auto { border-style: dashed; border-color: rgba(251,191,36,.35); }
+        .item-icon { width: 44px; height: 44px; border-radius: 10px; display: grid; place-items: center; background: var(--bg-elevated); color: var(--term-green); font-size: 1.1rem; border: 1px dashed transparent; cursor: pointer; transition: border-color .2s; }
+        .item-icon:hover { border-color: var(--term-green); }
+        .item.auto .item-icon { color: var(--term-amber); cursor: default; }
+        .item.auto .item-icon:hover { border-color: transparent; }
+        .item-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+        .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: 6px; }
+        .item-body b { font-size: 0.92rem; }
+        .item-body .muted { font-size: 0.8rem; color: var(--text-muted); }
+        .note { font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono); min-height: 0; }
+        .note:empty { display: none; }
+        .note.err { color: var(--term-red); }
+        .note.info i { color: var(--term-amber); margin-right: 4px; }
+        .item-actions { display: grid; grid-template-columns: repeat(3, 30px); gap: 2px; }
+        .icon-btn { border: 1px solid transparent; background: none; cursor: pointer; color: var(--text-muted); width: 30px; height: 30px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.82rem; }
+        .icon-btn:hover { color: var(--text-primary); border-color: var(--border-hover); }
+        .icon-btn:disabled { opacity: .25; cursor: default; border-color: transparent; }
+        .icon-btn.del:hover { color: var(--term-red); }
+        .icon-btn.star.on { color: var(--term-amber); }
+        .icon-btn.eye.on { color: var(--term-red); }
+
+        .add-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; align-items: center; }
+        .add-row .lead { font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-mono); margin-right: 4px; }
+        .chip { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; padding: 5px 11px; border-radius: 100px; border: 1px dashed var(--border-hover); background: var(--bg-secondary); color: var(--text-secondary); transition: all 0.15s; }
+        .chip:hover { border-color: var(--term-green); color: var(--term-green); }
+        .chip.have { border-style: solid; color: var(--text-muted); }
+        .chip.have::after { content: '✓'; color: var(--term-green); }
+
+        /* Sections */
+        .sections { display: flex; flex-direction: column; gap: 16px; }
+        .sec { border: 1px solid var(--border-default); border-radius: 12px; padding: 14px; background: var(--bg-primary); }
+        .sec-head { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+        .sec-head .prompt { font-family: var(--font-mono); font-size: 0.82rem; color: var(--term-green); white-space: nowrap; }
+        .sec-head .input { font-family: var(--font-mono); font-size: 0.85rem; padding: 7px 10px; }
+        .sec-head .acts { display: flex; gap: 2px; }
+        .sec-empty { font-size: 0.82rem; color: var(--text-muted); padding: 6px 2px; }
+
+        /* Preview */
+        .side-label { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; display: flex; justify-content: space-between; gap: 8px; }
+        .side-label a { color: var(--term-green); }
+        .phone { max-width: 390px; margin: 0 auto; border: 1px solid var(--border-hover); border-radius: 30px; padding: 10px; background: #05080e; box-shadow: var(--shadow-lg); }
+        .phone iframe { display: block; width: 100%; height: min(640px, calc(100vh - 380px)); min-height: 380px; border: 0; border-radius: 22px; background: var(--bg-primary); }
+
+        /* Publish panel */
+        .status { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; }
+        .status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
+        .status.dirty { color: var(--term-amber); } .status.dirty .dot { background: var(--term-amber); box-shadow: 0 0 6px var(--term-amber); }
+        .checks { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; font-size: 0.84rem; }
+        .checks li { display: flex; gap: 8px; align-items: baseline; color: var(--text-secondary); }
+        .checks li i { width: 14px; text-align: center; }
+        .checks li.ok i { color: var(--term-green); }
+        .checks li.err { color: var(--text-primary); } .checks li.err i { color: var(--term-red); }
+        .checks li.warn i { color: var(--term-amber); }
+        .checks li button { background: none; border: none; color: inherit; text-align: left; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
+        .submit-row { display: flex; gap: 8px; margin-top: 10px; }
+        .submit-row .btn { flex: 1; }
+        .kbd { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); text-align: center; margin-top: 8px; }
+        details.json { margin-top: 12px; }
+        details.json summary { cursor: pointer; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); }
+        details.json pre { margin-top: 10px; background: var(--bg-primary); border: 1px solid var(--border-default); border-radius: 8px; padding: 12px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-secondary); white-space: pre-wrap; word-break: break-word; max-height: 280px; overflow: auto; }
+
+        /* Dialogs */
+        dialog { margin: auto; border: 1px solid var(--border-accent); border-radius: 16px; background: var(--bg-card); color: var(--text-primary); max-width: 520px; width: calc(100% - 32px); padding: 26px; box-shadow: var(--shadow-lg), var(--shadow-glow); }
+        dialog::backdrop { background: rgba(5, 8, 14, 0.75); backdrop-filter: blur(3px); }
+        dialog h3 { font-size: 1.2rem; margin-bottom: 4px; }
+        dialog > p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 18px; }
+        .steps { counter-reset: s; display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px; }
+        .steps li { counter-increment: s; display: grid; grid-template-columns: 28px 1fr; gap: 12px; font-size: 0.9rem; color: var(--text-secondary); }
+        .steps li::before { content: counter(s); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; background: rgba(74,222,128,.12); color: var(--term-green); border: 1px solid rgba(74,222,128,.3); }
+        .steps b { color: var(--text-primary); }
+        .steps kbd { font-family: var(--font-mono); font-size: 0.78rem; background: var(--bg-elevated); border: 1px solid var(--border-hover); border-radius: 4px; padding: 0 5px; }
+        .dialog-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+        .help { font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; min-height: 1.2em; }
+        .help.err { color: var(--term-red); }
+        .toggle-row { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.88rem; color: var(--text-secondary); margin-top: 10px; }
+        .toggle-row input { accent-color: var(--term-green); width: 16px; height: 16px; }
+        .progress { display: flex; flex-direction: column; gap: 12px; margin-bottom: 22px; }
+        .progress li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: 0.9rem; color: var(--text-muted); align-items: baseline; }
+        .progress li.run { color: var(--text-primary); } .progress li.ok { color: var(--text-secondary); } .progress li.err { color: var(--term-red); }
+        .progress li i { text-align: center; }
+        .progress li.ok i { color: var(--term-green); }
+        .progress small { display: block; font-size: 0.78rem; color: var(--text-muted); word-break: break-word; }
+        .progress small a { color: var(--term-green); text-decoration: underline; }
+
+        /* Icon picker */
+        .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); gap: 6px; margin-bottom: 16px; max-height: 300px; overflow: auto; padding: 2px; }
+        .icon-grid button { height: 44px; border-radius: 9px; border: 1px solid var(--border-default); background: var(--bg-secondary); color: var(--text-secondary); cursor: pointer; font-size: 1.05rem; }
+        .icon-grid button:hover, .icon-grid button.on { border-color: var(--term-green); color: var(--term-green); background: rgba(74,222,128,.08); }
+        .icon-grid button.auto-opt { grid-column: span 3; font-size: 0.8rem; font-family: var(--font-mono); display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .icon-custom { display: flex; gap: 8px; }
+
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px); opacity: 0; transition: all 0.25s; background: var(--bg-elevated); border: 1px solid var(--border-accent); color: var(--text-primary); padding: 10px 16px; border-radius: 8px; font-size: 0.85rem; z-index: 2000; pointer-events: none; }
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+        .loading { padding: 64px 0; text-align: center; color: var(--text-muted); font-family: var(--font-mono); }
+        [hidden] { display: none !important; }
+        .footer { color: var(--text-muted); padding: 32px 0; text-align: center; font-size: 0.85rem; border-top: 1px solid var(--border-default); font-family: var(--font-mono); }
+        .footer a { color: var(--term-green); }
+
+        @media (max-width: 1040px) {
+            .studio { grid-template-columns: 1fr; }
+            .side { position: static; }
+        }
+        @media (max-width: 640px) {
+            .container { padding: 0 16px; }
+            .nav-links a:not(.btn) { display: none; }
+            .nav-logo { font-size: 0.95rem; }
+            .studio-hero h1 { font-size: 1.9rem; }
+            .row, .two { grid-template-columns: 1fr; }
+            .panel { padding: 16px; }
+            .item { grid-template-columns: 40px minmax(0, 1fr); }
+            .item-icon { width: 40px; height: 40px; }
+            .item-actions { grid-column: 1 / -1; grid-template-columns: repeat(6, 30px); justify-content: end; }
+            .sec { padding: 10px; }
+        }
+        *:focus-visible { outline: 2px solid var(--term-green); outline-offset: 2px; }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+    </style>
+</head>
+<body>
+    <nav class="nav" aria-label="Main navigation">
+        <div class="container">
+            <div class="nav-inner">
+                <a href="index.html" class="nav-logo">
+                    <span class="prompt-user">root</span><span class="prompt-at">@</span><span class="prompt-host">mehul</span><span class="prompt-colon">:</span><span class="prompt-path">~/links</span><span class="prompt-hash">#</span><span class="cursor-block"></span>
+                </a>
+                <div class="nav-links">
+                    <a href="studio.html">Content Studio</a>
+                    <a href="connect.html" target="_blank" rel="noopener" class="btn btn-primary btn-sm"><i class="fas fa-link"></i> /connect</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="main-content">
+        <section class="studio-hero">
+            <div class="container">
+                <div class="hero-prompt"><span class="u">mehul</span>@<span class="h">berlin</span>:<span class="p">~/links</span>$ edit connect</div>
+                <h1>Links <span class="hl">Studio</span></h1>
+                <p>Edit your link-in-bio page, <a href="connect.html" target="_blank" rel="noopener">nomadicmehul.dev/connect</a>: profile, social icons and link sections. The preview on the right updates as you type.</p>
+                <div class="quick-links">
+                    <a class="btn btn-ghost btn-sm" href="studio.html"><i class="fas fa-microphone"></i> Speaking events</a>
+                    <a class="btn btn-ghost btn-sm" href="demo-studio.html"><i class="fas fa-code-branch"></i> Demo repos</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="container">
+            <div class="connect" id="connect">
+                <span class="dot"></span>
+                <span class="grow" id="connect-text"></span>
+                <button type="button" class="btn btn-primary btn-sm" id="connect-btn"></button>
+            </div>
+
+            <div class="loading" id="loading"><i class="fas fa-circle-notch fa-spin"></i> loading links…</div>
+
+            <div class="studio" id="studio" hidden>
+                <form id="form" autocomplete="off" novalidate>
+                    <section class="panel">
+                        <div class="panel-head"><span class="panel-num">01</span><h2>Profile</h2></div>
+                        <div class="row">
+                            <div class="field">
+                                <label class="lbl" for="p-name">--name <span class="req">*</span></label>
+                                <input class="input" id="p-name" data-path="profile.name" maxlength="80">
+                            </div>
+                            <div class="field">
+                                <label class="lbl" for="p-handle">--handle</label>
+                                <input class="input mono" id="p-handle" data-path="profile.handle" placeholder="nomadicmehul" maxlength="40" spellcheck="false">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="lbl" for="p-tagline">--tagline <span style="color:var(--text-muted)">(the $ whoami line)</span></label>
+                            <input class="input" id="p-tagline" data-path="profile.tagline" maxlength="160">
+                        </div>
+                        <div class="field">
+                            <label class="lbl" for="p-bio">--bio</label>
+                            <textarea class="input" id="p-bio" data-path="profile.bio" rows="2" maxlength="300"></textarea>
+                        </div>
+                        <div class="field">
+                            <label class="lbl" for="p-avatar">--photo</label>
+                            <input class="input mono" id="p-avatar" data-path="profile.avatar" placeholder="assets/img/profile.jpg" spellcheck="false">
+                        </div>
+                    </section>
+
+                    <section class="panel">
+                        <div class="panel-head"><span class="panel-num">02</span><h2>Social icons</h2><span class="hint">the row of icons under your name</span></div>
+                        <div class="items" id="socials"></div>
+                        <div class="add-row" id="social-add"></div>
+                    </section>
+
+                    <section class="panel">
+                        <div class="panel-head"><span class="panel-num">03</span><h2>Links</h2><span class="hint">grouped in sections · <i class="fas fa-star" style="color:var(--term-amber)"></i> highlights a link</span></div>
+                        <div class="sections" id="sections"></div>
+                        <div class="add-row"><button type="button" class="btn btn-dashed btn-sm" data-act="add-section"><i class="fas fa-plus"></i> Add section</button></div>
+                    </section>
+                </form>
+
+                <aside class="side" id="side">
+                    <div>
+                        <div class="side-label"><span>// live preview, as on /connect</span><a href="connect.html" target="_blank" rel="noopener">open live page <i class="fas fa-arrow-up-right-from-square"></i></a></div>
+                        <div class="phone"><iframe id="preview" src="connect.html?preview" title="Preview of the connect page"></iframe></div>
+                    </div>
+                    <section class="panel">
+                        <div class="status" id="status"><span class="dot"></span><span id="status-text"></span></div>
+                        <ul class="checks" id="checks"></ul>
+                        <button type="button" class="btn btn-primary btn-lg" id="publish"><i class="fas fa-rocket"></i> Publish to site</button>
+                        <a class="btn btn-primary btn-lg" id="manual" href="https://github.com/nomadicmehul/nomadicmehul.github.io/edit/main/data/links.json" target="_blank" rel="noopener"><i class="fab fa-github"></i> Copy &amp; open on GitHub</a>
+                        <div class="submit-row">
+                            <button type="button" class="btn btn-ghost btn-sm" id="copy"><i class="fas fa-copy"></i> Copy JSON</button>
+                            <button type="button" class="btn btn-ghost btn-sm" id="discard"><i class="fas fa-rotate-left"></i> Discard changes</button>
+                        </div>
+                        <div class="kbd" id="kbd">⌘/Ctrl + Enter to publish</div>
+                        <details class="json"><summary>data/links.json</summary><pre id="json"></pre></details>
+                    </section>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <dialog id="connect-dialog">
+        <h3><i class="fab fa-github" style="color:var(--term-green)"></i> Connect GitHub</h3>
+        <p>With a token, the studio saves your links and deploys the site itself. It's the same token as the Content Studio and Demo Studio, kept only in this browser and only sent to api.github.com.</p>
+        <ol class="steps">
+            <li><span><a href="https://github.com/settings/tokens/new?scopes=public_repo&amp;description=Studios+%28nomadicmehul.dev%29" target="_blank" rel="noopener" style="color:var(--term-green);text-decoration:underline">Create a classic token</a> — <b>public_repo</b> is already ticked. Pick an expiry such as 90 days, then <b>Generate token</b>.</span></li>
+            <li><span>Copy it and paste it here.</span></li>
+        </ol>
+        <input class="input" id="token-input" type="password" placeholder="ghp_…" autocomplete="off" spellcheck="false">
+        <label class="toggle-row"><input type="checkbox" id="token-remember" checked> Remember on this device</label>
+        <div class="help" id="token-help"></div>
+        <div class="dialog-actions">
+            <button type="button" class="btn btn-ghost btn-sm" id="connect-cancel">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm" id="connect-save"><i class="fas fa-plug"></i> Connect</button>
+        </div>
+    </dialog>
+
+    <dialog id="manual-dialog">
+        <h3><i class="fab fa-github" style="color:var(--term-green)"></i> Finish on GitHub</h3>
+        <p>The new <b>links.json</b> is on your clipboard, and GitHub's editor opened in a new tab.</p>
+        <ol class="steps">
+            <li><span>In the editor, select everything (<kbd>⌘A</kbd> / <kbd>Ctrl A</kbd>) and paste (<kbd>⌘V</kbd> / <kbd>Ctrl V</kbd>).</span></li>
+            <li><span>Click <b>Commit changes…</b> and commit directly to <b>main</b>.</span></li>
+            <li><span>The site deploys by itself; <b>/connect</b> updates in about a minute.</span></li>
+        </ol>
+        <div class="dialog-actions">
+            <button type="button" class="btn btn-ghost btn-sm" id="manual-copy"><i class="fas fa-copy"></i> Copy again</button>
+            <button type="button" class="btn btn-primary btn-sm" id="manual-done"><i class="fas fa-check"></i> Done</button>
+        </div>
+    </dialog>
+
+    <dialog id="publish-dialog">
+        <h3><i class="fas fa-rocket" style="color:var(--term-green)"></i> <span id="pub-title">Publishing</span></h3>
+        <p id="pub-intro"></p>
+        <ol class="progress" id="pub-steps"></ol>
+        <div class="dialog-actions">
+            <a class="btn btn-ghost btn-sm" id="pub-view" href="connect.html" target="_blank" rel="noopener" hidden><i class="fas fa-up-right-from-square"></i> View /connect</a>
+            <button type="button" class="btn btn-primary btn-sm" id="pub-done" disabled><i class="fas fa-check"></i> Done</button>
+        </div>
+    </dialog>
+
+    <dialog id="icon-dialog">
+        <h3><i class="fas fa-icons" style="color:var(--term-green)"></i> Pick an icon</h3>
+        <p>Or leave it on <b>Auto</b>: the icon follows the link (GitHub, YouTube, Spotify…).</p>
+        <div class="icon-grid" id="icon-grid"></div>
+        <label class="lbl" for="icon-custom">any Font Awesome 6 class</label>
+        <div class="icon-custom">
+            <input class="input mono" id="icon-custom" placeholder="fas fa-rocket" spellcheck="false">
+            <button type="button" class="btn btn-primary btn-sm" id="icon-use">Use</button>
+        </div>
+        <div class="dialog-actions" style="margin-top:16px">
+            <a class="btn btn-ghost btn-sm" href="https://fontawesome.com/v6/search?o=r&amp;m=free" target="_blank" rel="noopener"><i class="fas fa-magnifying-glass"></i> Browse icons</a>
+            <button type="button" class="btn btn-ghost btn-sm" id="icon-cancel">Cancel</button>
+        </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <footer class="footer">
+        <p>Saves to <a href="https://github.com/nomadicmehul/nomadicmehul.github.io/blob/main/data/links.json" target="_blank" rel="noopener">data/links.json</a> &mdash; <a href="connect.html" target="_blank" rel="noopener">View /connect</a></p>
+    </footer>
+
+    <script>
+        const REPO = 'nomadicmehul/nomadicmehul.github.io';
+        const OWNER = 'nomadicmehul';
+        const API = 'https://api.github.com';
+        const FILE = 'data/links.json';
+        const DRAFT_KEY = 'links-studio-draft-v1';
+        const TOKEN_KEY = 'studio-github-token';   // shared with studio.html and demo-studio.html
+
+        const $ = id => document.getElementById(id);
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+        // What connect.html's safeUrl() accepts, a bit stricter (a domain after https://, an address after mailto:)
+        const URL_OK = /^(https?:\/\/[^\s/]+\.[^\s]+|mailto:[^\s@]+@\S+|assets\/\S+|[\w-]+\.html(#[\w-]*)?)$/i;
+        const ICON_OK = /^(fa[sbr]|fa-(solid|brands|regular)) fa-[a-z0-9-]+$/;
+
+        // Same list as BRANDS in connect.html (keep in sync): the icon a link gets when it has none
+        const BRANDS = [
+            [/github\.com/, 'fab fa-github'], [/linkedin\.com/, 'fab fa-linkedin-in'], [/(twitter|x)\.com/, 'fab fa-x-twitter'],
+            [/youtube\.com|youtu\.be/, 'fab fa-youtube'], [/instagram\.com/, 'fab fa-instagram'], [/medium\.com/, 'fab fa-medium'],
+            [/bsky\.app/, 'fab fa-bluesky'], [/threads\.net/, 'fab fa-threads'], [/mastodon|fosstodon|hachyderm/, 'fab fa-mastodon'],
+            [/facebook\.com/, 'fab fa-facebook-f'], [/tiktok\.com/, 'fab fa-tiktok'], [/discord\.(gg|com)/, 'fab fa-discord'],
+            [/t\.me|telegram/, 'fab fa-telegram'], [/wa\.me|whatsapp/, 'fab fa-whatsapp'], [/dev\.to/, 'fab fa-dev'],
+            [/stackoverflow\.com/, 'fab fa-stack-overflow'], [/hub\.docker\.com|docker\.com/, 'fab fa-docker'],
+            [/slideshare|speakerdeck/, 'fas fa-person-chalkboard'], [/sessionize\.com/, 'fas fa-microphone'],
+            [/topmate\.io|calendly\.com|cal\.com/, 'fas fa-calendar-check'], [/buymeacoffee\.com|ko-fi\.com/, 'fas fa-mug-hot'],
+            [/credly\.com/, 'fas fa-award'], [/spotify\.com/, 'fab fa-spotify'], [/podcasts\.apple\.com/, 'fas fa-podcast'],
+            [/g\.dev|developers\.google\.com/, 'fab fa-google'], [/^mailto:/, 'fas fa-envelope'],
+        ];
+        const autoIcon = url => (BRANDS.find(([re]) => re.test(String(url).toLowerCase())) || [null, 'fas fa-link'])[1];
+        const iconOf = item => item.icon || autoIcon(item.url);
+
+        // Quick-add for the social row: label + the start of the profile URL
+        const PLATFORMS = [
+            ['LinkedIn', 'https://www.linkedin.com/in/'], ['GitHub', 'https://github.com/'], ['X (Twitter)', 'https://x.com/'],
+            ['YouTube', 'https://www.youtube.com/@'], ['Instagram', 'https://www.instagram.com/'], ['Medium', 'https://medium.com/@'],
+            ['Bluesky', 'https://bsky.app/profile/'], ['Threads', 'https://www.threads.net/@'], ['Mastodon', 'https://mastodon.social/@'],
+            ['Facebook', 'https://www.facebook.com/'], ['TikTok', 'https://www.tiktok.com/@'], ['Spotify', 'https://open.spotify.com/'],
+            ['Apple Podcasts', 'https://podcasts.apple.com/'], ['Telegram', 'https://t.me/'], ['Discord', 'https://discord.gg/'],
+            ['WhatsApp', 'https://wa.me/'], ['Dev.to', 'https://dev.to/'], ['Stack Overflow', 'https://stackoverflow.com/users/'],
+            ['Docker Hub', 'https://hub.docker.com/u/'], ['Sessionize', 'https://sessionize.com/'], ['Credly', 'https://www.credly.com/users/'],
+            ['Google Developer Profile', 'https://g.dev/'], ['Email', 'mailto:'],
+        ];
+        const PREFIXES = new Set(PLATFORMS.map(p => p[1].toLowerCase()));
+
+        const AUTOS = {
+            'next-talk': { name: 'Next talk', icon: 'fas fa-microphone', about: 'The next upcoming talk from speaking.json, or the latest one if none is coming up.' },
+            'latest-post': { name: 'Latest article', icon: 'fab fa-medium', about: 'The newest Medium post from blog.json, with its thumbnail.' },
+        };
+
+        const ICONS = ['fas fa-link', 'fas fa-globe', 'fas fa-terminal', 'fas fa-microphone', 'fas fa-microphone-lines', 'fas fa-person-chalkboard',
+            'fas fa-calendar-check', 'fas fa-envelope', 'fas fa-file-lines', 'fas fa-file-pdf', 'fas fa-code-branch', 'fas fa-code',
+            'fab fa-github', 'fab fa-youtube', 'fas fa-video', 'fab fa-spotify', 'fas fa-podcast', 'fas fa-headphones', 'fas fa-pen-nib',
+            'fab fa-medium', 'fas fa-blog', 'fas fa-anchor', 'fas fa-cloud', 'fab fa-docker', 'fab fa-aws', 'fab fa-google',
+            'fas fa-dharmachakra', 'fas fa-robot', 'fas fa-brain', 'fas fa-graduation-cap', 'fas fa-book', 'fas fa-users', 'fas fa-handshake',
+            'fas fa-briefcase', 'fas fa-ticket', 'fas fa-trophy', 'fas fa-award', 'fas fa-star', 'fas fa-heart', 'fas fa-rocket', 'fas fa-bolt',
+            'fas fa-gift', 'fas fa-mug-hot', 'fas fa-newspaper', 'fas fa-images', 'fas fa-map-location-dot', 'fab fa-linkedin-in', 'fab fa-x-twitter'];
+
+        let TOKEN = null, LOGIN = '', EXTRA = '';
+        let state = null;          // what's being edited
+        let liveText = '';         // links.json exactly as loaded (to spot changes made on GitHub meanwhile)
+        let liveOut = '';          // serialize() of the loaded file: "no changes" means output === liveOut
+        let showAll = false;       // after a publish attempt, show every error, not only touched rows
+        const touched = new Set();
+
+        // ---------- model ----------
+        const str = v => typeof v === 'string' ? v : '';
+        function normalize(d) {
+            d = d && typeof d === 'object' ? d : {};
+            const p = d.profile || {};
+            return {
+                profile: { name: str(p.name), handle: str(p.handle), tagline: str(p.tagline), bio: str(p.bio), avatar: str(p.avatar) },
+                socials: (Array.isArray(d.socials) ? d.socials : []).map(s => ({ label: str(s.label), url: str(s.url), icon: str(s.icon), hidden: !!s.hidden })),
+                sections: (Array.isArray(d.sections) ? d.sections : []).map(s => ({
+                    title: str(s.title),
+                    links: (Array.isArray(s.links) ? s.links : []).map(l => l.auto ? { auto: String(l.auto) }
+                        : { label: str(l.label), description: str(l.description), url: str(l.url), icon: str(l.icon), highlight: !!l.highlight, hidden: !!l.hidden }),
+                })),
+            };
+        }
+        // The JSON written to data/links.json: empty optional fields left out, keys in the file's order
+        function serialize(s) {
+            const t = v => v.trim();
+            const profile = { name: t(s.profile.name) };
+            for (const k of ['handle', 'tagline', 'bio', 'avatar']) if (t(s.profile[k])) profile[k] = t(s.profile[k]);
+            const item = (x, withDesc) => {
+                const o = { label: t(x.label) };
+                if (withDesc && t(x.description)) o.description = t(x.description);
+                o.url = t(x.url);
+                if (t(x.icon)) o.icon = t(x.icon);
+                if (x.highlight) o.highlight = true;
+                if (x.hidden) o.hidden = true;
+                return o;
+            };
+            const out = {
+                profile,
+                socials: s.socials.map(x => item(x, false)),
+                sections: s.sections.map(sec => ({ title: t(sec.title), links: sec.links.map(l => l.auto ? { auto: l.auto } : item(l, true)) })),
+            };
+            return JSON.stringify(out, null, 2) + '\n';   // same bytes as Python json.dumps(indent=2, ensure_ascii=False)
+        }
+        const getPath = path => path.split('.').reduce((o, k) => o?.[k], state);
+        function setPath(path, value) {
+            const keys = path.split('.'), last = keys.pop();
+            const obj = keys.reduce((o, k) => o[k], state);
+            obj[last] = value;
+        }
+
+        // ---------- GitHub token (same as studio.html) ----------
+        function loadToken() {
+            if (window.top !== window.self) { TOKEN = null; return; }   // framed by another site: act as not connected
+            try { TOKEN = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || null; } catch (_) { TOKEN = null; }
+        }
+        function storeToken(token, remember) {
+            try {
+                localStorage.removeItem(TOKEN_KEY); sessionStorage.removeItem(TOKEN_KEY);
+                if (token) (remember ? localStorage : sessionStorage).setItem(TOKEN_KEY, token);
+            } catch (_) {}
+            TOKEN = token;
+        }
+        async function verifyToken(token) {
+            const res = await fetch(API + '/user', { headers: { Accept: 'application/vnd.github+json', Authorization: `Bearer ${token}` } });
+            if (res.status === 401) throw new Error("GitHub didn't accept this token — check it was copied completely and hasn't expired.");
+            if (!res.ok) throw new Error(`GitHub answered HTTP ${res.status}.`);
+            const user = await res.json();
+            if (user.login.toLowerCase() !== OWNER) throw new Error(`This token belongs to ${user.login}, not ${OWNER}.`);
+            const scopes = res.headers.get('x-oauth-scopes');
+            if (scopes !== null && !/\b(public_)?repo\b/.test(scopes)) throw new Error('The token needs the public_repo scope.');
+            EXTRA = scopes === null ? '' : scopes.split(',').map(x => x.trim()).filter(x => x && x !== 'public_repo').join(', ');
+            return user.login;
+        }
+        async function call(method, path, body) {
+            const res = await fetch(API + path, { method, headers: { Accept: 'application/vnd.github+json', Authorization: `Bearer ${TOKEN}`, 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' }, body: body && JSON.stringify(body), cache: 'no-store' });
+            const data = res.status === 204 ? null : await res.json().catch(() => null);
+            if (!res.ok) throw new Error(`${data?.message || res.statusText} (HTTP ${res.status})`);
+            return data;
+        }
+        const connected = () => !!TOKEN;
+        function renderConnect() {
+            const on = connected();
+            $('connect').classList.toggle('on', on);
+            $('connect-text').innerHTML = on
+                ? (EXTRA ? `<b style="color:var(--term-amber)">⚠ This token can also: ${esc(EXTRA)}.</b> Create one with only <b>public_repo</b> to limit the damage if it ever leaks. ` : '')
+                  + `<b>Connected as ${esc(LOGIN || OWNER)}.</b> <b>Publish to site</b> saves and deploys in one step. <a href="https://github.com/settings/tokens" target="_blank" rel="noopener" style="text-decoration:underline">Manage or revoke the token</a>`
+                : '<b>Publish in one click?</b> Connect GitHub with the same token as the Content Studio. Without it, you paste the result into GitHub\'s editor.';
+            $('connect-btn').innerHTML = on ? '<i class="fas fa-plug-circle-xmark"></i> Disconnect' : '<i class="fas fa-plug"></i> Connect GitHub';
+            $('connect-btn').className = 'btn btn-sm ' + (on ? 'btn-ghost' : 'btn-primary');
+            $('publish').hidden = !on; $('manual').hidden = on; $('kbd').hidden = !on;
+        }
+        $('connect-btn').addEventListener('click', () => {
+            if (connected()) { storeToken(null); LOGIN = ''; renderConnect(); toast('Removed from this browser. To revoke it everywhere, delete it on GitHub → Settings → Tokens'); return; }
+            $('token-input').value = ''; $('token-help').textContent = ''; $('connect-dialog').showModal(); $('token-input').focus();
+        });
+        $('connect-cancel').addEventListener('click', () => $('connect-dialog').close());
+        $('connect-save').addEventListener('click', async () => {
+            const token = $('token-input').value.trim();
+            if (!token) { $('token-help').textContent = 'Paste the token first.'; return; }
+            $('token-help').className = 'help'; $('token-help').innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> checking…';
+            try {
+                LOGIN = await verifyToken(token);
+                storeToken(token, $('token-remember').checked);
+                $('connect-dialog').close(); renderConnect(); toast(`Connected as ${LOGIN}`);
+            } catch (e) { $('token-help').className = 'help err'; $('token-help').textContent = e.message; }
+        });
+        $('token-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('connect-save').click(); } });
+
+        // ---------- load ----------
+        async function load() {
+            try {
+                const res = await fetch(FILE, { cache: 'no-cache' });
+                if (!res.ok) throw new Error();
+                liveText = await res.text();
+                state = normalize(JSON.parse(liveText));
+            } catch (_) {
+                $('loading').innerHTML = '<i class="fas fa-triangle-exclamation"></i> Couldn\'t load data/links.json — serve the site over HTTP (python3 -m http.server).';
+                return;
+            }
+            liveOut = serialize(state);
+            let draft = null;
+            try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY)); } catch (_) {}
+            if (draft && typeof draft === 'object') {
+                const d = normalize(draft);
+                if (serialize(d) !== liveOut) { state = d; setTimeout(() => toast('Restored your unsaved changes — “Discard changes” goes back to the live version'), 300); }
+            }
+            loadToken();
+            if (TOKEN) verifyToken(TOKEN).then(l => { LOGIN = l; renderConnect(); }).catch(() => { storeToken(null); renderConnect(); toast('Your saved GitHub token stopped working — connect again'); });
+            renderConnect();
+            $('loading').hidden = true; $('studio').hidden = false;
+            renderAll();
+        }
+
+        // ---------- editor ----------
+        const actBtn = (act, path, icon, label, extra = '') => `<button type="button" class="icon-btn ${extra}" data-act="${act}" data-path="${path}" title="${label}" aria-label="${label}"><i class="fas ${icon}"></i></button>`;
+
+        function renderProfile() {
+            for (const k of ['name', 'handle', 'tagline', 'bio', 'avatar']) $('p-' + k).value = state.profile[k];
+        }
+
+        function renderSocials() {
+            const n = state.socials.length;
+            $('socials').innerHTML = state.socials.map((s, i) => {
+                const p = `socials.${i}`;
+                return `<div class="item ${s.hidden || !s.url.trim() ? 'off' : ''}" data-row="${p}">
+                    <button type="button" class="item-icon" data-act="icon" data-path="${p}" title="Change icon" aria-label="Change icon for ${esc(s.label || 'this profile')}"><i class="${esc(iconOf(s))}" data-icon="${p}"></i></button>
+                    <div class="item-body">
+                        <div class="two">
+                            <input class="input" data-path="${p}.label" value="${esc(s.label)}" placeholder="Name (e.g. Bluesky)" aria-label="Name" maxlength="60">
+                            <input class="input mono" data-path="${p}.url" value="${esc(s.url)}" placeholder="https://…" aria-label="URL" spellcheck="false" inputmode="url">
+                        </div>
+                        <div class="note" data-note="${p}"></div>
+                    </div>
+                    <div class="item-actions">
+                        ${actBtn('hide', p, s.hidden ? 'fa-eye-slash' : 'fa-eye', s.hidden ? 'Hidden — click to show' : 'Shown — click to hide', 'eye' + (s.hidden ? ' on' : ''))}
+                        ${actBtn('up', p, 'fa-arrow-up', 'Move up').replace('>', i === 0 ? ' disabled>' : '>')}
+                        ${actBtn('down', p, 'fa-arrow-down', 'Move down').replace('>', i === n - 1 ? ' disabled>' : '>')}
+                        <span></span><span></span>
+                        ${actBtn('del', p, 'fa-trash', 'Remove', 'del')}
+                    </div>
+                </div>`;
+            }).join('') || '<div class="sec-empty">No social icons yet.</div>';
+            const have = new Set(state.socials.map(s => s.label.trim().toLowerCase()));
+            $('social-add').innerHTML = '<span class="lead">+ add</span>' + PLATFORMS.map(([name]) =>
+                `<button type="button" class="chip ${have.has(name.toLowerCase()) ? 'have' : ''}" data-act="add-social" data-name="${esc(name)}">${esc(name)}</button>`).join('')
+                + '<button type="button" class="chip" data-act="add-social" data-name="">Other…</button>';
+        }
+
+        function linkRow(l, si, li, first, last) {
+            const p = `sections.${si}.links.${li}`;
+            const moves = actBtn('up', p, 'fa-arrow-up', 'Move up').replace('>', first ? ' disabled>' : '>')
+                        + actBtn('down', p, 'fa-arrow-down', 'Move down').replace('>', last ? ' disabled>' : '>');
+            if (l.auto) {
+                const a = AUTOS[l.auto] || { name: l.auto, icon: 'fas fa-question', about: 'Unknown auto card.' };
+                return `<div class="item auto" data-row="${p}">
+                    <span class="item-icon" aria-hidden="true"><i class="${a.icon}"></i></span>
+                    <div class="item-body"><b><i class="fas fa-wand-magic-sparkles" style="color:var(--term-amber);font-size:.8em"></i> ${esc(a.name)} <span class="muted">· auto</span></b><span class="muted">${esc(a.about)}</span></div>
+                    <div class="item-actions"><span></span>${moves}<span></span><span></span>${actBtn('del', p, 'fa-trash', 'Remove', 'del')}</div>
+                </div>`;
+            }
+            return `<div class="item ${l.hidden || !l.url.trim() ? 'off' : ''} ${l.highlight ? 'hl' : ''}" data-row="${p}">
+                <button type="button" class="item-icon" data-act="icon" data-path="${p}" title="Change icon" aria-label="Change icon for ${esc(l.label || 'this link')}"><i class="${esc(iconOf(l))}" data-icon="${p}"></i></button>
+                <div class="item-body">
+                    <div class="two">
+                        <input class="input" data-path="${p}.label" value="${esc(l.label)}" placeholder="Title" aria-label="Title" maxlength="100">
+                        <input class="input mono" data-path="${p}.url" value="${esc(l.url)}" placeholder="https://… or speaking.html" aria-label="URL" spellcheck="false" inputmode="url">
+                    </div>
+                    <input class="input" data-path="${p}.description" value="${esc(l.description)}" placeholder="Short line under the title (optional)" aria-label="Description" maxlength="140" style="font-size:.84rem;padding:7px 12px">
+                    <div class="note" data-note="${p}"></div>
+                </div>
+                <div class="item-actions">
+                    ${actBtn('star', p, 'fa-star', l.highlight ? 'Highlighted — click to un-highlight' : 'Highlight this link', 'star' + (l.highlight ? ' on' : ''))}
+                    ${moves}
+                    ${actBtn('hide', p, l.hidden ? 'fa-eye-slash' : 'fa-eye', l.hidden ? 'Hidden — click to show' : 'Shown — click to hide', 'eye' + (l.hidden ? ' on' : ''))}
+                    <span></span>
+                    ${actBtn('del', p, 'fa-trash', 'Remove', 'del')}
+                </div>
+            </div>`;
+        }
+
+        function renderSections() {
+            const secs = state.sections, n = secs.length;
+            const used = new Set(secs.flatMap(s => s.links.filter(l => l.auto).map(l => l.auto)));
+            $('sections').innerHTML = secs.map((s, si) => {
+                const p = `sections.${si}`;
+                const rows = s.links.map((l, li) => linkRow(l, si, li, si === 0 && li === 0, si === n - 1 && li === s.links.length - 1)).join('');
+                return `<div class="sec" data-row="${p}">
+                    <div class="sec-head">
+                        <span class="prompt">$ ls ~/</span>
+                        <input class="input" data-path="${p}.title" value="${esc(s.title)}" placeholder="section name" aria-label="Section name" maxlength="40">
+                        <span class="acts">
+                            ${actBtn('sec-up', p, 'fa-arrow-up', 'Move section up').replace('>', si === 0 ? ' disabled>' : '>')}
+                            ${actBtn('sec-down', p, 'fa-arrow-down', 'Move section down').replace('>', si === n - 1 ? ' disabled>' : '>')}
+                            ${actBtn('sec-del', p, 'fa-trash', 'Remove section', 'del')}
+                        </span>
+                    </div>
+                    <div class="items">${rows || '<div class="sec-empty">Empty — sections without links aren\'t shown.</div>'}</div>
+                    <div class="add-row">
+                        <button type="button" class="btn btn-dashed btn-sm" data-act="add-link" data-path="${p}"><i class="fas fa-plus"></i> Link</button>
+                        ${Object.entries(AUTOS).map(([k, a]) => `<button type="button" class="chip ${used.has(k) ? 'have' : ''}" data-act="add-auto" data-auto="${k}" data-path="${p}" title="${esc(a.about)}"><i class="fas fa-wand-magic-sparkles"></i> ${esc(a.name)}</button>`).join('')}
+                    </div>
+                </div>`;
+            }).join('') || '<div class="sec-empty">No sections yet.</div>';
+        }
+
+        function renderAll() { renderProfile(); renderSocials(); renderSections(); changed(); }
+
+        // ---------- validation ----------
+        function validate() {
+            const errs = [];   // { path (row or input), field (input path to mark), msg, where }
+            if (!state.profile.name.trim()) errs.push({ row: 'profile.name', field: 'profile.name', msg: 'Your name is required', where: 'Profile' });
+            const av = state.profile.avatar.trim();
+            if (av && !/^(https:\/\/\S+|assets\/\S+)$/.test(av)) errs.push({ row: 'profile.avatar', field: 'profile.avatar', msg: 'Photo must be https://… or assets/…', where: 'Profile' });
+            const checkItem = (item, p, where) => {
+                const url = item.url.trim();
+                if (!item.label.trim()) errs.push({ row: p, field: `${p}.label`, msg: 'Needs a name', where });
+                if (url && PREFIXES.has(url.toLowerCase())) errs.push({ row: p, field: `${p}.url`, msg: 'Finish the link (add your username)', where });
+                else if (url && !URL_OK.test(url)) errs.push({ row: p, field: `${p}.url`, msg: 'Link must start with https://, mailto:, assets/ or be a page like speaking.html', where });
+                if (item.icon.trim() && !ICON_OK.test(item.icon.trim())) errs.push({ row: p, field: null, msg: 'Icon must look like "fas fa-rocket"', where });
+            };
+            state.socials.forEach((s, i) => checkItem(s, `socials.${i}`, `Social · ${s.label || '#' + (i + 1)}`));
+            state.sections.forEach((sec, si) => sec.links.forEach((l, li) => {
+                if (l.auto) { if (!AUTOS[l.auto]) errs.push({ row: `sections.${si}.links.${li}`, field: null, msg: `Unknown auto card "${l.auto}"`, where: sec.title || 'Section' }); return; }
+                checkItem(l, `sections.${si}.links.${li}`, `${sec.title || 'Section ' + (si + 1)} · ${l.label || 'link ' + (li + 1)}`);
+            }));
+            return errs;
+        }
+
+        let previewTimer = null, output = '';
+        function changed() {
+            output = serialize(state);
+            const dirty = output !== liveOut;
+            const errs = validate();
+            const shown = errs.filter(e => showAll || touched.has(e.row));
+
+            document.querySelectorAll('.input.invalid').forEach(el => el.classList.remove('invalid'));
+            document.querySelectorAll('[data-note]').forEach(el => { el.className = 'note'; el.textContent = ''; });
+            // rows without a url: say they're hidden for now
+            document.querySelectorAll('[data-note]').forEach(el => {
+                const item = getPath(el.dataset.note);
+                if (item && !item.auto && !item.url.trim()) { el.className = 'note info'; el.innerHTML = '<i class="fas fa-eye-slash"></i>not shown until it has a link'; }
+                else if (item?.hidden) { el.className = 'note info'; el.innerHTML = '<i class="fas fa-eye-slash"></i>hidden'; }
+            });
+            for (const e of shown) {
+                if (e.field) document.querySelector(`[data-path="${e.field}"]`)?.classList.add('invalid');
+                const note = document.querySelector(`[data-note="${e.row}"]`);
+                if (note) { note.className = 'note err'; note.textContent = e.msg; }
+            }
+
+            // status + checklist
+            $('status').classList.toggle('dirty', dirty);
+            $('status-text').textContent = dirty ? 'unsaved changes' : 'no changes — same as the live page';
+            const visible = state.socials.filter(s => s.url.trim() && !s.hidden).length;
+            const links = state.sections.flatMap(s => s.links);
+            const shownLinks = links.filter(l => l.auto || (l.url.trim() && !l.hidden)).length;
+            const parked = [...state.socials, ...links.filter(l => !l.auto)].filter(x => !x.url.trim()).length;
+            const checks = [];
+            if (errs.length) errs.slice(0, 6).forEach((e, k) => checks.push(`<li class="err"><i class="fas fa-xmark"></i><button type="button" data-goto="${k}">${esc(e.where)}: ${esc(e.msg)}</button></li>`));
+            if (errs.length > 6) checks.push(`<li class="err"><i class="fas fa-xmark"></i>…and ${errs.length - 6} more</li>`);
+            if (!errs.length) checks.push('<li class="ok"><i class="fas fa-check"></i>Everything looks good</li>');
+            checks.push(`<li class="ok"><i class="fas fa-eye"></i>${visible} social icon${visible === 1 ? '' : 's'} and ${shownLinks} link${shownLinks === 1 ? '' : 's'} shown</li>`);
+            if (parked) checks.push(`<li class="warn"><i class="fas fa-eye-slash"></i>${parked} waiting for a link (not shown yet)</li>`);
+            $('checks').innerHTML = checks.join('');
+            $('checks').onclick = e => {
+                const b = e.target.closest('[data-goto]'); if (!b) return;
+                const err = errs[Number(b.dataset.goto)];
+                const el = (err.field && document.querySelector(`[data-path="${err.field}"]`)) || document.querySelector(`[data-row="${err.row}"]`);
+                el?.scrollIntoView({ behavior: 'smooth', block: 'center' }); if (el?.focus) setTimeout(() => el.focus({ preventScroll: true }), 300);
+            };
+
+            const blocked = !dirty || errs.length > 0;
+            $('publish').setAttribute('aria-disabled', blocked); $('manual').setAttribute('aria-disabled', blocked);
+            $('publish').dataset.why = !dirty ? 'Nothing to publish — no changes yet' : errs.length ? 'Fix the items marked in red first' : '';
+            $('manual').dataset.why = $('publish').dataset.why;
+            $('discard').disabled = !dirty;
+            $('json').textContent = output;
+
+            try { dirty ? localStorage.setItem(DRAFT_KEY, output) : localStorage.removeItem(DRAFT_KEY); } catch (_) {}
+            clearTimeout(previewTimer); previewTimer = setTimeout(sendPreview, 120);
+            return errs;
+        }
+
+        // ---------- live preview (connect.html?preview in the frame) ----------
+        function sendPreview() {
+            try { $('preview').contentWindow.postMessage({ type: 'links-preview', links: JSON.parse(output) }, location.origin); } catch (_) {}
+        }
+        window.addEventListener('message', e => {
+            if (e.origin === location.origin && e.source === $('preview').contentWindow && e.data?.type === 'links-preview-ready' && state) sendPreview();
+        });
+
+        // ---------- editing ----------
+        $('form').addEventListener('input', e => {
+            const path = e.target.dataset.path; if (!path) return;
+            setPath(path, e.target.value);
+            if (path.endsWith('.url')) {
+                const base = path.slice(0, -4), item = getPath(base), ic = document.querySelector(`[data-icon="${base}"]`);
+                if (ic) ic.className = iconOf(item);
+                document.querySelector(`[data-row="${base}"]`)?.classList.toggle('off', item.hidden || !item.url.trim());
+            }
+            changed();
+        });
+        $('form').addEventListener('focusout', e => {
+            const path = e.target.dataset?.path; if (!path) return;
+            touched.add(path.startsWith('profile.') ? path : path.replace(/\.(label|url|description|title)$/, ''));
+            changed();
+        });
+        $('form').addEventListener('submit', e => e.preventDefault());
+
+        let iconTarget = null;
+        document.addEventListener('click', e => {
+            const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+            const act = b.dataset.act, path = b.dataset.path || '';
+            const parts = path.split('.'), idx = Number(parts[parts.length - 1]);
+            let focus = null;   // [act, path] to focus after re-render (keeps keyboard flow)
+
+            if (act === 'icon') { openIcons(path); return; }
+            if (act === 'add-social') {
+                const name = b.dataset.name, found = state.socials.findIndex(s => name && s.label.trim().toLowerCase() === name.toLowerCase());
+                if (found >= 0) { const el = document.querySelector(`[data-path="socials.${found}.url"]`); el.scrollIntoView({ block: 'center' }); el.focus(); return; }
+                const prefix = (PLATFORMS.find(p => p[0] === name) || [])[1] || '';
+                state.socials.push({ label: name, url: prefix, icon: '', hidden: false });
+                renderSocials(); changed();
+                const el = document.querySelector(`[data-path="socials.${state.socials.length - 1}.${name ? 'url' : 'label'}"]`);
+                el.focus(); el.setSelectionRange?.(el.value.length, el.value.length);
+                return;
+            }
+            if (act === 'add-section') {
+                state.sections.push({ title: '', links: [] });
+                renderSections(); changed();
+                document.querySelector(`[data-path="sections.${state.sections.length - 1}.title"]`).focus();
+                return;
+            }
+            if (act === 'add-link' || act === 'add-auto') {
+                const sec = getPath(path);
+                sec.links.push(act === 'add-auto' ? { auto: b.dataset.auto } : { label: '', description: '', url: '', icon: '', highlight: false, hidden: false });
+                renderSections(); changed();
+                const p = `${path}.links.${sec.links.length - 1}`;
+                (document.querySelector(`[data-path="${p}.label"]`) || document.querySelector(`[data-row="${p}"]`))?.focus?.();
+                if (act === 'add-auto') toast(`${AUTOS[b.dataset.auto].name} card added`);
+                return;
+            }
+            if (act === 'sec-up' || act === 'sec-down') {
+                const d = act === 'sec-up' ? -1 : 1, s = state.sections;
+                [s[idx], s[idx + d]] = [s[idx + d], s[idx]];
+                focus = [act, `sections.${idx + d}`];
+                renderSections();
+            } else if (act === 'sec-del') {
+                const sec = state.sections[idx];
+                if (sec.links.length && !confirm(`Remove the section "${sec.title || 'untitled'}" and its ${sec.links.length} link${sec.links.length > 1 ? 's' : ''}?`)) return;
+                state.sections.splice(idx, 1); renderSections();
+            } else if (parts[0] === 'socials') {
+                const list = state.socials;
+                if (act === 'hide') list[idx].hidden = !list[idx].hidden, focus = [act, path];
+                if (act === 'del') list.splice(idx, 1);
+                if (act === 'up' || act === 'down') { const d = act === 'up' ? -1 : 1; [list[idx], list[idx + d]] = [list[idx + d], list[idx]]; focus = [act, `socials.${idx + d}`]; }
+                renderSocials();
+            } else if (parts[0] === 'sections') {
+                const si = Number(parts[1]), secs = state.sections, list = secs[si].links;
+                if (act === 'hide') list[idx].hidden = !list[idx].hidden, focus = [act, path];
+                if (act === 'star') list[idx].highlight = !list[idx].highlight, focus = [act, path];
+                if (act === 'del') list.splice(idx, 1);
+                if (act === 'up' || act === 'down') {
+                    const d = act === 'up' ? -1 : 1, j = idx + d;
+                    if (j >= 0 && j < list.length) { [list[idx], list[j]] = [list[j], list[idx]]; focus = [act, `sections.${si}.links.${j}`]; }
+                    else if (d < 0 && si > 0) { secs[si - 1].links.push(list.splice(idx, 1)[0]); focus = [act, `sections.${si - 1}.links.${secs[si - 1].links.length - 1}`]; toast(`Moved to “${secs[si - 1].title || 'previous section'}”`); }
+                    else if (d > 0 && si < secs.length - 1) { secs[si + 1].links.unshift(list.splice(idx, 1)[0]); focus = [act, `sections.${si + 1}.links.0`]; toast(`Moved to “${secs[si + 1].title || 'next section'}”`); }
+                }
+                renderSections();
+            } else return;
+            changed();
+            if (focus) { const el = document.querySelector(`[data-act="${focus[0]}"][data-path="${focus[1]}"]`); if (el && !el.disabled) el.focus(); }
+        });
+
+        // ---------- icon picker ----------
+        function openIcons(path) {
+            iconTarget = path;
+            const item = getPath(path), auto = autoIcon(item.url);
+            $('icon-grid').innerHTML = `<button type="button" class="auto-opt ${item.icon ? '' : 'on'}" data-icon-pick=""><i class="${esc(auto)}"></i> Auto</button>`
+                + ICONS.map(c => `<button type="button" class="${item.icon === c ? 'on' : ''}" data-icon-pick="${c}" title="${c}" aria-label="${c}"><i class="${c}"></i></button>`).join('');
+            $('icon-custom').value = item.icon && !ICONS.includes(item.icon) ? item.icon : '';
+            $('icon-dialog').showModal();
+        }
+        function setIcon(cls) {
+            const item = getPath(iconTarget); item.icon = cls;
+            const ic = document.querySelector(`[data-icon="${iconTarget}"]`); if (ic) ic.className = iconOf(item);
+            touched.add(iconTarget);
+            $('icon-dialog').close(); changed();
+        }
+        $('icon-grid').addEventListener('click', e => { const b = e.target.closest('[data-icon-pick]'); if (b) setIcon(b.dataset.iconPick); });
+        $('icon-use').addEventListener('click', () => {
+            const v = $('icon-custom').value.trim().replace(/^fa-(solid|brands|regular) /, m => ({ 'fa-solid ': 'fas ', 'fa-brands ': 'fab ', 'fa-regular ': 'far ' }[m]));
+            if (!ICON_OK.test(v)) { toast('Use a class like "fas fa-rocket" or "fab fa-github"'); return; }
+            setIcon(v);
+        });
+        $('icon-custom').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('icon-use').click(); } });
+        $('icon-cancel').addEventListener('click', () => $('icon-dialog').close());
+
+        // ---------- publish ----------
+        function progress(steps) {
+            $('pub-steps').innerHTML = steps.map(s => `<li class="${s.state}"><i class="fas fa-${{ wait: 'circle', run: 'circle-notch fa-spin', ok: 'check', err: 'xmark' }[s.state]}"></i><span>${s.text}${s.note ? `<small>${s.note}</small>` : ''}</span></li>`).join('');
+        }
+        const b64encode = text => { const bytes = new TextEncoder().encode(text); let bin = ''; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000)); return btoa(bin); };
+        const b64decode = b64 => new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\s/g, '')), c => c.charCodeAt(0)));
+
+        function blockedWhy(btn) {
+            if (btn.getAttribute('aria-disabled') !== 'true') return false;
+            showAll = true; changed(); toast(btn.dataset.why); return true;
+        }
+
+        async function publish() {
+            if (blockedWhy($('publish'))) return;
+            const text = output;
+            const steps = [
+                { text: 'Check links.json on GitHub', state: 'wait' },
+                { text: 'Save your links', state: 'wait' },
+                { text: 'Deploy the site', state: 'wait' },
+            ];
+            let i = 0;
+            const run = note => { steps[i].state = 'run'; steps[i].note = note || ''; progress(steps); };
+            const ok = note => { steps[i].state = 'ok'; if (note !== undefined) steps[i].note = note; i++; progress(steps); };
+            $('pub-title').textContent = 'Publishing your links';
+            $('pub-intro').textContent = 'Keep this tab open — it takes about a minute.';
+            $('pub-view').hidden = true; $('pub-done').disabled = true;
+            progress(steps); $('publish-dialog').showModal();
+            try {
+                run();
+                const cur = await call('GET', `/repos/${REPO}/contents/${FILE}?ref=main`);
+                if (b64decode(cur.content) !== liveText)
+                    throw new Error('links.json was changed on GitHub after this page loaded. Reload the page (your edits are kept as a draft, so re-check them against the new version) and publish again.');
+                ok();
+
+                run();
+                const res = await call('PUT', `/repos/${REPO}/contents/${FILE}`, { message: 'data: update connect page links', content: b64encode(text), sha: cur.sha, branch: 'main' });
+                const c = res.commit;
+                liveText = text; liveOut = text;
+                try { localStorage.removeItem(DRAFT_KEY); } catch (_) {}
+                changed();
+                ok(`<a href="https://github.com/${REPO}/commit/${c.sha}" target="_blank" rel="noopener">commit ${c.sha.slice(0, 7)}</a>`);
+
+                run('GitHub Pages is building it');
+                const since = Date.parse(c.committer?.date || new Date().toISOString()) - 5000;
+                let live = null, failed = null;
+                for (let n = 0; n < 70 && !live && !failed; n++) {
+                    await sleep(n < 4 ? 4000 : 6000);
+                    const runs = (await call('GET', `/repos/${REPO}/actions/workflows/deploy.yml/runs?branch=main&per_page=10`)).workflow_runs || [];
+                    const ours = runs.filter(r => Date.parse(r.created_at) >= since);
+                    live = ours.find(r => r.conclusion === 'success');
+                    const newest = ours[0];
+                    if (!live && newest?.status === 'completed' && !['success', 'cancelled'].includes(newest.conclusion)) failed = newest;
+                    if (ours.length) { steps[i].note = `GitHub Pages is building it · ${newest.status.replace('_', ' ')}`; progress(steps); }
+                }
+                if (failed) throw new Error(`the deploy failed — <a href="${esc(failed.html_url)}" target="_blank" rel="noopener">see the log</a>; your links are saved`);
+                if (!live) throw new Error(`still deploying — <a href="https://github.com/${REPO}/actions" target="_blank" rel="noopener">check Actions</a>; your links are saved`);
+                ok('live now (refresh /connect if it still shows the old version)');
+                $('pub-title').textContent = 'Links published';
+                $('pub-intro').textContent = 'nomadicmehul.dev/connect shows your changes.';
+                $('pub-view').hidden = false;
+            } catch (e) {
+                steps[i].state = 'err'; steps[i].note = /<a /.test(e.message) ? e.message : esc(e.message); progress(steps);
+                $('pub-title').textContent = 'Something went wrong';
+                $('pub-intro').textContent = i < 1 ? 'Nothing was changed.' : '';
+            }
+            $('pub-done').disabled = false;
+        }
+        $('publish').addEventListener('click', publish);
+        $('pub-done').addEventListener('click', () => $('publish-dialog').close());
+        window.addEventListener('beforeunload', e => { if ($('publish-dialog').open && $('pub-done').disabled) e.preventDefault(); });
+
+        // without a token: copy the JSON, open GitHub's editor
+        async function copyJson(msg) {
+            try { await navigator.clipboard.writeText(output); if (msg) toast(msg); return true; }
+            catch (_) { toast('Copy failed — open “data/links.json” below and copy it by hand'); return false; }
+        }
+        $('manual').addEventListener('click', e => {
+            if (blockedWhy($('manual'))) { e.preventDefault(); return; }
+            copyJson(); $('manual-dialog').showModal();   // the link itself opens GitHub in a new tab
+        });
+        $('manual-copy').addEventListener('click', () => copyJson('Copied'));
+        $('manual-done').addEventListener('click', () => $('manual-dialog').close());
+        $('copy').addEventListener('click', () => copyJson('links.json copied'));
+        $('discard').addEventListener('click', () => {
+            if (!confirm('Throw away your changes and go back to the live version?')) return;
+            state = normalize(JSON.parse(liveText)); touched.clear(); showAll = false;
+            renderAll(); toast('Back to the live version');
+        });
+        document.addEventListener('keydown', e => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter' && connected() && !document.querySelector('dialog[open]')) { e.preventDefault(); publish(); }
+        });
+
+        function toast(msg) {
+            const t = $('toast'); t.textContent = msg; t.classList.add('show');
+            clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2400);
+        }
+
+        load();
+    </script>
+</body>
+</html>
