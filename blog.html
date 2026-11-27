@@ -105,6 +105,26 @@
             .nav-links .btn .cta-label { display: none; }
             .nav-links .btn { padding-left: 13px; padding-right: 13px; }
         }
+        /* Phones: the nav links collapse into the menu, so Connect gets its own glowing pill beside the menu button */
+        .mobile-connect { display: none; }
+        @media (max-width: 768px) {
+            .mobile-connect {
+                display: inline-flex; align-items: center; gap: 7px; margin-left: auto; margin-right: 10px;
+                padding: 7px 13px; border-radius: 100px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600;
+                color: var(--term-cyan); background: rgba(34, 211, 238, 0.12); border: 1px solid rgba(34, 211, 238, 0.4);
+                animation: connect-glow 2.6s ease-in-out infinite;
+            }
+            .mobile-connect:active { background: rgba(34, 211, 238, 0.25); }
+        }
+        @media (max-width: 360px) {
+            .mobile-connect { padding: 8px 10px; }
+            .mobile-connect span { display: none; }
+        }
+        @keyframes connect-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+            50% { box-shadow: 0 0 14px 1px rgba(34, 211, 238, 0.35); }
+        }
+        @media (prefers-reduced-motion: reduce) { .mobile-connect { animation: none; } }
         .btn-connect {
             background: rgba(34, 211, 238, 0.12); color: var(--term-cyan);
             border: 1px solid rgba(34, 211, 238, 0.3);
@@ -330,6 +350,7 @@
                 <a href="index.html" class="nav-logo">
                     <span class="prompt-user">root</span><span class="prompt-at">@</span><span class="prompt-host">mehul</span><span class="prompt-colon">:</span><span class="prompt-path">~</span><span class="prompt-hash">#</span><span class="cursor-block"></span>
                 </a>
+                <a href="connect.html" class="mobile-connect" aria-label="Connect: all my links"><i class="fas fa-link"></i><span>Connect</span></a>
                 <button class="mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle menu">
                     <i class="fas fa-bars"></i>
                 </button>

@@ -355,6 +355,30 @@
             padding: 8px;
         }
 
+        /* Phones: the nav links collapse into the menu, so Connect gets its own glowing pill beside the menu button */
+        .mobile-connect { display: none; }
+        @media (max-width: 768px) {
+            .mobile-connect {
+                display: inline-flex; align-items: center; gap: 7px; margin-left: auto; margin-right: 10px;
+                padding: 7px 13px; border-radius: 100px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600;
+                color: var(--term-cyan); background: rgba(34, 211, 238, 0.12); border: 1px solid rgba(34, 211, 238, 0.4);
+                animation: connect-glow 2.6s ease-in-out infinite;
+            }
+            .mobile-connect:active { background: rgba(34, 211, 238, 0.25); }
+        }
+        @media (max-width: 360px) {
+            .mobile-connect { padding: 8px 10px; }
+            .mobile-connect span { display: none; }
+        }
+        @keyframes connect-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+            50% { box-shadow: 0 0 14px 1px rgba(34, 211, 238, 0.35); }
+        }
+        @media (prefers-reduced-motion: reduce) { .mobile-connect { animation: none; } }
+
+        .mobile-menu a.mobile-menu-connect { color: var(--term-cyan); }
+        .mobile-menu a.mobile-menu-connect::before { color: var(--term-cyan); }
+
         .mobile-menu {
             display: none;
             position: fixed;
@@ -1939,6 +1963,7 @@
                     <a href="https://github.com/nomadicmehul" target="_blank" class="nav-cta" title="GitHub"><i class="fab fa-github"></i><span class="cta-label"> GitHub</span></a>
                     <a href="https://topmate.io/nomadicmehul" target="_blank" class="nav-cta nav-cta-book" title="Book a session"><i class="fas fa-calendar-check"></i><span class="cta-label"> Book Session</span></a>
                 </div>
+                <a href="connect.html" class="mobile-connect" aria-label="Connect: all my links"><i class="fas fa-link"></i><span>Connect</span></a>
                 <button class="mobile-toggle" onclick="toggleMenu()" aria-label="Toggle menu">
                     <i class="fas fa-bars" id="menu-icon"></i>
                 </button>
@@ -1950,7 +1975,7 @@
             <a href="#speaking" onclick="toggleMenu()">Speaking</a>
             <a href="#projects" onclick="toggleMenu()">Projects</a>
             <a href="blog.html" onclick="toggleMenu()">Blog</a>
-            <a href="connect.html" onclick="toggleMenu()">Connect</a>
+            <a href="connect.html" class="mobile-menu-connect" onclick="toggleMenu()"><i class="fas fa-link"></i> Connect</a>
             <a href="https://github.com/nomadicmehul" target="_blank" onclick="toggleMenu()">GitHub</a>
             <a href="https://topmate.io/nomadicmehul" target="_blank" onclick="toggleMenu()">Book Session</a>
         </div>
@@ -2355,7 +2380,7 @@
             <h2>Let's Connect</h2>
             <p>Interested in collaboration, speaking opportunities, or just want to say hi? I'm always open to connecting with fellow developers and technologists.</p>
             <div class="cta-buttons">
-                <a href="mailto:contact@mehulpatel.dev" class="btn btn-white">
+                <a href="mailto:hello@nomadicmehul.dev" class="btn btn-white">
                     <i class="fas fa-envelope"></i> Email Me
                 </a>
                 <a href="connect.html" class="btn btn-ghost">
