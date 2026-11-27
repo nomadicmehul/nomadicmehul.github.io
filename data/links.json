@@ -61,7 +61,7 @@
     },
     {
       "label": "Email",
-      "url": "mailto:contact@mehulpatel.dev"
+      "url": "mailto:hello@nomadicmehul.dev"
     }
   ],
   "sections": [
@@ -78,7 +78,7 @@
         {
           "label": "Invite me to speak",
           "description": "Talks, workshops and panels",
-          "url": "mailto:contact@mehulpatel.dev?subject=Speaking%20invitation",
+          "url": "mailto:hello@nomadicmehul.dev?subject=Speaking%20invitation",
           "icon": "fas fa-microphone"
         }
       ]
